@@ -245,8 +245,8 @@ def main():
 
 	#What to plot?
 	plot_melt_comparison=False
-	plot_bt_stream_comparison=False
-	plot_temperature_cross_section=True
+	plot_bt_stream_comparison=True
+	plot_temperature_cross_section=False
 
 
 	#Defining path
@@ -367,7 +367,7 @@ def main():
 
 
 	if save_figure==True:
-		output_file='figures/static_shelf_comparison_' + field + '.png'
+		output_file='Figures/static_shelf_comparison_' + field + '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 

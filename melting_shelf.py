@@ -318,7 +318,7 @@ def main():
 
 
 	if save_figure==True:
-		#output_file='figures/static_shelf_comparison_' + field + '.png'
+		#output_file='Figures/static_shelf_comparison_' + field + '.png'
 		#plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		#print 'Saving ' ,output_file
 		print 'Saving file not working yet'
