@@ -17,12 +17,27 @@ from m6toolbox  import section2quadmesh
 
 
 def transpose_matrix(data):
-	M=data.shape
-	data_new=np.zeros([M[1],M[0]])
-	for i in range(M[0]):
-		for j in range(M[1]):
-			data_new[j,i]=data[i,j]
-	#print 'After rotation' ,data.shape
+	if len(data.shape)==2:
+		M=data.shape
+		data_new=np.zeros([M[1],M[0]])
+		for i in range(M[0]):
+			for j in range(M[1]):
+				data_new[j,i]=data[i,j]
+		#print 'After rotation' ,data.shape
+	if len(data.shape)==3:
+		M=data.shape
+		data_new=np.zeros([M[0],M[2],M[1]])
+		for i in range(M[1]):
+			for j in range(M[2]):
+				data_new[:,j,i]=data[:,i,j]
+		#print 'After rotation' ,data.shape
+	if len(data.shape)==4:
+		M=data.shape
+		data_new=np.zeros([M[0],M[1],M[3],M[2]])
+		for i in range(M[2]):
+			for j in range(M[3]):
+				data_new[:,:,j,i]=data[:,:,i,j]
+		#print 'After rotation' ,data.shape
 	return data_new
 
 
@@ -107,24 +122,52 @@ def squeeze_matrix_to_2D(data,time_slice,time_slice_num,direction=None,dir_slice
 				
 	return data
 
+def load_data_from_file(filename, field, rotated):
+	field_tmp=field
+	if rotated is True:
+		if field=='u':
+			field_tmp='v'
+		if field=='v':
+			field_tmp='u'
+		if field=='uo':
+			field_tmp='vo'
+		if field=='vo':
+			field_tmp='uo'
+		if field=='spread_uvel':
+			field_tmp='spread_vvel'
+		if field=='spread_vvel':
+			field_tmp='spread_uvel'
+		if field=='vhbt':
+			field_tmp='uhbt'
+		if field=='uhbt':
+			field_tmp='vhbt'
 
-def load_data_from_file(filename, field, time_slice, time_slice_num, direction=None ,dir_slice=None, dir_slice_num=None):
-	print 'Loading data from...', filename
 	with nc.Dataset(filename) as file:
-		data = file.variables[field][:]
+		data = file.variables[field_tmp][:]
+	
+	if rotated is True:
+		data=transpose_matrix(data)
+		if field=='u' or  field=='uo' or field=='uhbt' or field=='spread_uvel':
+			data=-data
+	return data
 
+def load_and_compress_data(filename, field, time_slice, time_slice_num, direction=None ,dir_slice=None, dir_slice_num=None,rotated=False):
+
+	#Loading data
+	data=load_data_from_file(filename, field, rotated)
+	
 	#Give an error message if direction is not given for 4D matrix	
 	if (len(data.shape)>3 and direction is None):
 		print 'Direction must be provided for 4-dim matrix'
 		return
 	data=squeeze_matrix_to_2D(data,time_slice,time_slice_num,direction,dir_slice, dir_slice_num)
-	print 'Loading complete'
 
 	return data
 
-def calculate_barotropic_streamfunction(filename,depth,ice_base,time_slice=None,time_slice_num=-1):
-	uhbt = Dataset(filename).variables['uhbt'][:]
-	vhbt = Dataset(filename).variables['vhbt'][:]
+
+def calculate_barotropic_streamfunction(filename,depth,ice_base,time_slice=None,time_slice_num=-1,rotated=False):
+	uhbt=load_data_from_file(filename, 'uhbt', rotated)
+	vhbt=load_data_from_file(filename, 'vhbt', rotated)
 	# mask grouded region
 	uhbt = mask_grounded_ice(uhbt,depth,ice_base)
 	vhbt = mask_grounded_ice(vhbt,depth,ice_base)
@@ -137,30 +180,22 @@ def calculate_barotropic_streamfunction(filename,depth,ice_base,time_slice=None,
 
 	return psi2D
 	
-def get_horizontal_dimentions(filename,start_from_zero=False):
-	with nc.Dataset(filename) as file:
-		x = file.variables['xq'][:]
-		y = file.variables['yh'][:]
-	if start_from_zero is True:
-		x=x-np.min(x)
-		y=y-np.min(y)
-	print np.max(y),np.max(x)
-	return [x,y]
-
-def get_vertical_dimentions(filename, vertical_coordinate, time_slice, time_slice_num, direction ,dir_slice, dir_slice_num):
-	print 'Loading vertical grid'
+def get_vertical_dimentions(filename, vertical_coordinate, time_slice, time_slice_num, direction ,dir_slice, dir_slice_num,rotated=False):
 	if vertical_coordinate=='z':
 		with nc.Dataset(filename) as file:
 			z = file.variables['zt'][:]
 		return z
 	if vertical_coordinate=='layers':
-		z=load_data_from_file(filename, 'e' , time_slice, time_slice_num, direction ,dir_slice, dir_slice_num)
-	print 'Vertical grid loading complete'
+		z=load_and_compress_data(filename, 'e' , time_slice, time_slice_num, direction ,dir_slice, dir_slice_num,rotated=rotated)
 
 	return z
 
+def switch_x_and_y(x,y):
+	tmp=y ; y=x ; x=tmp
+	
+	return [x,y]
 
-def load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename):
+def load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated):
 	# bedrock
 	depth = Dataset(ocean_geometry_filename).variables['D'][:]
 	# area under shelf 
@@ -177,11 +212,22 @@ def load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_I
 	y=Dataset(ocean_geometry_filename).variables['geolat'][:]#*1.0e3 # in m
 	xvec=Dataset(ocean_geometry_filename).variables['lonh'][:]#*1.0e3 # in m
 	yvec=Dataset(ocean_geometry_filename).variables['lath'][:]#*1.0e3 # in m
+	if rotated is True:
+		depth=transpose_matrix(depth)
+		shelf_area=transpose_matrix(shelf_area)
+		ice_base=transpose_matrix(ice_base)
+		[x,y]=switch_x_and_y(x,y)		
+		x=-transpose_matrix(x)
+		y=transpose_matrix(y)
+		[xvec,yvec]=switch_x_and_y(xvec,yvec)
+		xvec=-xvec
+		xvec=xvec-np.min(xvec)
+		x=x-np.min(x)
 	return [depth, shelf_area, ice_base, x,y, xvec, yvec]
 
 
-def plot_data_field(data,x,y,field,vmin=None,vmax=None,rotated=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel=''): 
-	if rotated is True:
+def plot_data_field(data,x,y,field,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel=''): 
+	if flipped is True:
 		data=transpose_matrix(data)
 		tmp=y ; y=x ; x=tmp
 		x=transpose_matrix(x)
@@ -211,7 +257,6 @@ def plot_data_field(data,x,y,field,vmin=None,vmax=None,rotated=False,colorbar=Tr
 
 
 def interpolated_onto_vertical_grid(data, layer_interface, x, vertical_coordinate):
-	print 'Interpolating data onto vertical grid'
 	if vertical_coordinate=='layers':  
                 representation='linear'  #'pcm'
                 #representation='pcm'
@@ -224,7 +269,6 @@ def interpolated_onto_vertical_grid(data, layer_interface, x, vertical_coordinat
                 X=x
                 Z=-layer_interface
                 Q=data
-	print 'Interpolation complete'
 
 	return [X,Z,Q]
 
@@ -246,52 +290,42 @@ def main():
 
 
 	#Plotting flats
-	save_figure=False
-
+	save_figure=True
+	
+	#General flags
+	rotated=True
 
 	#What to plot?
-	plot_melt_comparison=True
+	plot_melt_comparison=False
 	plot_bt_stream_comparison=False
-	plot_temperature_cross_section=False
-
-
-	if (plot_melt_comparison is False) and (plot_bt_stream_comparison is False) and  (plot_temperature_cross_section is False):
-		print 'You must select an option'
-		return
+	plot_cross_section=True
 
 
 	#Defining path
-
-	Fixed_berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/fixed_speed_Moving_berg_trimmed_shelf/'
-	Drift_berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/drifting_Moving_berg_trimmed_shelf/'
-	Bond_berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/Bond_drifting_Moving_berg_trimmed_shelf/'
+	Shelf_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Shelf/Melt_on_without_decay_with_spreading_trimmed_shelf/'
+	Berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/Melt_on_without_decay_with_spreading_trimmed_shelf/'
 
 	#Geometry files
-	ocean_geometry_filename=Fixed_berg_path +'ocean_geometry.nc'
-	ice_geometry_filename=Fixed_berg_path+'MOM_Shelf_IC.nc'
-	ISOMIP_IC_filename=Fixed_berg_path+'ISOMIP_IC.nc'
+	ocean_geometry_filename=Shelf_path +'ocean_geometry.nc'
+	ice_geometry_filename=Shelf_path+'/MOM_Shelf_IC.nc'
+	ISOMIP_IC_filename=Shelf_path+'ISOMIP_IC.nc'
 	
+	#Shelf files
+	Shelf_ocean_file=Shelf_path+'00010101.ocean_month.nc'
+
 	#Berg files
-	#Fixed_ocean_file=Fixed_berg_path+'00060101.ocean_month.nc'
-	#Drift_ocean_file=Drift_berg_path+'00060101.ocean_month.nc'
-	#Bond_ocean_file=Bond_berg_path+'00060101.ocean_month.nc'
-	Fixed_ocean_file=Fixed_berg_path+'00060101.prog.nc'
-	Drift_ocean_file=Drift_berg_path+'00060101.prog.nc'
-	Bond_ocean_file=Bond_berg_path+'00060101.prog.nc'
-	Fixed_iceberg_file=Fixed_berg_path+'00060101.icebergs_month.nc'
-	Drift_iceberg_file=Drift_berg_path+'00060101.icebergs_month.nc'
-	Bond_iceberg_file=Bond_berg_path+'00060101.icebergs_month.nc'
+	Berg_ocean_file=Berg_path+'00010101.ocean_month.nc'
+	Berg_iceberg_file=Berg_path+'00010101.icebergs_month.nc'
 
 
 
 	#Load static fields
-	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename)	
+	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated)	
 	
 	#Defining figure characteristics
-	fig=plt.figure(figsize=(15,10))
-	#fig=plt.figure(figsize=(15,10),facecolor='grey')
+	fig=plt.figure(figsize=(15,10),facecolor='grey')
 	#fig = plt.figure(facecolor='black')
-	#ax = fig.add_subplot(111,axisbg='gray')
+	ax = fig.add_subplot(111,axisbg='gray')
 
 	######################################################################################################################
 	################################  Plotting melt comparison  ##########################################################
@@ -299,94 +333,89 @@ def main():
 	
 	if plot_melt_comparison is True:
 		vmin=0.0  ; vmax=3.0
-		vmin=-2.0  ; vmax=1.0
-		rotated=True
-		field='sst'
-		#field='spread_area'
-		#field='spread_uvel'
+		flipped=False
+		field='melt'
 
-		data1=load_data_from_file(Fixed_iceberg_file,field=field,time_slice='',time_slice_num=0)
-		data2=load_data_from_file(Drift_iceberg_file,field=field,time_slice='',time_slice_num=0) #field name is difference since it comes from a diff file.
-		data3=load_data_from_file(Bond_iceberg_file,field=field,time_slice='',time_slice_num=0) #field name is difference since it comes from a diff file.
+		data1=load_and_compress_data(Shelf_ocean_file,field='melt',time_slice='mean',time_slice_num=-1,rotated=rotated)
+		data2=load_and_compress_data(Berg_iceberg_file,field='melt_m_per_year',time_slice='mean',time_slice_num=-1,rotated=rotated) #field name is difference since it comes from a diff file.
 
-		#data1=mask_ocean(data1,shelf_area)
-		#data2=mask_ocean(data2,shelf_area)
-		#data3=mask_ocean(data3,shelf_area)
+		data1=mask_ocean(data1,shelf_area)
+		data2=mask_ocean(data2,shelf_area)
+		#data3=mask_ocean(data1-data2,shelf_area)
 		plt.subplot(1,3,1)
-		plot_data_field(data1,x,y,'',vmin,vmax,rotated,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Shelf',xlabel='x (km)',ylabel='y (km)')	
 		plt.subplot(1,3,2)
-		plot_data_field(data2,x,y,'',vmin,vmax,rotated,colorbar=True,cmap='jet',title='Drift',xlabel='x (km)',ylabel='')	
+		plot_data_field(data2,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bergs',xlabel='x (km)',ylabel='')	
 		plt.subplot(1,3,3)
-		plot_data_field(data3,x,y,'',vmin,vmax,rotated,colorbar=True,cmap='jet',title='Bond',xlabel='x (km)',ylabel='')	
+		plot_data_field(data1-data2,x,y,'',vmin=-3.,vmax=3.,flipped=flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
 
 	######################data###############################################################################################
 	################################  Plotting Bt stream function ########################################################
 	######################################################################################################################
 
 	if plot_bt_stream_comparison is True:
-		vmin=-3*(10**4)  ; vmax=3*(10**4)
-		rotated=True
+		vmin=-3*(10**3)  ; vmax=3*(10**3)
+		flipped=False
 		field='barotropic_sf'
+		cmap='jet'
 
-		data1=calculate_barotropic_streamfunction(Fixed_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1)
-		data2=calculate_barotropic_streamfunction(Drift_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1)
-		data3=calculate_barotropic_streamfunction(Bond_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1)
+		data1=calculate_barotropic_streamfunction(Shelf_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
+		data2=calculate_barotropic_streamfunction(Berg_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
 		plt.subplot(1,3,1)
-		plot_data_field(data1,x,y,'',vmin,vmax,rotated,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1,x,y,'',vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Shelf',xlabel='x (km)',ylabel='y (km)')	
 		plt.subplot(1,3,2)
-		plot_data_field(data2,x,y,'',vmin,vmax,rotated,colorbar=True,cmap='jet',title='Drift',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data2,x,y,'',vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Bergs',xlabel='x (km)',ylabel='y (km)')	
 		plt.subplot(1,3,3)
-		plot_data_field(data3,x,y,'',vmin,vmax,rotated,colorbar=True,cmap='jet',title='Drift',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1-data2,x,y,'',-vmax, vmax, flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
 
 
-	if plot_temperature_cross_section is True:
-
+	if plot_cross_section is True:
 		plot_anomaly=True
-		time_slice=''
+		time_slice='mean'
 		#vertical_coordinate='z'
 		vertical_coordinate='layers'  #'z'
 		#field='temp'  ; vmin=-2.0  ; vmax=1.0  ;vdiff=0.1   ; vanom=0.3
-		field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.05  ; vanom=0.05
-		cmap='jet'
-		filename1=Fixed_ocean_file
-		filename2=Drift_ocean_file
-		filename3=Bond_ocean_file
+		field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.02  ; vanom=0.02
+		#field='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
+		#field='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
+		filename1=Shelf_ocean_file
+		filename2=Berg_ocean_file
 		
 		if vertical_coordinate=='z':
 			filename1=filename1.split('.nc')[0] + '_z.nc'
 			filename2=filename2.split('.nc')[0] + '_z.nc'
-		
+		if rotated is True:
+                        direction='yz'
+                        dist=yvec
+                else:
+                        direction='xz'
+                        dist=xvec
 
 
-		data1=load_data_from_file(filename1,field , time_slice, time_slice_num=-1, direction='xz' ,dir_slice=None, dir_slice_num=20)
-		elevation1 = get_vertical_dimentions(filename1,vertical_coordinate, time_slice, time_slice_num=-1, direction='xz' ,dir_slice=None, dir_slice_num=20)
-		(x1 ,z1 ,data1) =interpolated_onto_vertical_grid(data1, elevation1, xvec, vertical_coordinate)
+		data1=load_and_compress_data(filename1,field , time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+		elevation1 = get_vertical_dimentions(filename1,vertical_coordinate, time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+		(y1 ,z1 ,data1) =interpolated_onto_vertical_grid(data1, elevation1, dist, vertical_coordinate)
 
-		data2=load_data_from_file(filename2,field , time_slice, time_slice_num=-1, direction='xz' ,dir_slice=None, dir_slice_num=20)
-		elevation2 = get_vertical_dimentions(filename2,vertical_coordinate, time_slice, time_slice_num=-1, direction='xz' ,dir_slice=None, dir_slice_num=20)
-		(x2 ,z2 ,data2) =interpolated_onto_vertical_grid(data2, elevation2, xvec, vertical_coordinate)
-		
-		data3=load_data_from_file(filename3,field , time_slice, time_slice_num=-1, direction='xz' ,dir_slice=None, dir_slice_num=20)
-		elevation3 = get_vertical_dimentions(filename3,vertical_coordinate, time_slice, time_slice_num=-1, direction='xz' ,dir_slice=None, dir_slice_num=20)
-		(x3 ,z3 ,data3) =interpolated_onto_vertical_grid(data3, elevation3, xvec, vertical_coordinate)
+		data2=load_and_compress_data(filename2,field , time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+		elevation2 = get_vertical_dimentions(filename2,vertical_coordinate, time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+		(y2 ,z2 ,data2) =interpolated_onto_vertical_grid(data2, elevation2, dist, vertical_coordinate)
 
 		if plot_anomaly is True:
-			data0=load_data_from_file(filename1,field , time_slice=None, time_slice_num=0, direction='xz' ,dir_slice=None, dir_slice_num=20)
-			elevation0 = get_vertical_dimentions(filename1,vertical_coordinate, time_slice=None, time_slice_num=-1, direction='xz' ,dir_slice=None, dir_slice_num=20)
-			(x0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, xvec, vertical_coordinate)
+			data0=load_and_compress_data(filename1,field , time_slice=None, time_slice_num=0, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+			elevation0 = get_vertical_dimentions(filename1,vertical_coordinate, time_slice=None,\
+			  time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+			(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, dist, vertical_coordinate)
 			data1=data1-data0
 			data2=data2-data0
-			data3=data3-data0
 			vmin=-vanom  ; vmax=vanom
-			cmap='jet'
 
 
 		plt.subplot(3,1,1)
-		plot_data_field(data1, x1, z1, '', vmin, vmax, rotated=False, colorbar=True, cmap=cmap)
+		plot_data_field(data1, y1, z1, '', vmin, vmax, flipped=False, colorbar=True, cmap='jet')
 		plt.subplot(3,1,2)
-		plot_data_field(data2, x2, z2, '', vmin, vmax, rotated=False, colorbar=True, cmap=cmap)
+		plot_data_field(data2, y2, z2, '', vmin, vmax, flipped=False, colorbar=True, cmap='jet')
 		plt.subplot(3,1,3)
-		plot_data_field(data3, x3, z3, '', vmin, vmax, rotated=False, colorbar=True, cmap=cmap)
+		plot_data_field(data1-data2, y1, z1, '', vmin=-vdiff, vmax=vdiff, flipped=False, colorbar=True, cmap='bwr')
 		
 		#For plotting purposes
 		field=field+'_'+ vertical_coordinate
@@ -398,10 +427,9 @@ def main():
 
 
 	if save_figure==True:
-		output_file='Figures/moving_comparison_' + field + '.png'
-		#plt.savefig(output_file,dpi=300,bbox_inches='tight')
-		#print 'Saving ' ,output_file
-		print 'Saving not working yet'
+		output_file='Figures/static_shelf_comparison_' + field + '.png'
+		plt.savefig(output_file,dpi=300,bbox_inches='tight')
+		print 'Saving ' ,output_file
 
 	#fig.set_size_inches(9,4.5)
 	plt.show()
