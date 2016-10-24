@@ -93,32 +93,33 @@ def squeeze_matrix_to_2D(data,time_slice,time_slice_num,direction=None,dir_slice
 
 	#Trimming and squeezing the data
 
-	#Reducing time dimension  - assumes that first dim is time.
-	if time_slice=='mean':
-		data=np.squeeze(np.mean(data,axis=0))  #Mean over first variable
-	else:
-		if len(data.shape) == 3:
-			data=np.squeeze(data[time_slice_num,:,:])  #Mean over first variable
-		if len(data.shape) == 4:
-			data=np.squeeze(data[time_slice_num,:,:,:])  #Mean over first variable
-
-
-	if len(data.shape) == 3:
-		if dir_slice=='mean':
- 			if direction=='xy':
-				axis_num=0
- 			if direction=='xz':
-				axis_num=1
- 			if direction=='yz':
-				axis_num=2
-			data=np.squeeze(np.mean(data,axis=axis_num))
+	if len(data.shape)>2:
+		#Reducing time dimension  - assumes that first dim is time.
+		if time_slice=='mean':
+			data=np.squeeze(np.mean(data,axis=0))  #Mean over first variable
 		else:
- 			if direction=='xy':
-				data=np.squeeze(data[dir_slice_num,:,:])
- 			if direction=='xz':
-				data=np.squeeze(data[:,dir_slice_num,:])
- 			if direction=='yz':
-				data=np.squeeze(data[:,:,dir_slice_num])
+			if len(data.shape) == 3:
+				data=np.squeeze(data[time_slice_num,:,:])  #Mean over first variable
+			if len(data.shape) == 4:
+				data=np.squeeze(data[time_slice_num,:,:,:])  #Mean over first variable
+
+
+		if len(data.shape) == 3:
+			if dir_slice=='mean':
+				if direction=='xy':
+					axis_num=0
+				if direction=='xz':
+					axis_num=1
+				if direction=='yz':
+					axis_num=2
+				data=np.squeeze(np.mean(data,axis=axis_num))
+			else:
+				if direction=='xy':
+					data=np.squeeze(data[dir_slice_num,:,:])
+				if direction=='xz':
+					data=np.squeeze(data[:,dir_slice_num,:])
+				if direction=='yz':
+					data=np.squeeze(data[:,:,dir_slice_num])
 				
 	return data
 
@@ -224,6 +225,18 @@ def load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_I
 		xvec=xvec-np.min(xvec)
 		x=x-np.min(x)
 	return [depth, shelf_area, ice_base, x,y, xvec, yvec]
+
+def find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec):
+        #Finding grounding line (assuming shelf in the South)
+        M=depth.shape
+        grounding_line=np.zeros(M[1])
+        for i in range(M[1]):
+                Flag=False
+                for j in range(M[0]):
+                        if (Flag is False) and shelf_area[j,i]>0.5:
+                                Flag=True
+                                grounding_line[i]=yvec[j]
+        return grounding_line
 
 
 def plot_data_field(data,x,y,field,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel=''): 
