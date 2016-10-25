@@ -64,23 +64,27 @@ def load_data_from_nc_file(filename,field_name):
 
 def main():
         input_filename='/home/aas/Iceberg_Project/iceberg_scripts/python_scripts/movies/00010101.icebergs_day.nc'
-        output_filename='test5.mp4'
+        output_filename='movies/test5.mp4'
 
 	#General flags
 	horizontal_movie=False
 	cross_section_movie=True
 
 
-	Shelf_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Shelf/Melt_on_without_decay_with_spreading_trimmed_shelf/'
 	Berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/Melt_on_without_decay_with_spreading_trimmed_shelf/'
+	Berg_path='/ptmp/aas/data/fixed_speed_Moving_berg_trimmed_shelf_from_zero_small_step_u01/'
 
 	#Geometry files
-        ocean_geometry_filename=Shelf_path +'ocean_geometry.nc'
-        ice_geometry_filename=Shelf_path+'/MOM_Shelf_IC.nc'
-        ISOMIP_IC_filename=Shelf_path+'ISOMIP_IC.nc'
+        ocean_geometry_filename=Berg_path +'ocean_geometry.nc'
+        ice_geometry_filename=Berg_path+'/MOM_Shelf_IC.nc'
+        ISOMIP_IC_filename=Berg_path+'ISOMIP_IC.nc'
 
 	#Berg files
-        Berg_ocean_file=Berg_path+'00010101.ocean_month.nc'
+	extension_name='prog_combined.nc'
+	#extension_name='ocean_month_combined.nc'
+
+        #Berg_ocean_file=Berg_path+'00010101.ocean_month.nc'
+        Berg_ocean_file=Berg_path+extension_name
 	
 	#General flags
 	rotated=True	
@@ -123,10 +127,10 @@ def main():
                 field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.02  ; vanom=0.02
                 #field='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
                 #field='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
-                filename1=Berg_ocean_file
+                filename=Berg_ocean_file
                 
                 if vertical_coordinate=='z':
-                        filename1=filename1.split('.nc')[0] + '_z.nc'
+                        filename=filename.split('.nc')[0] + '_z.nc'
                 if rotated is True:
                         direction='yz'
                         dist=yvec
@@ -134,13 +138,15 @@ def main():
                         direction='xz'
                         dist=xvec
 
-                data1=load_and_compress_data(filename1,field , time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
-                elevation1 = get_vertical_dimentions(filename1,vertical_coordinate, time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
-                (y1 ,z1 ,data1) =interpolated_onto_vertical_grid(data1, elevation1, dist, vertical_coordinate)
+                data=load_and_compress_data(filename,field , time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+                elevation = get_vertical_dimentions(filename,vertical_coordinate, time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+                (y ,z ,data) =interpolated_onto_vertical_grid(data, elevation, dist, vertical_coordinate)
+		print 'Interpolation complete', data.shape
 
 
 
-        #ani_frame(data,output_filename)
+	print 'Staring to make a freaking movie!'
+	ani_frame(data,output_filename)
 
 if __name__ == '__main__':
         main()
