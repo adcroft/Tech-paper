@@ -94,33 +94,35 @@ def squeeze_matrix_to_2D(data,time_slice,time_slice_num,direction=None,dir_slice
 	#Trimming and squeezing the data
 
 	if len(data.shape)>2:
-		#Reducing time dimension  - assumes that first dim is time.
-		if time_slice=='mean':
-			data=np.squeeze(np.mean(data,axis=0))  #Mean over first variable
-		else:
-			if len(data.shape) == 3:
-				data=np.squeeze(data[time_slice_num,:,:])  #Mean over first variable
-			if len(data.shape) == 4:
-				data=np.squeeze(data[time_slice_num,:,:,:])  #Mean over first variable
-
-
-		if len(data.shape) == 3:
+		
+		#Removing extra horizontal dimension
+		if len(data.shape) == 4:
 			if dir_slice=='mean':
 				if direction=='xy':
-					axis_num=0
-				if direction=='xz':
 					axis_num=1
-				if direction=='yz':
+				if direction=='xz':
 					axis_num=2
+				if direction=='yz':
+					axis_num=3
 				data=np.squeeze(np.mean(data,axis=axis_num))
 			else:
 				if direction=='xy':
-					data=np.squeeze(data[dir_slice_num,:,:])
+					data=np.squeeze(data[:,dir_slice_num,:,:])
 				if direction=='xz':
-					data=np.squeeze(data[:,dir_slice_num,:])
+					data=np.squeeze(data[:,:,dir_slice_num,:])
 				if direction=='yz':
-					data=np.squeeze(data[:,:,dir_slice_num])
-				
+					data=np.squeeze(data[:,:,:,dir_slice_num])
+		
+		#Removing extra time dimensions
+		if time_slice!='all':
+			#Reducing time dimension  - assumes that first dim is time.
+			if time_slice=='mean':
+				data=np.squeeze(np.mean(data,axis=0))  #Mean over first variable
+			else:
+				#if len(data.shape) == 3:
+				data=np.squeeze(data[time_slice_num,:,:])  #Mean over first variable
+				#if len(data.shape) == 4:
+					#data=np.squeeze(data[time_slice_num,:,:,:])  #Mean over first variable
 	return data
 
 def load_data_from_file(filename, field, rotated):
@@ -161,6 +163,7 @@ def load_and_compress_data(filename, field, time_slice, time_slice_num, directio
 	if (len(data.shape)>3 and direction is None):
 		print 'Direction must be provided for 4-dim matrix'
 		return
+	
 	data=squeeze_matrix_to_2D(data,time_slice,time_slice_num,direction,dir_slice, dir_slice_num)
 
 	return data
@@ -269,16 +272,39 @@ def plot_data_field(data,x,y,field,vmin=None,vmax=None,flipped=False,colorbar=Tr
 	plt.title(title)
 
 
+
+def interpolated_layers_onto_grid(data, layer_interface, x):
+	representation='linear'  #'pcm'
+        #representation='pcm'
+        M=layer_interface.shape
+        layers=range(0,M[0]-1)
+        q=data[range(0,M[0]-1),:] ;q=q[:,range(0,len(x)-1) ]
+        layer_interface=layer_interface[:,range(0,len(x)-1)]
+        (X, Z, Q)=section2quadmesh(x, layer_interface, q, representation)
+	
+	return [X,Z,Q]
+
+
 def interpolated_onto_vertical_grid(data, layer_interface, x, vertical_coordinate):
+	print 'Beginning interpolation...'
 	if vertical_coordinate=='layers':  
-                representation='linear'  #'pcm'
-                #representation='pcm'
-                M=layer_interface.shape
-                layers=range(0,M[0]-1)
-                q=data[range(0,M[0]-1),:] ;q=q[:,range(0,len(x)-1) ]
-                layer_interface=layer_interface[:,range(0,len(x)-1)]
-                (X, Z, Q)=section2quadmesh(x, layer_interface, q, representation)
-        if vertical_coordinate=='z':
+		if len(data.shape)==2:
+			(X, Z, Q)=interpolated_layers_onto_grid(data, layer_interface, x)
+		elif len(data.shape)==3:
+			T=data.shape[0]
+			(X_tmp, Z_tmp, Q_tmp)=interpolated_layers_onto_grid(data[0,:,:], layer_interface[0,:,:], x)
+			M=X_tmp.shape
+			X=np.zeros([T,X_tmp.shape[0]])
+			Z=np.zeros([T,Z_tmp.shape[0],Z_tmp.shape[1]])
+			Q=np.zeros([T,Q_tmp.shape[0],Q_tmp.shape[1]])
+			for n in range(data.shape[0]):
+				(X_tmp, Z_tmp, Q_tmp)=interpolated_layers_onto_grid(data[n,:,:], layer_interface[n,:,:], x)
+				X[n,:]=X_tmp
+				Z[n,:,:]=Z_tmp
+				Q[n,:,:]=Q_tmp
+        
+	
+	if vertical_coordinate=='z':
                 X=x
                 Z=-layer_interface
                 Q=data
@@ -303,7 +329,7 @@ def main():
 
 
 	#Plotting flats
-	save_figure=True
+	save_figure=False
 	
 	#General flags
 	rotated=True

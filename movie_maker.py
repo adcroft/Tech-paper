@@ -67,8 +67,8 @@ def main():
         output_filename='test5.mp4'
 
 	#General flags
-	horizontal_movie=True
-	cross_section_movie=False
+	horizontal_movie=False
+	cross_section_movie=True
 
 
 	Shelf_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Shelf/Melt_on_without_decay_with_spreading_trimmed_shelf/'
@@ -116,7 +116,7 @@ def main():
 
         if cross_section_movie is True:
                 plot_anomaly=True
-                time_slice='mean'
+                time_slice='all'
                 #vertical_coordinate='z'
                 vertical_coordinate='layers'  #'z'
                 #field='temp'  ; vmin=-2.0  ; vmax=1.0  ;vdiff=0.1   ; vanom=0.3
@@ -138,10 +138,9 @@ def main():
                 elevation1 = get_vertical_dimentions(filename1,vertical_coordinate, time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
                 (y1 ,z1 ,data1) =interpolated_onto_vertical_grid(data1, elevation1, dist, vertical_coordinate)
 
-		print data.shape
 
 
-        ani_frame(data,output_filename)
+        #ani_frame(data,output_filename)
 
 if __name__ == '__main__':
         main()

@@ -56,11 +56,18 @@ def main():
 	
 	#Berg files
 	#Berg_ocean_file_init=Berg_path_init+'00010101.ocean_month.nc'
-	Berg_ocean_file_init=Berg_path+'00010101.ocean_month.nc'
 	if simulation=='high_melt':
-		Berg_ocean_file=Berg_path+'00060101.ocean_month.nc'
+		Berg_ocean_file1=Berg_path+'00010101.ocean_month.nc'
+		Berg_ocean_file2=Berg_path+'00060101.ocean_month.nc'
+		Berg_ocean_file2=Berg_path+'00060101.ocean_month.nc'
 	if simulation=='fixed_01':
-		Berg_ocean_file=Berg_path+'00010101.ocean_month.nc'
+		extension='.ocean_month.nc'
+		extension='.prog.nc'
+		Berg_ocean_file1=Berg_path+'00010101' +extension
+		Berg_ocean_file2=Berg_path+'00010107' +extension
+		Berg_ocean_file3=Berg_path+'00010206' +extension
+	
+	Berg_ocean_file_list=np.array([Berg_ocean_file1,Berg_ocean_file2,Berg_ocean_file3])
 	
 	Berg_icebergs_file=Berg_path+'00010101.icebergs_month.nc'
 
@@ -107,35 +114,31 @@ def main():
 			direction='xz'
 			dist=xvec
 
-		time_slice_num=np.array([1,10,-1])
+		time_slice_num=np.array([1,10,10])
 		for n in range(3):
 			plot_anomaly=False
 			vertical_coordinate='layers'  #'z'
 			#vertical_coordinate='z'
 			time_slice=None
-			field='u'  ; vmin=-0.05  ; vmax=0.05    ; vanom=0.3 ; cmap='seismic'
-			#field='v'  ; vmin=-0.05  ; vmax=0.05    ; vanom=0.3 ; cmap='seismic'
+			field='u'  ; vmin=-0.1  ; vmax=0.1    ; vanom=0.3 ; cmap='seismic'
+			field='v'  ; vmin=-0.1  ; vmax=0.1    ; vanom=0.3 ; cmap='seismic'
 			#field='temp'  ; vmin=1.0  ; vmax=5.0 ; vanom=0.3 ; cmap='jet'
 			#field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.05  ; vanom=0.05 ; cmap='jet'
-			if n==0:
-				#filename1=Berg_ocean_file_init
-				filename1=Berg_ocean_file
-			else:
-				filename1=Berg_ocean_file
 			
+			filename=Berg_ocean_file_list[n]
 			if vertical_coordinate=='z':
-				filename1=filename1.split('.nc')[0] + '_z.nc'
+				filename=filename.split('.nc')[0] + '_z.nc'
 
-			print filename1
+			print filename
 
-			data1=load_and_compress_data(filename1,field , time_slice, time_slice_num=time_slice_num[n], direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
-			elevation1 = get_vertical_dimentions(filename1,vertical_coordinate, time_slice, time_slice_num=time_slice_num[n],\
+			data1=load_and_compress_data(filename,field , time_slice, time_slice_num=time_slice_num[n], direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+			elevation1 = get_vertical_dimentions(filename,vertical_coordinate, time_slice, time_slice_num=time_slice_num[n],\
 					direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
 			(y1 ,z1 ,data1) =interpolated_onto_vertical_grid(data1, elevation1, dist, vertical_coordinate)
 
 			if plot_anomaly is True:
-				data0=load_and_compress_data(filename1,field , time_slice=None, time_slice_num=0, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
-				elevation0 = get_vertical_dimentions(filename1,vertical_coordinate, time_slice=None, time_slice_num=-1, \
+				data0=load_and_compress_data(filename,field , time_slice=None, time_slice_num=0, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+				elevation0 = get_vertical_dimentions(filename,vertical_coordinate, time_slice=None, time_slice_num=-1, \
 						direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
 				(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, dist, vertical_coordinate)
 				data1=data1-data0
@@ -144,7 +147,7 @@ def main():
 
 			plt.subplot(3,1,n+1)
 			plot_data_field(data1, y1, z1, '', vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
-			xmin=450.  ;xmax=700.
+			xmin=450.  ;xmax=750.
 			plt.xlim([xmin,xmax])
 			
 			surface=np.squeeze(elevation1[0,:])
