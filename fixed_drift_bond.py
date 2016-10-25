@@ -32,8 +32,8 @@ def main():
 	rotated=True
 
 	#What to plot?
-	plot_horizontal_field=False
-	plot_temperature_cross_section=True
+	plot_horizontal_field=True
+	plot_temperature_cross_section=False
 
 
 	if (plot_horizontal_field is False) and  (plot_temperature_cross_section is False):
@@ -66,6 +66,8 @@ def main():
 
 	#Load static fields
 	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated=rotated)	
+	grounding_line=find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec)
+
 	
 	#Defining figure characteristics
 	fig=plt.figure(figsize=(15,10))
@@ -86,7 +88,7 @@ def main():
 
 		#field='sst' ;  vmin=0.0  ; vmax=3.0
 		#field='spread_area' ; vmin=0.0  ; vmax=3.0
-		#field='spread_mass' ; vmin=0.0  ; vmax=500000.
+		field='spread_mass' ; vmin=0.0  ; vmax=1000000.
 		#field='spread_uvel' ; vmin=-2.0  ; vmax=1.0
 
 		data1=load_and_compress_data(Fixed_iceberg_file,field=field,time_slice=time_slice,time_slice_num=-1,rotated=rotated)
@@ -98,10 +100,13 @@ def main():
 		#data3=mask_ocean(data3,shelf_area)
 		plt.subplot(1,3,1)
 		plot_data_field(data1,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)')	
+		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 		plt.subplot(1,3,2)
 		plot_data_field(data2,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Drift',xlabel='x (km)',ylabel='y (km)')	
+		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 		plt.subplot(1,3,3)
 		plot_data_field(data3,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bonds',xlabel='x (km)',ylabel='y (km)')	
+		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 
 
 	######################data###############################################################################################
