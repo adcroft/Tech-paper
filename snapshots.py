@@ -98,7 +98,7 @@ def main():
 			data1=load_and_compress_data(Berg_icebergs_file,field=field,time_slice='',time_slice_num=-1,rotated=rotated)
 			#data1=mask_ocean(data1,shelf_area)
 			plt.subplot(1,3,n+1)
-			plot_data_field(data1,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)')  
+			plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)')  
 
 
 	####################################################################################################################################################
@@ -146,7 +146,7 @@ def main():
 			
 
 			plt.subplot(3,1,n+1)
-			plot_data_field(data1, y1, z1, '', vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
+			plot_data_field(data1, y1, z1, vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
 			xmin=450.  ;xmax=750.
 			plt.xlim([xmin,xmax])
 			

@@ -242,7 +242,7 @@ def find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec):
         return grounding_line
 
 
-def plot_data_field(data,x,y,field,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel=''): 
+def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=False): 
 	if flipped is True:
 		data=transpose_matrix(data)
 		tmp=y ; y=x ; x=tmp
@@ -261,15 +261,19 @@ def plot_data_field(data,x,y,field,vmin=None,vmax=None,flipped=False,colorbar=Tr
 
 	cNorm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 	#cNorm = mpl.colors.Normalize(vmin=600, vmax=850)
-	plt.pcolormesh(x,y,data,norm=cNorm,cmap=cmap)
+	datamap=plt.pcolormesh(x,y,data,norm=cNorm,cmap=cmap)
 	if colorbar is True:
-		plt.colorbar()
+		plt.colorbar(datamap, cmap=cmap, norm=cNorm, shrink=0.5)
+		#plt.colorbar()
 	plt.xlim(np.min(x),np.max(x))
 	plt.ylim(np.min(y),np.max(y))
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	#plt.grid(True)
 	plt.title(title)
+
+	if return_handle is True:
+		return datamap
 
 
 
@@ -382,11 +386,11 @@ def main():
 		data2=mask_ocean(data2,shelf_area)
 		#data3=mask_ocean(data1-data2,shelf_area)
 		plt.subplot(1,3,1)
-		plot_data_field(data1,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Shelf',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Shelf',xlabel='x (km)',ylabel='y (km)')	
 		plt.subplot(1,3,2)
-		plot_data_field(data2,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bergs',xlabel='x (km)',ylabel='')	
+		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bergs',xlabel='x (km)',ylabel='')	
 		plt.subplot(1,3,3)
-		plot_data_field(data1-data2,x,y,'',vmin=-3.,vmax=3.,flipped=flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
+		plot_data_field(data1-data2,x,y,vmin=-3.,vmax=3.,flipped=flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
 
 	######################data###############################################################################################
 	################################  Plotting Bt stream function ########################################################
@@ -401,11 +405,11 @@ def main():
 		data1=calculate_barotropic_streamfunction(Shelf_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
 		data2=calculate_barotropic_streamfunction(Berg_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
 		plt.subplot(1,3,1)
-		plot_data_field(data1,x,y,'',vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Shelf',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Shelf',xlabel='x (km)',ylabel='y (km)')	
 		plt.subplot(1,3,2)
-		plot_data_field(data2,x,y,'',vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Bergs',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Bergs',xlabel='x (km)',ylabel='y (km)')	
 		plt.subplot(1,3,3)
-		plot_data_field(data1-data2,x,y,'',-vmax, vmax, flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
+		plot_data_field(data1-data2,x,y,-vmax, vmax, flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
 
 
 	if plot_cross_section is True:
@@ -450,11 +454,11 @@ def main():
 
 
 		plt.subplot(3,1,1)
-		plot_data_field(data1, y1, z1, '', vmin, vmax, flipped=False, colorbar=True, cmap='jet')
+		plot_data_field(data1, y1, z1, vmin, vmax, flipped=False, colorbar=True, cmap='jet')
 		plt.subplot(3,1,2)
-		plot_data_field(data2, y2, z2, '', vmin, vmax, flipped=False, colorbar=True, cmap='jet')
+		plot_data_field(data2, y2, z2, vmin, vmax, flipped=False, colorbar=True, cmap='jet')
 		plt.subplot(3,1,3)
-		plot_data_field(data1-data2, y1, z1, '', vmin=-vdiff, vmax=vdiff, flipped=False, colorbar=True, cmap='bwr')
+		plot_data_field(data1-data2, y1, z1, vmin=-vdiff, vmax=vdiff, flipped=False, colorbar=True, cmap='bwr')
 		
 		#For plotting purposes
 		field=field+'_'+ vertical_coordinate

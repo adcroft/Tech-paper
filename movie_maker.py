@@ -6,46 +6,60 @@ from pylab import *
 from static_shelf_comparison import *
 
 
+def get_nth_values(n,data,x,y,axes_fixed):
+	data_n=data[n,:,:]
+	
+	if axes_fixed is True:
+		x_n=x
+		y_n=y
 
-def ani_frame(field,output_filename):
+	else:
+		if len(x.shape)==2:
+			x_n=x[n,:]
+		if len(x.shape)==3:
+			x_n=x[n,:,:]
+		if len(y.shape)==2:
+			y_n=y[n,:]
+		if len(y.shape)==3:
+			y_n=y[n,:,:]
 
-        dpi = 150
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.set_aspect('equal')
-        ax.get_xaxis().set_visible(False)
-        ax.get_yaxis().set_visible(False)
+	return [data_n, x_n, y_n]
 
-        M=field.shape
 
-        #im = ax.imshow(rand(M[0],M[1]),cmap='jet',interpolation='nearest')
-        im = ax.imshow(field[0,:,:],cmap='jet',interpolation='nearest')
+def ani_frame(x,y,data,output_filename,vmin,vmax,axes_fixed,fig_length=14,fig_height=6,resolution=360,xlabel='',ylabel='',frames_per_second=120, frame_interval=100, Max_frames=None):
+	
+	#Defining Figure Properties
+	fig=plt.figure(figsize=(fig_length,fig_height),facecolor='grey')
+	ax = fig.add_subplot(111,axisbg='gray')
+	(data_n , xn ,yn)=get_nth_values(0,data,x,y,axes_fixed)
+	im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=True)
         #cbar=fig.colorbar(im, orientation="horizontal")
 
-        vmax=np.max(field)
-        vmin=np.min(field)
-        im.set_clim([0,1])
-        im.set_clim([vmin,vmax])
-        fig.set_size_inches([15,30])
-
         tight_layout()
-
+	#plt.show()
+	#return
 
         def update_img(n):
-                #tmp = rand(300,300)
-                tmp =field[n,:,:]
-                im.set_data(tmp)
+		#Updating figure for each frame
+		print 'Frame number' ,n ,  'writing now.' 
+		fig.clf()
+		ax = fig.add_subplot(111,axisbg='gray')
+		(data_n , xn ,yn)=get_nth_values(n,data,x,y,axes_fixed)
+		im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=True)
+		
                 return im
 
         #legend(loc=0)
-        Number_of_images=10
-        fps=120
-        ani = animation.FuncAnimation(fig,update_img,Number_of_images,interval=30)
-        writer = animation.writers['ffmpeg'](fps=fps)
+	if Max_frames is None:
+	        Number_of_images=data.shape[0]
+	else:
+	        Number_of_images=Max_frames
+        ani = animation.FuncAnimation(fig,update_img,Number_of_images,interval=frame_interval)
+        writer = animation.writers['ffmpeg'](fps=frames_per_second)
 
-        ani.save(output_filename,writer=writer,dpi=dpi)
+        ani.save(output_filename,writer=writer,dpi=resolution)
+	print 'Movie saved: ' , output_filename
         return ani
-
 
 
 def load_data_from_nc_file(filename,field_name):
@@ -64,15 +78,17 @@ def load_data_from_nc_file(filename,field_name):
 
 def main():
         input_filename='/home/aas/Iceberg_Project/iceberg_scripts/python_scripts/movies/00010101.icebergs_day.nc'
-        output_filename='movies/test5.mp4'
+        output_filename='movies/test4.mp4'
 
 	#General flags
-	horizontal_movie=False
-	cross_section_movie=True
+	horizontal_movie=True
+	cross_section_movie=False
 
 
-	Berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/Melt_on_without_decay_with_spreading_trimmed_shelf/'
+	#Berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/Melt_on_without_decay_with_spreading_trimmed_shelf/'
 	Berg_path='/ptmp/aas/data/fixed_speed_Moving_berg_trimmed_shelf_from_zero_small_step_u01/'
+	exp_name='fixed_u01_from_zero'
+
 
 	#Geometry files
         ocean_geometry_filename=Berg_path +'ocean_geometry.nc'
@@ -81,6 +97,7 @@ def main():
 
 	#Berg files
 	extension_name='prog_combined.nc'
+	#extension_name='icebergs_month_combined.nc'
 	#extension_name='ocean_month_combined.nc'
 
         #Berg_ocean_file=Berg_path+'00010101.ocean_month.nc'
@@ -103,14 +120,18 @@ def main():
 
 		filename=Berg_ocean_file
 		print filename
-		field_name='mass_berg'
-		#field_name='u'
+		#field_name='mass_berg'
+		#field_name='spread_area'
+		field_name='u' ;  vmin=-0.02  ;vmax=0.02
 		direction='xy'
 		data=load_and_compress_data(filename,field=field_name,time_slice='all',time_slice_num=-1,rotated=rotated, direction=direction ,dir_slice=None, dir_slice_num=20)
-		print data.shape
 
-		#Loading data from NC file.
-		#[field,x,y]=load_data_from_nc_file(input_filename,field_name)
+		#Configuring movie specs
+		print 'Staring to make a freaking movie!'
+		axes_fixed=True
+		output_filename='movies/' + exp_name + '_' +field_name + '_' + direction + '_' + str(data.shape[0])+ 'frames' + '.mp4'
+		ani_frame(x,y,data,output_filename,vmin,vmax,axes_fixed,fig_length=6,fig_height=12,resolution=360,\
+		xlabel='x axis (km)',ylabel='y axis (km)',frames_per_second=120, frame_interval=100, Max_frames=None)
 
 
         ######################################################################################################################
@@ -123,10 +144,10 @@ def main():
                 time_slice='all'
                 #vertical_coordinate='z'
                 vertical_coordinate='layers'  #'z'
-                #field='temp'  ; vmin=-2.0  ; vmax=1.0  ;vdiff=0.1   ; vanom=0.3
-                field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.02  ; vanom=0.02
-                #field='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
-                #field='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
+                #field_name='temp'  ; vmin=-2.0  ; vmax=1.0  ;vdiff=0.1   ; vanom=0.3
+                #field_name='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.02  ; vanom=0.02
+                field_name='u'  ; vmin=-0.01  ; vmax=0.02  ;vdiff=0.02  ; vanom=0.02
+                #field_name='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
                 filename=Berg_ocean_file
                 
                 if vertical_coordinate=='z':
@@ -138,15 +159,18 @@ def main():
                         direction='xz'
                         dist=xvec
 
-                data=load_and_compress_data(filename,field , time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+                data=load_and_compress_data(filename,field_name , time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
                 elevation = get_vertical_dimentions(filename,vertical_coordinate, time_slice, time_slice_num=-1, direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
                 (y ,z ,data) =interpolated_onto_vertical_grid(data, elevation, dist, vertical_coordinate)
-		print 'Interpolation complete', data.shape
+		print 'Interpolation complete', data.shape, y.shape, z.shape
 
 
-
-	print 'Staring to make a freaking movie!'
-	ani_frame(data,output_filename)
+		axes_fixed=False
+		print 'Staring to make a freaking movie!'
+		output_filename='movies/' + exp_name + '_' +field_name + '_' + direction + '_' + str(data.shape[0])+ 'frames' + '.mp4'
+		print output_filename
+		ani_frame(y,z,data,output_filename,vmin,vmax,axes_fixed,fig_length=14,fig_height=6,resolution=360,\
+				xlabel='y axis (km)',ylabel='z axis (m)',frames_per_second=120, frame_interval=100, Max_frames=None)
 
 if __name__ == '__main__':
         main()

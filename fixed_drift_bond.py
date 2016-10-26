@@ -99,13 +99,13 @@ def main():
 		#data2=mask_ocean(data2,shelf_area)
 		#data3=mask_ocean(data3,shelf_area)
 		plt.subplot(1,3,1)
-		plot_data_field(data1,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)')	
 		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 		plt.subplot(1,3,2)
-		plot_data_field(data2,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Drift',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Drift',xlabel='x (km)',ylabel='y (km)')	
 		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 		plt.subplot(1,3,3)
-		plot_data_field(data3,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bonds',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data3,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bonds',xlabel='x (km)',ylabel='y (km)')	
 		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 
 
@@ -166,11 +166,11 @@ def main():
 
 
 		plt.subplot(3,1,1)
-		plot_data_field(data1, y1, z1, '', vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
+		plot_data_field(data1, y1, z1, vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
 		plt.subplot(3,1,2)
-		plot_data_field(data2, y2, z2, '', vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
+		plot_data_field(data2, y2, z2, vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
 		plt.subplot(3,1,3)
-		plot_data_field(data3, y3, z3, '', vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
+		plot_data_field(data3, y3, z3, vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
 		
 		#For plotting purposes
 		field=field+'_'+ vertical_coordinate

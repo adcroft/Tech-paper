@@ -116,7 +116,7 @@ def main():
 				data=mask_grounded_ice(data,depth,ice_base)
 			if scale_data is True:
 				data=data*scale_list[k]
-			plot_data_field(data,x,y,'',vmin,vmax,flipped,colorbar=True,cmap=cmap,title=title_list[k],xlabel='x (km)',ylabel='')	
+			plot_data_field(data,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title=title_list[k],xlabel='x (km)',ylabel='')	
 
 
 
@@ -133,7 +133,7 @@ def main():
 		plot_flag='field'
 
 		data1=calculate_barotropic_streamfunction(Berg_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
-		plot_data_field(data1,x,y,'',vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bergs',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bergs',xlabel='x (km)',ylabel='y (km)')	
 
 
 	######################data###############################################################################################
@@ -169,7 +169,7 @@ def main():
 			data=data-data0
 			vmin=-vanom  ; vmax=vanom
 
-		plot_data_field(data, y, z, '', vmin, vmax, flipped=False, colorbar=True, cmap='jet')
+		plot_data_field(data, y, z,  vmin, vmax, flipped=False, colorbar=True, cmap='jet')
 		
 		#For plotting purposes
 		field=field+'_'+ vertical_coordinate
