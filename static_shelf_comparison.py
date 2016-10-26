@@ -242,7 +242,7 @@ def find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec):
         return grounding_line
 
 
-def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=False): 
+def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=False,grounding_line=None): 
 	if flipped is True:
 		data=transpose_matrix(data)
 		tmp=y ; y=x ; x=tmp
@@ -265,6 +265,9 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 	if colorbar is True:
 		plt.colorbar(datamap, cmap=cmap, norm=cNorm, shrink=0.5)
 		#plt.colorbar()
+	if grounding_line is not None:
+		xvec=x[0,:]
+		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 	plt.xlim(np.min(x),np.max(x))
 	plt.ylim(np.min(y),np.max(y))
 	plt.xlabel(xlabel)

@@ -26,13 +26,14 @@ def get_nth_values(n,data,x,y,axes_fixed):
 	return [data_n, x_n, y_n]
 
 
-def ani_frame(x,y,data,output_filename,vmin,vmax,axes_fixed,fig_length=14,fig_height=6,resolution=360,xlabel='',ylabel='',frames_per_second=120, frame_interval=100, Max_frames=None):
+def ani_frame(x,y,data,output_filename,vmin,vmax,cmap,axes_fixed,fig_length=14,fig_height=6,resolution=360,xlabel='',ylabel='',frames_per_second=120, frame_interval=100, Max_frames=None,\
+		grounding_line=None):
 	
 	#Defining Figure Properties
-	fig=plt.figure(figsize=(fig_length,fig_height),facecolor='grey')
+	fig=plt.figure(figsize=(fig_length,fig_height),facecolor='white')
 	ax = fig.add_subplot(111,axisbg='gray')
 	(data_n , xn ,yn)=get_nth_values(0,data,x,y,axes_fixed)
-	im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=True)
+	im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=False,colorbar=True,cmap=cmap,title='',xlabel=xlabel,ylabel=ylabel,return_handle=True,grounding_line=grounding_line)
         #cbar=fig.colorbar(im, orientation="horizontal")
 
         tight_layout()
@@ -43,9 +44,9 @@ def ani_frame(x,y,data,output_filename,vmin,vmax,axes_fixed,fig_length=14,fig_he
 		#Updating figure for each frame
 		print 'Frame number' ,n ,  'writing now.' 
 		fig.clf()
-		ax = fig.add_subplot(111,axisbg='gray')
+		#ax = fig.add_subplot(111,axisbg='gray')
 		(data_n , xn ,yn)=get_nth_values(n,data,x,y,axes_fixed)
-		im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=True)
+		im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=False,colorbar=True,cmap=cmap,title='',xlabel=xlabel,ylabel=ylabel,return_handle=True)
 		
                 return im
 
@@ -81,8 +82,8 @@ def main():
         output_filename='movies/test4.mp4'
 
 	#General flags
-	horizontal_movie=True
-	cross_section_movie=False
+	horizontal_movie=False
+	cross_section_movie=True
 
 
 	#Berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/Melt_on_without_decay_with_spreading_trimmed_shelf/'
@@ -108,6 +109,7 @@ def main():
 
         #Load static fields
         (depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated)
+	grounding_line=find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec)
 
 
 
@@ -122,7 +124,7 @@ def main():
 		print filename
 		#field_name='mass_berg'
 		#field_name='spread_area'
-		field_name='u' ;  vmin=-0.02  ;vmax=0.02
+		field_name='u' ;  vmin=-0.1  ;vmax=0.1 ; cmap='bwr'
 		direction='xy'
 		data=load_and_compress_data(filename,field=field_name,time_slice='all',time_slice_num=-1,rotated=rotated, direction=direction ,dir_slice=None, dir_slice_num=20)
 
@@ -130,8 +132,8 @@ def main():
 		print 'Staring to make a freaking movie!'
 		axes_fixed=True
 		output_filename='movies/' + exp_name + '_' +field_name + '_' + direction + '_' + str(data.shape[0])+ 'frames' + '.mp4'
-		ani_frame(x,y,data,output_filename,vmin,vmax,axes_fixed,fig_length=6,fig_height=12,resolution=360,\
-		xlabel='x axis (km)',ylabel='y axis (km)',frames_per_second=120, frame_interval=100, Max_frames=None)
+		ani_frame(x,y,data,output_filename,vmin,vmax,cmap, axes_fixed,fig_length=6,fig_height=12,resolution=360,\
+		xlabel='x (km)',ylabel='y (km)',frames_per_second=120, frame_interval=100, Max_frames=None,grounding_line=grounding_line)
 
 
         ######################################################################################################################
@@ -146,7 +148,7 @@ def main():
                 vertical_coordinate='layers'  #'z'
                 #field_name='temp'  ; vmin=-2.0  ; vmax=1.0  ;vdiff=0.1   ; vanom=0.3
                 #field_name='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.02  ; vanom=0.02
-                field_name='u'  ; vmin=-0.01  ; vmax=0.02  ;vdiff=0.02  ; vanom=0.02
+                field_name='u'  ; vmin=-0.1  ; vmax=0.1  ;vdiff=0.02  ; vanom=0.02 ; cmap='bwr'
                 #field_name='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
                 filename=Berg_ocean_file
                 
@@ -169,8 +171,8 @@ def main():
 		print 'Staring to make a freaking movie!'
 		output_filename='movies/' + exp_name + '_' +field_name + '_' + direction + '_' + str(data.shape[0])+ 'frames' + '.mp4'
 		print output_filename
-		ani_frame(y,z,data,output_filename,vmin,vmax,axes_fixed,fig_length=14,fig_height=6,resolution=360,\
-				xlabel='y axis (km)',ylabel='z axis (m)',frames_per_second=120, frame_interval=100, Max_frames=None)
+		ani_frame(y,z,data,output_filename,vmin,vmax,cmap, axes_fixed,fig_length=14,fig_height=6,resolution=360,\
+				xlabel='y (km)',ylabel='depth (m)',frames_per_second=120, frame_interval=100, Max_frames=None)
 
 if __name__ == '__main__':
         main()

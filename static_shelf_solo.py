@@ -109,8 +109,8 @@ def main():
 			filename=filename_list[k]
 
 			plt.subplot(1,N,k+1)
-			data=load_and_compress_data(filename,field=field,time_slice=time_slice,time_slice_num=slice_num,rotated=rotated) 
-			plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
+			data=load_and_compress_data(filename,field=field,time_slice=time_slice,time_slice_num=slice_num,rotated=rotated,grounding_line=grounding_line) 
+			#plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 			#data1=mask_ocean(data1,shelf_area)
 			if mask_grounded[k] is True:
 				data=mask_grounded_ice(data,depth,ice_base)
