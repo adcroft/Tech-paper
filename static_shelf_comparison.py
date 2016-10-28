@@ -248,6 +248,9 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 		tmp=y ; y=x ; x=tmp
 		x=transpose_matrix(x)
 		y=transpose_matrix(y)
+		y=-y+(np.max(y))
+		(xlabel , ylabel) = switch_x_and_y(xlabel , ylabel)
+	
 	print 'Starting to plot...'	
 	if vmin==None:
 		vmin=np.min(data)
@@ -260,14 +263,15 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 		vmax=float(vmax)
 
 	cNorm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-	#cNorm = mpl.colors.Normalize(vmin=600, vmax=850)
 	datamap=plt.pcolormesh(x,y,data,norm=cNorm,cmap=cmap)
 	if colorbar is True:
 		plt.colorbar(datamap, cmap=cmap, norm=cNorm, shrink=0.5)
-		#plt.colorbar()
 	if grounding_line is not None:
-		xvec=x[0,:]
-		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
+		if  flipped is False:
+			plt.plot(x[0,:],grounding_line, linewidth=3.0,color='black')
+		else:
+			plt.plot(grounding_line,y[:,0], linewidth=3.0,color='black')
+
 	plt.xlim(np.min(x),np.max(x))
 	plt.ylim(np.min(y),np.max(y))
 	plt.xlabel(xlabel)
@@ -318,6 +322,43 @@ def interpolated_onto_vertical_grid(data, layer_interface, x, vertical_coordinat
 
 	return [X,Z,Q]
 
+def create_subsampled_zero_matrix(data,New_time_step_number):
+		print 'Lendth before shortening', len(data.shape)
+		if len(data.shape)==2:
+			data_new=np.zeros([New_time_step_number,data.shape[1]])
+		if len(data.shape)==3:
+			data_new=np.zeros([New_time_step_number,data.shape[1],data.shape[2]])
+		if len(data.shape)==4:
+			data_new=np.zeros([New_time_step_number,data.shape[1],data.shape[2],data.shape[3]])
+		return data_new
+
+
+def subsample_data(x, y, data,  axes_fixed, subsample_num=None):
+	if subsample_num is None:
+		return [x, y, data]
+	else:
+		Num_timesteps_old=data.shape[0]
+		Num_timesteps_new=int(np.ceil(Num_timesteps_old/float(subsample_num)))
+		
+		#Creating empty matricies
+		print data.shape
+		data_new=create_subsampled_zero_matrix(data, Num_timesteps_new)
+		if axes_fixed is False:
+			x_new=create_subsampled_zero_matrix(x, Num_timesteps_new)
+			y_new=create_subsampled_zero_matrix(y, Num_timesteps_new)
+		else:
+			x_new=x   ;  y_new =y
+		
+		#Filling in the new data
+		count=-1
+		for i in range(0,Num_timesteps_old,subsample_num):
+			count=count+1
+			data_new[count,:]=data[i,:]
+			if axes_fixed is False:
+				x_new[count,:]=x[i,:]
+				y_new[count,:]=y[i,:]
+
+		return [x_new, y_new, data_new]
 
 ##########################################################  Main Program   #########################################################################
 ####################################################################################################################################################
