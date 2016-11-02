@@ -272,12 +272,16 @@ def get_plot_axes_limits(x, y, xlim_min, xlim_max, ylim_min, ylim_max):
 		ylim_max=np.max(y)
 	return [xlim_min, xlim_max, ylim_min, ylim_max]
 
-def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=False,xlim_min=None, xlim_max=None, ylim_min=None,ylim_max=None): 
+def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=False,grounding_line=None, \
+		xlim_min=None, xlim_max=None, ylim_min=None,ylim_max=None): 
 	if flipped is True:
 		data=transpose_matrix(data)
 		tmp=y ; y=x ; x=tmp
 		x=transpose_matrix(x)
 		y=transpose_matrix(y)
+		y=-y+(np.max(y))
+		(xlabel , ylabel) = switch_x_and_y(xlabel , ylabel)
+	
 	print 'Starting to plot...'	
 	if vmin==None:
 		vmin=np.min(data)
@@ -290,14 +294,18 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 		vmax=float(vmax)
 
 	cNorm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-	#cNorm = mpl.colors.Normalize(vmin=600, vmax=850)
 	datamap=plt.pcolormesh(x,y,data,norm=cNorm,cmap=cmap)
 	if colorbar is True:
 		plt.colorbar(datamap, cmap=cmap, norm=cNorm, shrink=0.5)
-		#plt.colorbar()
 	(xlim_min, xlim_max, ylim_min, ylim_max)=get_plot_axes_limits(x, y, xlim_min, xlim_max, ylim_min, ylim_max)
 	plt.xlim(xlim_min,xlim_max)
 	plt.ylim(ylim_min,ylim_max)
+	if grounding_line is not None:
+		if  flipped is False:
+			plt.plot(x[0,:],grounding_line, linewidth=3.0,color='black')
+		else:
+			plt.plot(grounding_line,y[:,0], linewidth=3.0,color='black')
+
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	#plt.grid(True)
@@ -346,6 +354,43 @@ def interpolated_onto_vertical_grid(data, layer_interface, x, vertical_coordinat
 
 	return [X,Z,Q]
 
+def create_subsampled_zero_matrix(data,New_time_step_number):
+		print 'Lendth before shortening', len(data.shape)
+		if len(data.shape)==2:
+			data_new=np.zeros([New_time_step_number,data.shape[1]])
+		if len(data.shape)==3:
+			data_new=np.zeros([New_time_step_number,data.shape[1],data.shape[2]])
+		if len(data.shape)==4:
+			data_new=np.zeros([New_time_step_number,data.shape[1],data.shape[2],data.shape[3]])
+		return data_new
+
+
+def subsample_data(x, y, data,  axes_fixed, subsample_num=None):
+	if subsample_num is None:
+		return [x, y, data]
+	else:
+		Num_timesteps_old=data.shape[0]
+		Num_timesteps_new=int(np.ceil(Num_timesteps_old/float(subsample_num)))
+		
+		#Creating empty matricies
+		print data.shape
+		data_new=create_subsampled_zero_matrix(data, Num_timesteps_new)
+		if axes_fixed is False:
+			x_new=create_subsampled_zero_matrix(x, Num_timesteps_new)
+			y_new=create_subsampled_zero_matrix(y, Num_timesteps_new)
+		else:
+			x_new=x   ;  y_new =y
+		
+		#Filling in the new data
+		count=-1
+		for i in range(0,Num_timesteps_old,subsample_num):
+			count=count+1
+			data_new[count,:]=data[i,:]
+			if axes_fixed is False:
+				x_new[count,:]=x[i,:]
+				y_new[count,:]=y[i,:]
+
+		return [x_new, y_new, data_new]
 
 def switch_axis_if_rotated(rotated,yvec,xvec):
 	if rotated is True:
