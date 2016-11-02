@@ -62,12 +62,16 @@ def main():
 		Berg_ocean_file2=Berg_path+'00060101.ocean_month.nc'
 	if simulation=='fixed_01':
 		extension='.ocean_month.nc'
-		extension='.prog.nc'
-		Berg_ocean_file1=Berg_path+'00010101' +extension
-		Berg_ocean_file2=Berg_path+'00010107' +extension
-		Berg_ocean_file3=Berg_path+'00010206' +extension
-	
-	Berg_ocean_file_list=np.array([Berg_ocean_file1,Berg_ocean_file2,Berg_ocean_file3])
+		#extension='.prog.nc'
+		#extension='.icebergs_month.nc'
+		#extension='.ocean_month_z.nc'
+		Berg_ocean_file1=Berg_path+'00010101' 
+		Berg_ocean_file1=Berg_path+'00010107' 
+		Berg_ocean_file2=Berg_path+'00010107' 
+		Berg_ocean_file3=Berg_path+'00010206' 
+
+	Berg_ocean_file_list=np.array([Berg_ocean_file1 +extension ,Berg_ocean_file2+ extension ,Berg_ocean_file3 + extension])
+	Iceberg_file_list=np.array([Berg_ocean_file1 +'.icebergs_month.nc' ,Berg_ocean_file2+ '.icebergs_month.nc' ,Berg_ocean_file3 + '.icebergs_month.nc'])
 	
 	Berg_icebergs_file=Berg_path+'00010101.icebergs_month.nc'
 
@@ -80,6 +84,8 @@ def main():
 	#fig=plt.figure(figsize=(10,10),facecolor='grey')
 	#fig = plt.figure(facecolor='black')
 	#ax = fig.add_subplot(111,axisbg='gray')
+	time_slice_num=np.array([9, 24, 24])  #When using prog 
+	#time_slice_num=np.array([220,580,580])
 
 
 
@@ -89,16 +95,31 @@ def main():
         
         if plot_horizontal_field is True:
 		fig=plt.figure(figsize=(15,10),facecolor='grey')
-		time_slice_num=np.array([1,10,-1])
+		ylim_min=550.
+		ylim_max=750.
 		for n in range(3):
 			flipped=False
 			field='spread_area'  ;vmin=0.0  ; vmax=3.0
+			field='temp'  ;vmin=-2.0  ; vmax=-1.5
+			field='sst'  ;vmin=-1.8  ; vmax=-1.5
 			#field='spread_uvel' ;vmin=-0.01  ; vmax=0.01
+			filename=Berg_ocean_file_list[n]
 
-			data1=load_and_compress_data(Berg_icebergs_file,field=field,time_slice='',time_slice_num=-1,rotated=rotated)
+			(data1,time)=load_and_compress_data(filename,field=field,time_slice='',time_slice_num=time_slice_num[n],rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=1, \
+					return_time=True)
+			time_str=str(int(np.round(time)))
+
+			
+			mask_using_bergs=True
+			if mask_using_bergs is True:
+				iceberg_filename=Iceberg_file_list[n]
+				print iceberg_filename
+				ice_data=load_and_compress_data(iceberg_filename,field='spread_area',time_slice='',time_slice_num=time_slice_num[n],\
+						rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=1)
+				data1=mask_ice(data1,ice_data)
 			#data1=mask_ocean(data1,shelf_area)
 			plt.subplot(1,3,n+1)
-			plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)')  
+			plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Time = '+ time_str + ' days',xlabel='x (km)',ylabel='y (km)',ylim_min=ylim_min, ylim_max=ylim_max)  
 
 
 	####################################################################################################################################################
@@ -114,15 +135,14 @@ def main():
 			direction='xz'
 			dist=xvec
 
-		time_slice_num=np.array([1,10,10])
 		for n in range(3):
 			plot_anomaly=False
 			vertical_coordinate='layers'  #'z'
 			#vertical_coordinate='z'
 			time_slice=None
-			field='u'  ; vmin=-0.1  ; vmax=0.1    ; vanom=0.3 ; cmap='seismic'
-			field='v'  ; vmin=-0.1  ; vmax=0.1    ; vanom=0.3 ; cmap='seismic'
-			#field='temp'  ; vmin=1.0  ; vmax=5.0 ; vanom=0.3 ; cmap='jet'
+			#field='u'  ; vmin=-0.1  ; vmax=0.1    ; vanom=0.3 ; cmap='seismic'
+			#field='v'  ; vmin=-0.1  ; vmax=0.1    ; vanom=0.3 ; cmap='seismic'
+			field='temp'  ; vmin=-2.0  ; vmax=1.0 ; vanom=0.3 ; cmap='jet'
 			#field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.05  ; vanom=0.05 ; cmap='jet'
 			
 			filename=Berg_ocean_file_list[n]
@@ -131,7 +151,9 @@ def main():
 
 			print filename
 
-			data1=load_and_compress_data(filename,field , time_slice, time_slice_num=time_slice_num[n], direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+			(data1,time)=load_and_compress_data(filename,field , time_slice, time_slice_num=time_slice_num[n], direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated,\
+					return_time=True)
+			time_str=str(int(np.round(time)))
 			elevation1 = get_vertical_dimentions(filename,vertical_coordinate, time_slice, time_slice_num=time_slice_num[n],\
 					direction=direction ,dir_slice=None, dir_slice_num=20,rotated=rotated)
 			(y1 ,z1 ,data1) =interpolated_onto_vertical_grid(data1, elevation1, dist, vertical_coordinate)
@@ -146,7 +168,7 @@ def main():
 			
 
 			plt.subplot(3,1,n+1)
-			plot_data_field(data1, y1, z1, vmin, vmax, flipped=False, colorbar=True, cmap=cmap)
+			plot_data_field(data1, y1, z1, vmin, vmax, flipped=False, colorbar=True, cmap=cmap,title='Time = '+ time_str + ' days')
 			xmin=450.  ;xmax=750.
 			plt.xlim([xmin,xmax])
 			

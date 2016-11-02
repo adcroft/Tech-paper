@@ -70,6 +70,21 @@ def mask_ocean(data,area):
 
    return  data
 
+def mask_ice(data,area):
+   """
+   Mask open ocean. Works with 2D or 3D arrays.
+   """
+   if len(data.shape) == 2: # 2D array
+     data = np.ma.masked_where(area>0.1,data)
+     #data[np.where(area==0)]=np.nan
+
+   else: # 3D array
+     NZ,NY,NX = data.shape
+     area=np.resize(area,(NZ,NY,NX))
+     data = np.ma.masked_where(area==0,data)
+
+   return  data
+
 def get_psi2D(u,v):
     '''
     Loop in time and compute the barotropic streamfunction psi at h points.
@@ -154,7 +169,7 @@ def load_data_from_file(filename, field, rotated):
 			data=-data
 	return data
 
-def load_and_compress_data(filename, field, time_slice, time_slice_num, direction=None ,dir_slice=None, dir_slice_num=None,rotated=False):
+def load_and_compress_data(filename, field, time_slice, time_slice_num, direction=None ,dir_slice=None, dir_slice_num=None,rotated=False,return_time=False):
 
 	#Loading data
 	data=load_data_from_file(filename, field, rotated)
@@ -166,7 +181,12 @@ def load_and_compress_data(filename, field, time_slice, time_slice_num, directio
 	
 	data=squeeze_matrix_to_2D(data,time_slice,time_slice_num,direction,dir_slice, dir_slice_num)
 
-	return data
+	if (return_time is True) and ((time_slice=='') or (time_slice is None)):
+		time=load_data_from_file(filename, 'time', rotated=False)[time_slice_num]
+		print 'time = ', time , ' days'
+		return [data , time]
+	else:
+		return data
 
 
 def calculate_barotropic_streamfunction(filename,depth,ice_base,time_slice=None,time_slice_num=-1,rotated=False):
@@ -241,8 +261,18 @@ def find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec):
                                 grounding_line[i]=yvec[j]
         return grounding_line
 
+def get_plot_axes_limits(x, y, xlim_min, xlim_max, ylim_min, ylim_max):
+	if xlim_min is None:
+		xlim_min=np.min(x)
+	if xlim_max is None:
+		xlim_max=np.max(x)
+	if ylim_min is None:
+		ylim_min=np.min(y)
+	if ylim_max is None:
+		ylim_max=np.max(y)
+	return [xlim_min, xlim_max, ylim_min, ylim_max]
 
-def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=False): 
+def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=False,xlim_min=None, xlim_max=None, ylim_min=None,ylim_max=None): 
 	if flipped is True:
 		data=transpose_matrix(data)
 		tmp=y ; y=x ; x=tmp
@@ -265,8 +295,9 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 	if colorbar is True:
 		plt.colorbar(datamap, cmap=cmap, norm=cNorm, shrink=0.5)
 		#plt.colorbar()
-	plt.xlim(np.min(x),np.max(x))
-	plt.ylim(np.min(y),np.max(y))
+	(xlim_min, xlim_max, ylim_min, ylim_max)=get_plot_axes_limits(x, y, xlim_min, xlim_max, ylim_min, ylim_max)
+	plt.xlim(xlim_min,xlim_max)
+	plt.ylim(ylim_min,ylim_max)
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	#plt.grid(True)
@@ -314,6 +345,16 @@ def interpolated_onto_vertical_grid(data, layer_interface, x, vertical_coordinat
                 Q=data
 
 	return [X,Z,Q]
+
+
+def switch_axis_if_rotated(rotated,yvec,xvec):
+	if rotated is True:
+		direction='yz'
+		dist=yvec
+	else:
+		direction='xz'
+		dist=xvec
+	return  [dist , direction]
 
 
 ##########################################################  Main Program   #########################################################################
