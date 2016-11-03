@@ -70,7 +70,7 @@ def main():
 
 	
 	#Defining figure characteristics
-	fig=plt.figure(figsize=(15,10))
+	fig=plt.figure(figsize=(15,8))
 	#fig=plt.figure(figsize=(15,10),facecolor='grey')
 	#fig = plt.figure(facecolor='black')
 	#ax = fig.add_subplot(111,axisbg='gray')
@@ -88,7 +88,7 @@ def main():
 
 		#field='sst' ;  vmin=0.0  ; vmax=3.0
 		#field='spread_area' ; vmin=0.0  ; vmax=3.0
-		field='spread_mass' ; vmin=0.0  ; vmax=1000000.
+		field='spread_mass' ; vmin=0.0  ; vmax=500000.
 		#field='spread_uvel' ; vmin=-2.0  ; vmax=1.0
 
 		data1=load_and_compress_data(Fixed_iceberg_file,field=field,time_slice=time_slice,time_slice_num=-1,rotated=rotated)
@@ -99,13 +99,13 @@ def main():
 		#data2=mask_ocean(data2,shelf_area)
 		#data3=mask_ocean(data3,shelf_area)
 		plt.subplot(1,3,1)
-		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Fixed',xlabel='x (km)',ylabel='y (km)', ylim_min=500.,ylim_max=750.)	
 		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 		plt.subplot(1,3,2)
-		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Drift',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Drift',xlabel='x (km)',ylabel='y (km)', ylim_min=500.,ylim_max=750.)	
 		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 		plt.subplot(1,3,3)
-		plot_data_field(data3,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bonds',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data3,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bonds',xlabel='x (km)',ylabel='y (km)', ylim_min=500.,ylim_max=750.)	
 		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 
 

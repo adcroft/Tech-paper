@@ -84,8 +84,8 @@ def main():
 	#fig=plt.figure(figsize=(10,10),facecolor='grey')
 	#fig = plt.figure(facecolor='black')
 	#ax = fig.add_subplot(111,axisbg='gray')
-	time_slice_num=np.array([9, 24, 24])  #When using prog 
-	#time_slice_num=np.array([220,580,580])
+	#time_slice_num=np.array([8, 24, 24])  #When using prog 
+	time_slice_num=np.array([220,580,580])
 
 
 

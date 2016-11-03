@@ -281,6 +281,9 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 		y=transpose_matrix(y)
 		y=-y+(np.max(y))
 		(xlabel , ylabel) = switch_x_and_y(xlabel , ylabel)
+		(xlim_max , ylim_max) = switch_x_and_y(xlim_max , ylim_max)
+		(xlim_min , ylim_min) = switch_x_and_y(xlim_min , ylim_min)
+
 	
 	print 'Starting to plot...'	
 	if vmin==None:
