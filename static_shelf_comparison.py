@@ -422,7 +422,7 @@ def main():
 
 
 	#Plotting flats
-	save_figure=False
+	save_figure=True
 	
 	#General flags
 	rotated=True
@@ -544,10 +544,18 @@ def main():
 
 		plt.subplot(3,1,1)
 		plot_data_field(data1, y1, z1, vmin, vmax, flipped=False, colorbar=True, cmap='jet')
+		surface=np.squeeze(elevation1[0,:])   ;  plot(dist, surface,'black')
+		bottom=np.squeeze(depth[:,20])   ;  plot(dist, -bottom,'black')
+
 		plt.subplot(3,1,2)
 		plot_data_field(data2, y2, z2, vmin, vmax, flipped=False, colorbar=True, cmap='jet')
+		surface=np.squeeze(elevation2[0,:])   ;  plot(dist, surface,'black')
+		bottom=np.squeeze(depth[:,20])   ;  plot(dist, -bottom,'black')
+
 		plt.subplot(3,1,3)
+		surface=np.squeeze(elevation1[0,:])   ;  plot(dist, surface,'black')
 		plot_data_field(data1-data2, y1, z1, vmin=-vdiff, vmax=vdiff, flipped=False, colorbar=True, cmap='bwr')
+		bottom=np.squeeze(depth[:,20])   ;  plot(dist, -bottom,'black')
 		
 		#For plotting purposes
 		field=field+'_'+ vertical_coordinate
