@@ -446,7 +446,7 @@ The introduction of Lagrangian elements, numerical bonds and interpolation schem
 %This section describes the experimental setup of these numerical experiments. The results are shown in Section 4.
 
 \subsection{MISOMIP configuration}
-In order for our simulations to be easily comparable to previous models of ice shelf cavities, we use an experimental setup based on the configuration created for the Marine Ice Ocean Modeling Inter-comparion Project (MISOMIP) \citep{Asay-Davis2016}.
+In order for our (pre-calving) simulations to be easily comparable to previous models of ice shelf cavities, we use an experimental setup based on the configuration created for the Marine Ice Ocean Modeling Inter-comparion Project (MISOMIP) \citep{Asay-Davis2016}.
 %For this experiment, we use the ice shelf geometry, ocean topography and various parameters used in the Marine Ice Ocean Modeling Intercomparion project (MISOMIP) [reference]. 
 The MISOMIP configuration was developed as a standardize configuration to allow for the comparison between various ocean-ice coupled models. The configuration consists of an idealized ice shelf in a rectangular domain. The domain is $L_{x}=80$km wide and $L_{y}=480$km long, and contains an ice shelf which is grounded on the south side of the domain and has an ice front at y=650km. The ice thickness and bottom topography of this setup are shown in Figure \ref{fig:ISOMIP_exp}a and \ref{fig:ISOMIP_exp}b respectively, with the grounding line position drawn in for reference. The configuration is the same as that of the Ocean0 setup in the MISOMIP, with three changes made:
 \begin{enumerate}
@@ -459,13 +459,14 @@ These three changes were made in order to make the circulation beneath the ice s
 The LIISM model is coupled to the MOM6 ocean model. 
 The ocean model is run in layered mode, with a horizontal resolution of $\Delta x = 2$ km, and 36 vertical layers. 
 %The ocean model is run in using vertical coordinate system which is a hybrid between a sigma level and a z-level model. In particular, model layers bend underneath the ice shelf as they would in a sigma model, but collapse to zero thickness when they intersect with bottom topography, as they would in a z-level model. The coordinate system was achieve using ALE regridding remapping scheme.The model used a horizontal resolution of 2km, and 36 vertical layers.
-Ocean parameters are as specified in the MISOMIP configuration \citep{Asay-Davis2016}, and are shown in Table 1. The simulation is initially at rest, with horizontally uniform initial ocean temperature and salinity profiles that vary linearly between specified surface and bottom values. The initial surface temperature and salinity are  $T_{t}=-1.9^{\circ}$C and $S_{t}=33.8$ psu, respectively. The initial temperature and salinity at the depth $H_{ocean}$ are $T_{b}=1.0^{\circ}$C and $S_{b}=34.7$ psu. The maximum ocean depth is $H_{ocean}=720$ m.  A sponge layer is used on the northern boundary of which relaxes back to the initial temperature and salinity with a relaxation time scale of $\tau=0.1$ days. Melting is set to zero for cells where the ocean column thickness is less than 10m to avoid using more energy to melt ice than is present in the water column.
+Ocean parameters are as specified in the MISOMIP configuration \citep{Asay-Davis2016}, and are shown in Table 1. The simulation is initially at rest, with horizontally uniform initial ocean temperature  (Figure \ref{fig:static_solo_temp_temp_v}a) and salinity profiles that vary linearly between specified surface and bottom values. The initial surface temperature and salinity are  $T_{t}=-1.9^{\circ}$C and $S_{t}=33.8$ psu, respectively. The initial temperature and salinity at the depth $H_{ocean}$ are $T_{b}=1.0^{\circ}$C and $S_{b}=34.7$ psu. The maximum ocean depth is $H_{ocean}=720$ m.  A sponge layer is used on the northern boundary of which relaxes back to the initial temperature and salinity with a relaxation time scale of $\tau=0.1$ days. Melting is set to zero for cells where the ocean column thickness is less than 10m to avoid using more energy to melt ice than is present in the water column.
 
 %\textbf{Initializing Lagrangian elements:}\\
 \subsection{Initializing Lagrangian elements:}
-Ice elements in the LIISM model are set to be hexagonal and are arranged in a regular staggered lattice (as discussed in Section 2.3). The apothem of the hexagons is initially set to $A=0.85$ km. Recall that the element size must be smaller than the ocean grid spacing (i.e.: $2A<\Delta x$). The initial mass of the ice elements is determined by preprocessing inversion, which is the inverse of the 'mass-spreading' interpolation procedure discussed in Section 2.3. Boundary points are filled in using extra ice elements of appropriate thickness.
+Ice elements in the LIISM model are set to be hexagonal and are arranged in a regular staggered lattice (as discussed in Section 2.3). The apothem of the gridded hexagons are initially set to $A=0.85$ km. Recall that the element size must be smaller than the ocean grid spacing (i.e.: $2A<\Delta x$). 
+Gaps along the boundary are filled in with using smaller elements so that the total ice shelf area is preserved. The initial mass of the ice elements is determined by a preprocessing inversion step, which is the inverse of the 'mass-spreading' interpolation procedure discussed in Section 2.3.
 
-When the model is run, the average ice draft in an ocean grid cell, is calculated from the total mass of ice elements in that grid cell by assuming that the ice elements are in hydrostatic balance. The total mass is found by summing up over all ice elements located in that grid cell, while allowing elements to spread their mass across neighboring grid cells (as discussed in Section 2.3). Figure \ref{fig:ISOMIP_exp}b shows the draft of the ice shelf above the ice shelf cavity in the coupled static ice shelf simulation using this interpolation method, while Figure \ref{fig:ISOMIP_exp}c shows the draft which is calculated without spreading an elements mass across neighboring cells (i.e.: treating elements as point masses). When the mass spreading interpolation scheme is not used, grid artifacts seen in the ice shelf draft (Figure \ref{fig:ISOMIP_exp}c). The grid artifacts are much reduced when the mass spreading interpolation is used (Figure \ref{fig:ISOMIP_exp}b). In simulations without mass spreading, irregularities in ice draft cause irregularities in the ocean surface pressure, which cause spurious motion in the ocean (not shown). This is much reduced or absent when mass spreading is used.
+Figure \ref{fig:ISOMIP_exp}c shows what the ice shelf draft would be if the draft were calculated from the mass of elements in each ocean grid cell without spreading an elements mass across neighboring cells (i.e.: treating elements as point masses). Figure \ref{fig:ISOMIP_exp}b shows the draft after spreading the mass across grid cells. When the mass spreading interpolation scheme is not used, grid artifacts seen in the ice shelf draft (Figure \ref{fig:ISOMIP_exp}c). The grid artifacts are much reduced when the mass spreading interpolation is used (Figure \ref{fig:ISOMIP_exp}b). 
 
 \subsection{Static ice shelf experiment}
 In the first experiment, we use a static ice shelf where the velocity of all ice elements is set to zero. In this experiment, the ice shelf is thermodynamically active and is able to `melt' but has a constant thickness (as was done in the Ocean0 setup in the MISOMIP \citep{Asay-Davis2016}). In this setup, ice shelf melting generates a temperature and salinity flux into the ocean, but does not change the thickness of the ice shelf. This can be thought to represent an ice shelf in dynamic equilibrium where the melt is exactly balanced ice shelf advection. 
@@ -480,7 +481,7 @@ Results of the static ice shelf experiment using the LISSM model are compared to
  \subsection{Tabular iceberg calving}
 In the next set of experiments, we demonstrates capabilities of the LIISM model that can not be performed by traditional Eularian ice shelf models. These simulations model a large tabular iceberg being calved from the edge of the ice shelf. The tabular iceberg drifts in the ocean, submerged in the water column, where it influences the ocean circulation.
 
-The tabular iceberg simulations are initialized using the final ocean state of the static ice shelf experiment. For these situations, all ice elements initially within a 15km radius of the center of the ice front are allowed to move freely while the other ice elements continue to be held are stationary.  The three tabular iceberg simulations are performed:
+The tabular iceberg simulations are initialized using the ocean state from the end of the static ice shelf experiment (after 5 years). For these situations, all ice elements initially within a 15km radius of the center of the ice front are allowed to move freely while the other ice elements continue to be held are stationary.  The three tabular iceberg simulations are performed:
 
 \begin{enumerate}
 \item
@@ -503,6 +504,9 @@ This simulation is identical to the bonded elements simulation, except that all 
 %Comparing the northern and southern halves of the simulation shows how large tabular icebergs can interfere with the trajectories and movement of smaller icebergs (or sea ice flows). These types of interactions will likely play an important role in ice choked fjords [reference] and Antarctic coastal regions [reference].
 
 \section{Results}
+
+%\subsection{Mass spreading}
+%When the model is run, the average ice draft in an ocean grid cell, is calculated from the total mass of ice elements in that grid cell by assuming that the ice elements are in hydrostatic balance. The total mass is found by summing up over all ice elements located in that grid cell, while allowing elements to spread their mass across neighboring grid cells (as discussed in Section 2.3). Figure \ref{fig:ISOMIP_exp}b shows the draft of the ice shelf above the ice shelf cavity in the coupled static ice shelf simulation using this interpolation method, while Figure \ref{fig:ISOMIP_exp}c shows the draft which is calculated without spreading an elements mass across neighboring cells (i.e.: treating elements as point masses). When the mass spreading interpolation scheme is not used, grid artifacts seen in the ice shelf draft (Figure \ref{fig:ISOMIP_exp}c). The grid artifacts are much reduced when the mass spreading interpolation is used (Figure \ref{fig:ISOMIP_exp}b). In simulations without mass spreading, irregularities in ice draft cause irregularities in the ocean surface pressure, which cause spurious motion in the ocean (not shown). This is much reduced or absent when mass spreading is used.
 
 %\subsection{Coupled simulation}
 \subsection{Static ice shelf experiment}
@@ -956,6 +960,19 @@ Weeks, W. F., and  W. J. Campbell (1973). Icebergs as a fresh-water source: an a
  
  
  
+ 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_solo_temp_temp_v.png}
+\caption{ {Results of the static ice shelf experiment using the LIISM model. Panels show a cross section of the (a) initial temperature field, (b) temperature anomaly after 5-years (relative the the initial field, and  (c) meridional velocity after 5 years of simulation.}}
+\end{center}
+%FIgure created by \end{center}
+\label{fig:static_solo_temp_temp_v}
+\end{figure} 
+ \clearpage
+ 
+ 
+ 
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_solo_melt_m_per_year_sst_ustar_iceberg.png}
@@ -1088,15 +1105,50 @@ Weeks, W. F., and  W. J. Campbell (1973). Icebergs as a fresh-water source: an a
  \clearpage
 
 
-\begin{figure}
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_solo_vo_uo_sst.png}
+%\caption{ {Results of the static ice shelf experiment using the LIISM model. The three panels show 5 year time average of the (a) meridional velocity, (b) zonal velocity and (c) ocean temperature in the top layer of the simulation (at the surface or directly below the ice shelf).}}
+%\end{center}
+%\label{fig:static_solo}
+%\end{figure} 
+ %\clearpage
+ 
+ 
+ \section{ALE versions}
+  
+ \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_solo_vo_uo_sst.png}
-\caption{ {Results of the static ice shelf experiment using the LIISM model. The three panels show 5 year time average of the (a) meridional velocity, (b) zonal velocity and (c) ocean temperature in the top layer of the simulation (at the surface or directly below the ice shelf).}}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_temp_temp_v.png}
+\caption{ {ALE z , Results of the static ice shelf experiment using the LIISM model. Panels show a cross section of the (a) initial temperature field, (b) temperature anomaly after 5-years (relative the the initial field, and  (c) meridional velocity after 5 years of simulation.}}
 \end{center}
 %FIgure created by \end{center}
-\label{fig:static_solo}
+\label{fig:static_solo_temp_temp_v}
 \end{figure} 
  \clearpage
+ 
+ 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_melt_m_per_year_sst_ustar_iceberg.png}
+\caption{ {ALE Results of the static ice shelf experiment using the LIISM model. The three panels show 5 year time average of the (a) melt rate, (b) ocean surface temperature and (c) $u^{*}$  in the top layer of the simulation (at the surface or directly below the ice shelf).}}
+\end{center}
+%FIgure created by \end{center}
+\label{fig:static_solo_melt}
+\end{figure} 
+ \clearpage
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_comparison_barotropic_sf.png}
+\caption{ {ALE Comparison of Eulerian ice shelf model and Lagrangian Ice shelf model barotropic stream function}}
+\end{center}
+%FIgure created by \end{center}
+\label{fig:Bt_comparison}
+\end{figure}
+ \clearpage
+
  
 
  \end{document}
