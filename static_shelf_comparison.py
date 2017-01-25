@@ -16,6 +16,62 @@ import argparse
 from m6toolbox  import section2quadmesh
 
 
+def parseCommandLine():
+        """
+        Parse the command line positional and optional arguments.
+        This is the highest level procedure invoked from the very end of the script.
+        """
+
+        parser = argparse.ArgumentParser(description=
+        '''
+        Plot snapshots of either surface or vertical sections, for Tech paper.
+        ''',
+        epilog='Written by Alon Stern, Dec. 2016.')
+	
+	#Adding an extra boolian type argument
+        parser.register('type','bool',str2bool) # add type keyword to registries
+
+
+
+	#Adding arguments:
+
+	#Saving figure
+	parser.add_argument('-save_figure', type='bool', default=False,
+		                        help=''' When true, the figure produced by the script is saved''')
+
+	#General flags
+	parser.add_argument('-rotated', type='bool', default=True,
+		                        help=''' Rotates the figures so that latitude runs in the vertical (involves switching x and y. ''')
+	parser.add_argument('-use_ALE', type='bool', default=True,
+		                        help='''When true, it uses the results of the ALE simulations. When false, layed simulations are used.    ''')
+	
+	#What to plot?
+	parser.add_argument('-fields_to_compare', type=str, default='plot_bt_stream_comparison',
+		                        help=''' This flag determine whether to plot horizontal, vertical, or special case for barotropic stream function
+					(should remove this later). Options are plot_bt_stream_comparison, plot_melt_comparison, plot_cross_section   ''')
+
+	#Which file type to use
+	parser.add_argument('-use_title_on_figure', type='bool', default=False,
+		                        help=''' When true, figure the name of the field is written as title ''')
+
+	optCmdLineArgs = parser.parse_args()
+	return optCmdLineArgs
+
+def str2bool(string):
+        if string.lower() in  ("yes", "true", "t", "1"):
+                Value=True
+        elif string.lower() in ("no", "false", "f", "0"):
+                Value=False
+        else:
+                print '**********************************************************************'
+                print 'The input variable ' ,str(string) ,  ' is not suitable for boolean conversion, using default'
+                print '**********************************************************************'
+
+                Value=None
+                return
+
+        return Value
+
 def transpose_matrix(data):
 	if len(data.shape)==2:
 		M=data.shape
@@ -60,8 +116,8 @@ def mask_ocean(data,area):
    Mask open ocean. Works with 2D or 3D arrays.
    """
    if len(data.shape) == 2: # 2D array
-     data = np.ma.masked_where(area==0,data)
-     #data[np.where(area==0)]=np.nan
+     data = np.ma.masked_where(area==0.0,data)
+     #data[np.where(area<0.5)]=np.nan
 
    else: # 3D array
      NZ,NY,NX = data.shape
@@ -70,20 +126,21 @@ def mask_ocean(data,area):
 
    return  data
 
-def mask_ice(data,area):
-   """
-   Mask open ocean. Works with 2D or 3D arrays.
-   """
-   if len(data.shape) == 2: # 2D array
-     data = np.ma.masked_where(area>0.1,data)
-     #data[np.where(area==0)]=np.nan
+def mask_ice(data,area,tol=None):
+	"""
+	Mask open ocean. Works with 2D or 3D arrays.
+	"""
+	if tol is None:
+		tol=0.8
+	if len(data.shape) == 2: # 2D array
+		data = np.ma.masked_where(area>tol,data)
+		#data[np.where(area==0)]=np.nan
 
-   else: # 3D array
-     NZ,NY,NX = data.shape
-     area=np.resize(area,(NZ,NY,NX))
-     data = np.ma.masked_where(area==0,data)
-
-   return  data
+	else: # 3D array
+		NZ,NY,NX = data.shape
+		area=np.resize(area,(NZ,NY,NX))
+		data = np.ma.masked_where(area==0,data)
+	return  data
 
 def get_psi2D(u,v):
     '''
@@ -169,10 +226,16 @@ def load_data_from_file(filename, field, rotated):
 			data=-data
 	return data
 
-def load_and_compress_data(filename, field, time_slice, time_slice_num, direction=None ,dir_slice=None, dir_slice_num=None,rotated=False,return_time=False):
+def load_and_compress_data(filename, field, time_slice, time_slice_num, direction=None ,dir_slice=None, dir_slice_num=None,\
+		rotated=False,return_time=False,depth=None, ice_base=None):
 
 	#Loading data
-	data=load_data_from_file(filename, field, rotated)
+	if field=='barotropic_sf':  #special case for barotropic stream function.
+		if (depth is None) or (ice_base is None):
+			print 'Depth and ice base needed to calculate stream function'
+		data=calculate_barotropic_streamfunction(filename,depth,ice_base,time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated)
+	else:
+		data=load_data_from_file(filename, field, rotated)
 	
 	#Give an error message if direction is not given for 4D matrix	
 	if (len(data.shape)>3 and direction is None):
@@ -261,6 +324,18 @@ def find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec):
                                 grounding_line[i]=yvec[j]
         return grounding_line
 
+def find_ice_front(depth,shelf_area,x,y, xvec, yvec):
+        #Finding grounding line (assuming shelf in the South)
+        M=depth.shape
+        ice_front=np.zeros(M[1])
+        for i in range(M[1]):
+                Flag=False
+                for j in range(M[0]-1,0,-1):
+                        if (Flag is False) and shelf_area[j,i]>0.5:
+                                Flag=True
+                                ice_front[i]=yvec[j]
+        return ice_front
+
 def get_plot_axes_limits(x, y, xlim_min, xlim_max, ylim_min, ylim_max):
 	if xlim_min is None:
 		xlim_min=np.min(x)
@@ -273,7 +348,7 @@ def get_plot_axes_limits(x, y, xlim_min, xlim_max, ylim_min, ylim_max):
 	return [xlim_min, xlim_max, ylim_min, ylim_max]
 
 def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=False,grounding_line=None, \
-		xlim_min=None, xlim_max=None, ylim_min=None,ylim_max=None): 
+		xlim_min=None, xlim_max=None, ylim_min=None,ylim_max=None,colorbar_units='',colorbar_shrink=1.0): 
 	if flipped is True:
 		data=transpose_matrix(data)
 		tmp=y ; y=x ; x=tmp
@@ -299,7 +374,9 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 	cNorm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 	datamap=plt.pcolormesh(x,y,data,norm=cNorm,cmap=cmap)
 	if colorbar is True:
-		plt.colorbar(datamap, cmap=cmap, norm=cNorm, shrink=0.5)
+		cbar=plt.colorbar(datamap, cmap=cmap, norm=cNorm, shrink=colorbar_shrink)
+		cbar.set_label(colorbar_units, rotation=90,fontsize=20)
+
 	(xlim_min, xlim_max, ylim_min, ylim_max)=get_plot_axes_limits(x, y, xlim_min, xlim_max, ylim_min, ylim_max)
 	plt.xlim(xlim_min,xlim_max)
 	plt.ylim(ylim_min,ylim_max)
@@ -309,10 +386,10 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 		else:
 			plt.plot(grounding_line,y[:,0], linewidth=3.0,color='black')
 
-	plt.xlabel(xlabel)
-	plt.ylabel(ylabel)
+	plt.xlabel(xlabel,fontsize=20)
+	plt.ylabel(ylabel,fontsize=20)
 	#plt.grid(True)
-	plt.title(title)
+	plt.title(title,fontsize=20)
 
 	if return_handle is True:
 		return datamap
@@ -408,39 +485,39 @@ def switch_axis_if_rotated(rotated,yvec,xvec):
 ##########################################################  Main Program   #########################################################################
 ####################################################################################################################################################
 
-def main():
-	parser = argparse.ArgumentParser()
-        parser.add_argument('--file1', default=None, help='The input data file1 in NetCDF format.')
-        parser.add_argument('--file2', default=None, help='The input data file2 in NetCDF format.')
-        parser.add_argument('--field', default=None, help='Feild to plot')
-        parser.add_argument('--field2', default=None, help='Feild to plot')
-        parser.add_argument('--operation',default=None, help='Operation betweeen fields')
-        parser.add_argument('--vmax', default=None, help='Maximum for plotting')
-        parser.add_argument('--vmin', default=None, help='Minimum for plotting')
-        parser.add_argument('--rotated', default=None, help='Minimum for plotting')
-	args = parser.parse_args()
-
+def main(args):
 
 	#Plotting flats
-	save_figure=True
+	print 'sfdsdsdsf', args.save_figure
+	save_figure=args.save_figure
 	
 	#General flags
-	rotated=True
+	rotated=args.rotated
+	use_ALE=args.use_ALE
 
 	#What to plot?
-	plot_melt_comparison=False
-	plot_bt_stream_comparison=False
-	plot_cross_section=True
+	fields_to_compare=args.fields_to_compare
 
 
 	#Defining path
-	Shelf_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Shelf/Melt_on_without_decay_with_spreading_trimmed_shelf/'
-	Berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/Melt_on_without_decay_with_spreading_trimmed_shelf/'
+	Path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/'
+	Folder_name= 'Melt_on_without_decay_with_spreading_trimmed_shelf/' 
+	Shelf_path=Path+'Shelf/' + Folder_name
+	Berg_path=Path+'Bergs/' + Folder_name
 
-	#Geometry files
+
+	#Geometry files  (from non ALE version)
 	ocean_geometry_filename=Shelf_path +'ocean_geometry.nc'
 	ice_geometry_filename=Shelf_path+'/MOM_Shelf_IC.nc'
 	ISOMIP_IC_filename=Shelf_path+'ISOMIP_IC.nc'
+	
+	#Using ALE ice shelf
+	use_ALE_flag=''
+	if use_ALE is True:
+		use_ALE_flag='ALE_z_'
+		Folder_name='ALE_z_' +Folder_name
+		Shelf_path=Path+'Shelf/' + Folder_name
+		Berg_path=Path+'Bergs/' + Folder_name
 	
 	#Shelf files
 	Shelf_ocean_file=Shelf_path+'00010101.ocean_month.nc'
@@ -453,6 +530,9 @@ def main():
 
 	#Load static fields
 	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated)	
+      	grounding_line=find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec)
+	ice_front=find_ice_front(depth,shelf_area,x,y, xvec, yvec)
+
 	
 	#Defining figure characteristics
 	fig=plt.figure(figsize=(15,10),facecolor='grey')
@@ -463,8 +543,10 @@ def main():
 	################################  Plotting melt comparison  ##########################################################
 	######################################################################################################################
 	
-	if plot_melt_comparison is True:
-		vmin=0.0  ; vmax=3.0
+	if fields_to_compare=='plot_melt_comparison':
+		vmin=0.0  ; vmax=3.0  ; vdiff=3.0
+		if use_ALE is True:
+			vmin=0.0  ; vmax=8.0  ; vdiff=8.0
 		flipped=False
 		field='melt'
 
@@ -475,18 +557,20 @@ def main():
 		data2=mask_ocean(data2,shelf_area)
 		#data3=mask_ocean(data1-data2,shelf_area)
 		plt.subplot(1,3,1)
-		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Shelf',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Eularian',xlabel='x (km)',ylabel='y (km)')	
 		plt.subplot(1,3,2)
-		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Bergs',xlabel='x (km)',ylabel='')	
+		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Lagrangian',xlabel='x (km)',ylabel='')	
 		plt.subplot(1,3,3)
-		plot_data_field(data1-data2,x,y,vmin=-3.,vmax=3.,flipped=flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
+		plot_data_field(data1-data2,x,y,vmin=-vdiff,vmax=vdiff,flipped=flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
 
 	######################data###############################################################################################
 	################################  Plotting Bt stream function ########################################################
 	######################################################################################################################
 
-	if plot_bt_stream_comparison is True:
+	if fields_to_compare=='plot_bt_stream_comparison':
 		vmin=-3*(10**3)  ; vmax=3*(10**3)
+		if use_ALE is True:
+			vmin=-7*(10**3)  ; vmax=7*(10**3)
 		flipped=False
 		field='barotropic_sf'
 		cmap='jet'
@@ -494,14 +578,22 @@ def main():
 		data1=calculate_barotropic_streamfunction(Shelf_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
 		data2=calculate_barotropic_streamfunction(Berg_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
 		plt.subplot(1,3,1)
-		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Shelf',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Lagrangian',\
+				xlabel='x (km)',ylabel='y (km)',colorbar_shrink=0.5,colorbar_units='(Sv)')	
+                plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
+                plt.plot(xvec,ice_front, linewidth=3.0,color='black')
 		plt.subplot(1,3,2)
-		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Bergs',xlabel='x (km)',ylabel='y (km)')	
+		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Eularian',\
+				xlabel='x (km)',ylabel='',colorbar_shrink=0.5,colorbar_units='(Sv)')	
+                plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
+                plt.plot(xvec,ice_front, linewidth=3.0,color='black')
 		plt.subplot(1,3,3)
-		plot_data_field(data1-data2,x,y,-vmax, vmax, flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
+		plot_data_field(data1-data2,x,y,-vmax, vmax, flipped,colorbar=True,cmap='bwr',title='Difference',\
+				xlabel='x (km)',ylabel='',colorbar_shrink=0.5,colorbar_units='(Sv)')	
+                plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
+                plt.plot(xvec,ice_front, linewidth=3.0,color='black')
 
-
-	if plot_cross_section is True:
+	if fields_to_compare=='plot_cross_section':
 		plot_anomaly=True
 		time_slice='mean'
 		#vertical_coordinate='z'
@@ -567,7 +659,7 @@ def main():
 
 
 	if save_figure==True:
-		output_file='Figures/static_shelf_comparison_' + field + '.png'
+		output_file='Figures/'+ use_ALE_flag +'static_shelf_comparison_' + field + '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 
@@ -578,7 +670,9 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+	optCmdLineArgs= parseCommandLine()
+	main(optCmdLineArgs)
+
 	#sys.exit(main())
 
 
