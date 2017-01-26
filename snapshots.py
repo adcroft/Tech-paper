@@ -277,6 +277,8 @@ def main(args):
 				plt.ylabel('y (km)',fontsize=20)
 			if n>0:
 				ax.set_yticks([])
+			if (n==2) and (args.field=='spread_area'):
+				plt.plot(np.array([xvec[10], xvec[10]]), np.array([450.0, 750.0]),'--', color='k',linewidth=3 )
 		#Creating colorbar
 		fig.subplots_adjust(right=0.85)
 		cbar_ax = fig.add_axes([0.88,0.12 , 0.025, 0.75])

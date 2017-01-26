@@ -54,6 +54,9 @@ def parseCommandLine():
 	parser.add_argument('-use_title_on_figure', type='bool', default=False,
 		                        help=''' When true, figure the name of the field is written as title ''')
 
+	parser.add_argument('-only_shelf_ALE', type='bool', default=False,
+		                        help=''' When true, Figures compares Shelf ALE and Layer (must be used with use_ALE=True ''')
+
 	optCmdLineArgs = parser.parse_args()
 	return optCmdLineArgs
 
@@ -511,13 +514,21 @@ def main(args):
 	ice_geometry_filename=Shelf_path+'/MOM_Shelf_IC.nc'
 	ISOMIP_IC_filename=Shelf_path+'ISOMIP_IC.nc'
 	
+	#only used when comparing ALE and Layer
+	Layer_Shelf_path=Path+'Shelf/' + Folder_name
+
 	#Using ALE ice shelf
 	use_ALE_flag=''
 	if use_ALE is True:
+		
 		use_ALE_flag='ALE_z_'
 		Folder_name='ALE_z_' +Folder_name
 		Shelf_path=Path+'Shelf/' + Folder_name
 		Berg_path=Path+'Bergs/' + Folder_name
+
+		#Comparing Layer vs ALE
+		if args.only_shelf_ALE is True:
+			Berg_path=Layer_Shelf_path 
 	
 	#Shelf files
 	Shelf_ocean_file=Shelf_path+'00010101.ocean_month.nc'

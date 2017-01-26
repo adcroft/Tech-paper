@@ -191,7 +191,7 @@ def main(args):
 		#fig=plt.figure(figsize=(15,10))
 
 		flipped=False
-		slice_num=59
+		time_slice_num=59
 		time_slice='mean'
 		cmap='jet'
 		snapshot=True
@@ -261,14 +261,14 @@ def main(args):
 			filename=filename_list[k]
 
 			ax=plt.subplot(1,N,k+1)
-			data=load_and_compress_data(filename,field=field,time_slice=time_slice,time_slice_num=slice_num,rotated=rotated) 
+			data=load_and_compress_data(filename,field=field,time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated) 
 			plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
 			if broken_shelf is False:
 				plt.plot(xvec,ice_front, linewidth=3.0,color='black')
 			if mask_open_ocean[k] == True:
 				mask_ocean_using_bergs=True
 				if mask_ocean_using_bergs is True:
-					ice_data=load_and_compress_data(Berg_iceberg_file,field='spread_area',time_slice='',time_slice_num=slice_num,\
+					ice_data=load_and_compress_data(Berg_iceberg_file,field='spread_area',time_slice='',time_slice_num=time_slice_num,\
 							rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=1)
 					data=mask_ocean(data,ice_data)
 				else:
@@ -383,7 +383,7 @@ def main(args):
 
 			plot_flag=plot_flag+'_'+ field
 
-			plt.subplot(N,1,k+1)
+			ax=plt.subplot(N,1,k+1)
 
 			data=load_and_compress_data(filename,field , time_slice, time_slice_num=time_slice_num, direction='yz',\
 					dir_slice=None, dir_slice_num=20,rotated=rotated)
@@ -418,6 +418,7 @@ def main(args):
 			if k==2:
 				plt.xlabel('y (km)',fontsize=20)
 			plt.ylabel('Depth (m)',fontsize=20)
+			text(1,1,letter_labels[k], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 		
 		#For plotting purposes
 		field=field+'_'+ vertical_coordinate
