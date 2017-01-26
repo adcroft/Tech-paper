@@ -236,8 +236,8 @@ def main(args):
 		fig, axes = plt.subplots(nrows=1,ncols=3)
 		fig.set_size_inches(15.0,10.0, forward=True)
 		#fig=plt.figure(figsize=(15,10),facecolor='grey')
-		ylim_min=550.
-		ylim_max=750.
+		ylim_min=550.-320.0
+		ylim_max=750.-320.0
 		for n in range(3):
 			#flipped=False
 			#field='spread_area'  ;vmin=0.0  ; vmax=1.0
@@ -278,7 +278,7 @@ def main(args):
 			if n>0:
 				ax.set_yticks([])
 			if (n==2) and (args.field=='spread_area'):
-				plt.plot(np.array([xvec[10], xvec[10]]), np.array([450.0, 750.0]),'--', color='k',linewidth=3 )
+				plt.plot(np.array([xvec[10], xvec[10]]), np.array([450.0-320., 750.0-320.]),'--', color='k',linewidth=3 )
 		#Creating colorbar
 		fig.subplots_adjust(right=0.85)
 		cbar_ax = fig.add_axes([0.88,0.12 , 0.025, 0.75])

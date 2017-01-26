@@ -71,44 +71,44 @@ def parseCommandLine():
 	parser.add_argument('-cmap', type=str, default='jet',
 		                        help='''Colormap to use when producing the figure ''')
 	
-	parser.add_argument('-field', type=str, default='temp',
-		                        help=''' Which field is being plotted  ''')
+	#parser.add_argument('-field', type=str, default='temp',
+	#	                        help=''' Which field is being plotted  ''')
 	
-	parser.add_argument('-vmin', type=float, default=0.0,
-		                        help='''Minimum value used for plotting''')
+	#parser.add_argument('-vmin', type=float, default=0.0,
+	#	                        help='''Minimum value used for plotting''')
 	
-	parser.add_argument('-vmax', type=float, default=1.0,
-		                        help='''Maximum values used for plotting''')
+	#parser.add_argument('-vmax', type=float, default=1.0,
+	#	                        help='''Maximum values used for plotting''')
 	
-	parser.add_argument('-vanom', type=float, default=0.3,
-		                        help='''This is the color scale when plot_anomaly=True. Goes from [-vanom vanom]''')
+	#parser.add_argument('-vanom', type=float, default=0.3,
+	#	                        help='''This is the color scale when plot_anomaly=True. Goes from [-vanom vanom]''')
 	
-	parser.add_argument('-flipped', type='bool', default=False,
-		                        help=''' The panel is flipped over so that it faces the other way.''')
+	#parser.add_argument('-flipped', type='bool', default=False,
+	#	                        help=''' The panel is flipped over so that it faces the other way.''')
 	
-	parser.add_argument('-mask_using_bergs', type='bool', default=False,
-		                        help='''When true, the iceberg is masked out using the iceberg file (when you only want the ocean)''')
+	#parser.add_argument('-plot_anomaly', type='bool', default=False,
+	#	                        help=''' If true, then figure plots the anomaly from the initial value, using color scale -vanom ''')
 
-	parser.add_argument('-plot_anomaly', type='bool', default=False,
-		                        help=''' If true, then figure plots the anomaly from the initial value, using color scale -vanom ''')
-
-	parser.add_argument('-vertical_coordinate', type=str, default='layers',
-			help='''Describes which type of ocean_month file is being used. Options: layers, z''')
+	#parser.add_argument('-vertical_coordinate', type=str, default='layers',
+	#		help='''Describes which type of ocean_month file is being used. Options: layers, z''')
 
 	parser.add_argument('-time_slice', type=str, default='',
 			help='''Time slice tells the code whether to do a time mean or a snapshot. Options: mean, None (default is snapshot)''')
-
-	parser.add_argument('-xmin', type=float, default=0.0,
-		                        help='''Minimum x used for plotting (only applies to vertical sectins for now)''')
-
-	parser.add_argument('-xmax', type=float, default=960.0,
-		                        help='''Minimum x used for plotting (only applies to vertical sectins for now)''')
-
-	parser.add_argument('-dir_slice_num', type=int, default=1,
+	
+	parser.add_argument('-time_slice_num', type=int, default=59,
 		                        help='''The index of the transect used (in the direction not plotted''')
 
-	#parser.add_argument('-', type=str, default='',
-	#	                        help='''''')
+	#parser.add_argument('-xmin', type=float, default=0.0,
+	#	                        help='''Minimum x used for plotting (only applies to vertical sectins for now)''')
+
+	#parser.add_argument('-xmax', type=float, default=960.0,
+	#	                        help='''Minimum x used for plotting (only applies to vertical sectins for now)''')
+
+	#parser.add_argument('-dir_slice_num', type=int, default=1,
+	#	                        help='''The index of the transect used (in the direction not plotted''')
+
+
+
 
         optCmdLineArgs = parser.parse_args()
         return optCmdLineArgs
@@ -172,6 +172,12 @@ def main(args):
 	#ax = fig.add_subplot(111,axisbg='gray')
 	letter_labels=np.array(['(a)','(b)','(c)','(d)','(e)'])
 	title=''
+	
+	#Deciding which time to plot (time_slice_num overridded sometimes)
+	time_slice=args.time_slice
+	time_slice_num=args.time_slice_num
+		
+	cmap=args.cmap
 
 	######################################################################################################################
 	################################  Plotting melt comparison  ##########################################################
@@ -191,12 +197,6 @@ def main(args):
 		#fig=plt.figure(figsize=(15,10))
 
 		flipped=False
-		time_slice_num=59
-		time_slice='mean'
-		cmap='jet'
-		snapshot=True
-		if snapshot is True:
-			time_slice=''
 
 		#if plot_vel_vel_sst is True:
 		if three_fields_flag=='plot_vel_vel_sst':
@@ -324,9 +324,6 @@ def main(args):
 		#fig=plt.figure(figsize=(10,5))
 		fig=plt.figure(figsize=(10,10),facecolor='grey')
 		plot_anomaly=False
-		time_slice=''
-		time_slice_num=-1
-		cmap='jet'
 		#vertical_coordinate='z'
 		vertical_coordinate='layers'  #'z'
 		field='v'  ; vmin=-0.01 ; vmax=0.01  ;vdiff=0.01   ; vanom=0.01; plot_anomaly=False; cmap='bwr'
@@ -405,7 +402,7 @@ def main(args):
 
 			zoom_in_on_second_plot=True
 			if zoom_in_on_second_plot is True:
-				xlo=475. ; xhi=500.
+				xlo=475.-320.0 ; xhi=500.-320.0
 				ylo=-520.; yhi=-420.
 				if k==1:
 					plt.plot(np.array([xlo , xhi]) ,np.array([ylo , ylo]),'k',linewidth=3)

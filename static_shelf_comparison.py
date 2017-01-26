@@ -285,7 +285,7 @@ def switch_x_and_y(x,y):
 	
 	return [x,y]
 
-def load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated):
+def load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated,xy_from_zero=True):
 	# bedrock
 	depth = Dataset(ocean_geometry_filename).variables['D'][:]
 	# area under shelf 
@@ -302,6 +302,16 @@ def load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_I
 	y=Dataset(ocean_geometry_filename).variables['geolat'][:]#*1.0e3 # in m
 	xvec=Dataset(ocean_geometry_filename).variables['lonh'][:]#*1.0e3 # in m
 	yvec=Dataset(ocean_geometry_filename).variables['lath'][:]#*1.0e3 # in m
+
+	if xy_from_zero is True:
+		x_start=np.min(x)-(0.5*(xvec[2]-xvec[1]));
+		y_start=np.min(y)-(0.5*(yvec[2]-yvec[1]));
+		print 'Subtracting y,x=', x_start, y_start
+		x=x-x_start
+		y=y-y_start
+		xvec=xvec-x_start
+		yvec=yvec-y_start
+
 	if rotated is True:
 		depth=transpose_matrix(depth)
 		shelf_area=transpose_matrix(shelf_area)
