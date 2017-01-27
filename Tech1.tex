@@ -463,10 +463,10 @@ The MISOMIP configuration was developed as a standardized configuration to allow
 These three changes were made in order to make the circulation beneath the ice shelf easier to interpret. 
 
 The LIISM model is coupled to the MOM6 ocean model. 
-The ocean model is run in using vertical coordinate system which is a hybrid between a sigma-level and a z-level coordinate. In particular, model layers bend underneath the ice shelf as they would in a sigma model, but collapse to zero thickness when they intersect with bottom topography, as they would in a z-level model. The coordinate system was achieve using ALE regridding-remapping scheme \citep{White2009}. The model used a horizontal resolution of 2km, and 36 vertical layers.
+The ocean model is run in using vertical coordinate system which is a hybrid between a sigma-level and a z-level coordinate. In particular, model layers bend underneath the ice shelf as they would in a sigma model, but collapse to zero thickness when they intersect with bottom topography, as they would in a z-level model. The coordinate system was achieve using ALE regridding-remapping scheme \citep{White2009}. The model used a horizontal resolution of 2km, and 72 vertical layers.
 All simulation were repeated using the ocean model is run layered mode (results were similar and are not presented here).
 %(select results are shown in the supplementary material). 
-Ocean parameters are as specified in the MISOMIP configuration \citep{Asay-Davis2016}, and are shown in Table 1. The simulation is initially at rest, with horizontally uniform initial ocean temperature  (Figure \ref{fig:static_solo_temp_temp_v}a) and salinity profiles that vary linearly between specified surface and bottom values. The initial surface temperature and salinity are  $T_{t}=-1.9^{\circ}$C and $S_{t}=33.8$ psu, respectively. The initial temperature and salinity at the depth $H_{ocean}$ are $T_{b}=1.0^{\circ}$C and $S_{b}=34.7$ psu. The maximum ocean depth is $H_{ocean}=720$ m.  A sponge layer is used on the northern boundary, which relaxes back to the initial temperature and salinity with a relaxation time scale of $\tau=0.1$ days. Melting is set to zero for ocean cells where the ocean column thickness is less than 10m to avoid using more energy to melt ice than is present in the water column.
+Ocean parameters are as specified in the MISOMIP configuration \citep{Asay-Davis2016}, and are shown in Table 1. The simulation is initially at rest, with horizontally uniform initial ocean temperature  (Figure \ref{fig:static_solo_temp_temp_v}a) and salinity profiles that vary linearly between specified surface and bottom values. The initial surface temperature and salinity are  $T_{t}=-1.9^{\circ}$C and $S_{t}=33.8$ psu, respectively. The initial temperature and salinity at the depth $H_{ocean}$ are $T_{b}=1.0^{\circ}$C and $S_{b}=34.7$ psu. The maximum ocean depth is $H_{ocean}=720$ m.  A sponge layer is used on the northern boundary, which relaxes back to the initial temperature and salinity with a relaxation time scale of $T_{sponge}=0.1$ days. Melting is set to zero for ocean cells where the ocean column thickness is less than 10m to avoid using more energy to melt ice than is present in the water column.
 
 %\textbf{Initializing Lagrangian elements:}\\
 \subsection{Initializing Lagrangian elements:}
@@ -563,7 +563,9 @@ The tabular iceberg calving experiment demonstrates that the model is able to si
 
 The motion of the tabular iceberg disturbs the ocean surface, which drives ocean velocities through out the water column (Figure \ref{fig:Velocity_section_Collapse}). The elevated velocities around the tabular iceberg lead to increased vertical mixing in the vicinity of the iceberg, which alters the stratification of the water column (Figure \ref{fig:Temperature_section_Collapse}), heating the upper ocean. The increased ocean velocities and increased surface temperatures cause elevated melt rates at the base of the ice shelf and iceberg (Figure \ref{fig:Collapse_solo_melt}). Large melt rates are observed at the newly calved ice-shelf front and on the rounded side of the iceberg (Figure \ref{fig:Collapse_solo_melt}a), where the iceberg calving has created steep ice cliffs. These sharp ice fronts allow for large ocean currents (Figure \ref{fig:Collapse_solo_melt}c), which drive the elevated melt rates. These elevated melt rates act to smooth out the ice front over time, making the ice cliff less steep. While this is likely a real phenomena that could be observed in nature, we should be wary of the modeled velocities at the ice cliffs, since large changes in ice-shelf thicknesses are often associated with numerical pressure gradient errors which can drive spurious motion.
  
-As mentioned above, the direction (and speed) of the iceberg drift is largely determined by the wind speed and direction. Perturbation experiments using different wind stresses showed that the iceberg drifts to the north east for positive zonal wind stresses and to the north west for negative zonal wind stresses. For wind stresses less that $\tau= ???$ the iceberg does not move away from the ice shelf. While this result is partly an artifact of the artificial shape of the calving iceberg, it is also consistent with \citet{Bassis2013} who noted that calving is a two step process consisting of (i) ice-shelf breaking and (ii) iceberg detachment. The results here suggest that strong wind may be required to drive large tabular icebergs away from their mother glaciers.
+As mentioned above, the direction (and speed) of the iceberg drift is largely determined by the wind speed and direction. Perturbation experiments using different wind stresses showed that for sufficiently large winds, the iceberg drifts to the north east when the zonal component of the wind stresses is positive, and to the north west when the zonal component of the wind stress is negative. For a purely zonal wind stress with $\tau_{x} \leq 0.01 \frac{\textrm{N}}{\textrm{m}^{2}}$, the iceberg does not move away from the ice shelf. 
+When the wind is purely offshore ($\tau_{x} = 0.0 \frac{\textrm{N}}{\textrm{m}^{2}}$), a meridional wind stress $\tau_{y} \geq 0.05 \frac{\textrm{N}}{\textrm{m}^{2}}$ is needed to move the tabular iceberg away from the ice shelf.
+While this result is partly an artifact of the artificial shape of the calving iceberg, it is also consistent with \citet{Bassis2013} who noted that calving is a two step process consisting of (i) ice-shelf breaking and (ii) iceberg detachment. The results here suggest that strong (cross-shore) winds may be required to drive large tabular icebergs away from their mother glaciers.
 
 Finally, we note that the numerical bonds in the LIISM model are needed in order to allow the tabular iceberg to retain its shape. Comparing the iceberg calving simulation with an identical simulation where all numerical bonds have been removed, shows that in the absence of the bonds, the ice elements quickly disperse (Figure \ref{fig:Bond_vs_No_bond}). In this case, the model behavior is more similar to an ice-shelf disintegration and does not create a cohesive tabular iceberg.
 
@@ -1120,8 +1122,9 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/drift_bond_salt_layers.png}
-\caption{ {Results from the tabular iceberg calving experiment using the LIISM model coupled to an ocean model. The top row shows the average draft of ice above the ocean for the simulation (a) with and (b) without numerical bonds. The bottom row shows the corresponding temperature section at $x=\frac{L_{x}}{2}$ for the simulation (a) with and (b) without bonds.  All snapshots are taken at time t = 30 days.}}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/drift_bond_temp_layers.png}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/drift_bond_salt_layers.png}
+\caption{ {Results from the tabular iceberg calving experiment with and without iceberg bonds. The top row shows the fractional ice cover for the simulations (a) with and (b) without numerical bonds. The bottom row shows the corresponding vertical temperature section at $x=58 $km for the simulation (c) with and (d) without bonds. The location of the vertical transects in panels (c) and (d) are shown by the dashed lines in panels (a) and (b), respectively. All snapshots are taken at time t = 30 days. The simulations uses wind stress $\vec{\tau}=< 0.0, 0.05 >.$}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:Bond_vs_No_bond}
@@ -1139,14 +1142,23 @@ Parameter & Symbol & Value &  Unit \\
 \hline
 Domain Length &  $L_{x}$ & 80  & km \\
 Domain Width &  $L_{y}$ & 480  & km \\
-Viscosity &  $3.3\times 10^{9}$ & 209 & 104 \\
-Time step &  $1.8\times 10^{10}$& 426  & 104\\
-Class 5 &  $3.8\times 10^{10}$ & 518 & 104 \\
-Class 6 &  $7.5\times 10^{10}$ & 728  & 104\\
-Class 7 &  $1.2\times 10^{11}$ & 920  & 104 \\
-Class 8 &  $2.2\times 10^{11}$ & 1246  & 104\\
-Class 9 &  $3.9\times 10^{11}$ & 1659 & 104 \\
-Class 10 & $7.4\times 10^{11}$ &  2285  & 104\\
+Horizontal Resolution &  $\Delta x$ & 2  & km \\
+Number of vertical layers &  $N_{l}$ & 72  & non-dim\\
+Horizontal Viscosity &  $\nu_{H}$ & 6.0 & $\frac{m^{2}}{s}$ \\
+Diapycnal Viscosity &  $\nu_{V} $ & $10^{-3}$ & $\frac{m^{2}}{s}$ \\
+Horizontal Diffusivity & $ \epsilon_{H}$ & 1.0 & $ \frac{m^{2}}{s}$ \\
+Diapycnal Diffusivity &  $\epsilon_{V} $ & $5 \times 10^{-5}$ & $\frac{m^{2}}{s}$ \\
+Initial Surface Temperature &  $ T_{t}$& -1.9   & $ ^{o} C$\\
+Initial Bottom Temperature &  $ T_{b}$&  1.0  & $ ^{o} C$\\
+Initial Surface Salinity &  $ S_{t}$& 33.8   & psu\\
+Initial Bottom Salinity &  $ S_{b}$&  34.7  & psu\\
+Maximum Ocean depth &  $H_{ocean} $ & 720 & m \\
+Relaxation Time of Sponge Layer &  $T_{sponge}$ & 0.1  & days\\
+%Background Frictional Velocity Below Ice &  $u^{*}_{bg}$ & 0.0  & 104 \\
+%Drag Coefficient Below Ice&  c_{d} & $0.0025$  & (non dim)\\
+%Class 9 &  $3.9\times 10^{11}$ & 1659 & 104 \\
+Time Step for Static Shelf Experiment & $dt_{Static}$ &  1000  & s\\
+Time Step for Iceberg Calving Experiment & $dt_{Calving}$ &  10  & s\\
 %Class 1 &  $8.8\times 10^{7}$ & 60  & 0.0026 & 40 & 2000 \\
 %Class 2 &  $4.1\times 10^{8}$ & 100 & 0.0072 & 67 & 200\\
 %Class 3 &  $3.3\times 10^{9}$ & 200  & 0.029 &133 & 50 \\
