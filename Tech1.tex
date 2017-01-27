@@ -154,7 +154,7 @@
 %\title{Remote and local effects of large Antarctic icebergs}
 %OR\\
 %\title{The effect of calving-size distribution on sea-ice formation around Antarctica}
-\title{Modeling ice shelf cavities and calving tabular icebergs}
+\title{Modeling ice-shelf cavities and calving tabular icebergs}
 %\title{The effects of iceberg calving-size distribution in a global climate model}
 % e.g., \title{Terrestrial ring current:
 % Origin, formation, and decay $\alpha\beta\Gamma\Delta$}
@@ -185,11 +185,11 @@
 % >> the body of the abstract.
 
 \begin{abstract}
-The calving of giant icebergs is an important process in the Antarctic freshwater cycle. Iceberg calving can significantly alter the geometry of an ice shelf cavity, potentially affecting the circulation within the cavity. Giant icebergs which break away can drift across large distance, altering regional ocean circulation, sea ice distributions and bottom water formation. 
+The calving of giant icebergs is an important process in the Antarctic freshwater cycle. Iceberg calving can significantly alter the geometry of an ice-shelf cavity, potentially affecting the circulation within the cavity. Giant icebergs which break away can drift across large distance, altering regional ocean circulation, sea ice distributions and bottom water formation. 
 However, despite its importance, the current generation of numerical models is unable to represent this process in a physically realistic way.
-In this study we develop a model of an ice shelf cavity using a Lagrangian ice shelf. The ice shelf is constructed out of Lagrangian elements which are bonded together by numerical bonds. This Lagrangian framework allows for large pieces of the ice shelf to break away and become tabular icebergs. 
+In this study we develop a model of an ice-shelf cavity using a Lagrangian ice shelf. The ice shelf is constructed out of Lagrangian elements which are bonded together by numerical bonds. This Lagrangian framework allows for large pieces of the ice shelf to break away and become tabular icebergs. 
 The model developed in the manuscript is referred to as the Lagrangian Iceberg/Ice Shelf Model (LIISM). This paper provides a description of the LIISM model and discusses a number of the technical elements involved in building a Lagrangian ice shelf. 
-To test the model, the LIISM is used to model an idealized ice shelf cavity which was developed as part of the Marine Ice Ocean Modeling Inter-comparison Project (MISOMIP). Results from static ice shelf experiments compare well to results using a more traditional Eularian ice shelf modles. 
+To test the model, the LIISM is used to model an idealized ice-shelf cavity which was developed as part of the Marine Ice Ocean Modeling Inter-comparison Project (MISOMIP). Results from static ice-shelf experiments compare well to results using a more traditional Eularian ice-shelf models. 
 The novel capabilities of the  LIISM are demonstrated by modeling a tabular iceberg breaking away from the idealized ice shelf.
 
 \end{abstract}
@@ -228,33 +228,33 @@ The novel capabilities of the  LIISM are demonstrated by modeling a tabular iceb
 %6) Short summary and paper description.
 %
 %\subsection{Introduction}
-Floating ice shelves cover vast regions of the Antarctic polar oceans. These massive platforms of ice extend deep into the water column, applying large pressures to surface of the ocean, which is often hundreds of meters below global sea level. Beneath the ice shelves, both the bottom topography and the ice shelf geometry play a role in steering ocean currents \citep{Nicholls1996, Jenkins2010,  Stern2014}. The topographic constraint imposed by the ice shelf at the ocean's upper boundary significantly affects the circulation within the ice shelf cavities, and gives the ocean within the ice shelves cavities a unique character. 
+Floating ice shelves cover vast regions of the Antarctic polar oceans. These massive platforms of ice extend deep into the water column, applying large pressures to surface of the ocean, which is often hundreds of meters below global sea level. Beneath the ice shelves, both the bottom topography and the ice-shelf geometry play a role in steering ocean currents \citep{Nicholls1996, Jenkins2010,  Stern2014}. The topographic constraint imposed by the ice shelf at the ocean's upper boundary significantly affects the circulation within the ice-shelf cavities, and gives the ocean within the ice shelves cavities a unique character. 
 
-In addition to suppressing the depth of ocean surface, the ice shelves also melt (and break), thus providing a freshwater flux into the ice shelf cavities. 
+In addition to suppressing the depth of ocean surface, the ice shelves also melt (and break), thus providing a freshwater flux into the ice-shelf cavities. 
 %Perhaps remove this line....:
 This melting and breaking of Antarctic ice shelves is a key component in the Antarctic meltwater system.
 %, and affect the ocean hydrography and biology both inside and outside of the ice shelf cavities. %Some elements of this Antarctic meltwater system are discussed in the following paragraphs. 
 %
-Within the ice shelf cavities, the input of buoyant meltwater into the ocean creates rising density plumes, which are guided along the ice shelf base, and help drive ocean circulation beneath the ice shelves \citep{MacAyeal1984,  Holland2006}. The strength of the circulation within the cavity feeds back onto the ice shelf melt rates, by removing cold water from the cavity, and drawing in warmer waters from the open ocean, thus providing the constant supply of thermal energy needed for continuous ice shelf melt \citep{Lewis1986, Jacobs2011}.
+Within the ice-shelf cavities, the input of buoyant meltwater into the ocean creates rising density plumes, which are guided along the ice-shelf base, and help drive ocean circulation beneath the ice shelves \citep{MacAyeal1984,  Holland2006}. The strength of the circulation within the cavity feeds back onto the ice-shelf melt rates, by removing cold water from the cavity, and drawing in warmer waters from the open ocean, thus providing the constant supply of thermal energy needed for continuous ice-shelf melt \citep{Lewis1986, Jacobs2011}.
 
-The Antarctic ice shelves are also characterized by large infrequent calving events where massive pieces of the ice shelves break off, to create giant tabular icebergs. Observational estimates suggest that approximately half of Antarctic ice shelf decay is due to iceberg calving, while the other half occurs through ice shelf melting \citep{Depoorter2013, Rignot2013}. Calving icebergs' sizes appear to fit a power law distribution, with the majority of icebergs being small (L$<$ 1 km), while giant tabular icebergs (L $>$ 5km) account for more than 90$\%$ of the icebergs mass \citep{Tournadre2016}. After calving, icebergs slowly drift away from their mother glaciers, often becoming stuck in sea ice, or become grounded along the Antarctic coast \citep{Lichey2001, Dowdeswell2007}. Giant tabular icebergs also extend deep into the water column, and have to potential to disrupt ocean circulation patterns for months or even years after calving \citep{Robinson2012, Stern2015}. 
+The Antarctic ice shelves are also characterized by large infrequent calving events where massive pieces of the ice shelves break off, to create giant tabular icebergs. Observational estimates suggest that approximately half of Antarctic ice-shelf decay is due to iceberg calving, while the other half occurs through ice-shelf melting \citep{Depoorter2013, Rignot2013}. Calving icebergs' sizes appear to fit a power law distribution, with the majority of icebergs being small (L$<$ 1 km), while giant tabular icebergs (L $>$ 5km) account for more than 90$\%$ of the icebergs mass \citep{Tournadre2016}. After calving, icebergs slowly drift away from their mother glaciers, often becoming stuck in sea ice, or become grounded along the Antarctic coast \citep{Lichey2001, Dowdeswell2007}. Giant tabular icebergs also extend deep into the water column, and have to potential to disrupt ocean circulation patterns for months or even years after calving \citep{Robinson2012, Stern2015}. 
 
-Melt water from both ice shelf melt and iceberg melt impact the ocean hydrography outside of the ice shelf cavities, influencing sea ice production and bottom water formation \citep{Arrigo2002, Robinson2012, Nicholls2009}. The long distances traveled by giant icebergs before melting means that their meltwater impact is often felt hundreds of kilometers away from their calving origins \citep{Stern2016}. Melt water injection (and the accompanying upwelling) from ice shelves and icebergs can also influence biological productivity by providing nutrients to the surface ocean or changing sea ice conditions \citep{Arrigo2002, Vernet2012, Biddle2015}. The increased productivity associated with free-floating tabular icebergs has been linked with local increases in ocean carbon uptake, potentially large enough to be a significant fraction of the Southern Ocean carbon sequestration \citep{Smith2007}.
+Melt water from both ice-shelf melt and iceberg melt impact the ocean hydrography outside of the ice-shelf cavities, influencing sea ice production and bottom water formation \citep{Arrigo2002, Robinson2012, Nicholls2009}. The long distances traveled by giant icebergs before melting means that their meltwater impact is often felt hundreds of kilometers away from their calving origins \citep{Stern2016}. Melt water injection (and the accompanying upwelling) from ice shelves and icebergs can also influence biological productivity by providing nutrients to the surface ocean or changing sea ice conditions \citep{Arrigo2002, Vernet2012, Biddle2015}. The increased productivity associated with free-floating tabular icebergs has been linked with local increases in ocean carbon uptake, potentially large enough to be a significant fraction of the Southern Ocean carbon sequestration \citep{Smith2007}.
 %either increasing it by providing nutrients to the surface ocean, or decreasing by changing sea ice conditions
 
-In recent years society's need for improved projections of future sea level has lead to an increased focus on the Antarctic meltwater system described in the previous paragraphs. This increased interest has led to accelerated efforts to accurately model Antarctic ice shelf cavities \citep{Asay-Davis2016}.  Modeling the ocean beneath the ice shelves presents a unique set of challenges, since (i) the presence of ice shelves provides a rigid upper boundary for the ocean model which is not encountered elsewhere in the ocean, and (ii) melting and breaking ice shelves imply a changing ocean boundary conditions which present numerous numerical difficulties. 
+In recent years society's need for improved projections of future sea level has lead to an increased focus on the Antarctic meltwater system described in the previous paragraphs. This increased interest has led to accelerated efforts to accurately model Antarctic ice-shelf cavities \citep{Asay-Davis2016}.  Modeling the ocean beneath the ice shelves presents a unique set of challenges, since (i) the presence of ice shelves provides a rigid upper boundary for the ocean model which is not encountered elsewhere in the ocean, and (ii) melting and breaking ice shelves imply a changing ocean boundary conditions which present numerous numerical difficulties. 
 
-The earliest models of ocean ice shelf cavities were developed using a static ice shelves with a fixed shape \citep{Hellmer1989, Determan1994, Grosfeld1997, Holland2001, Losch2008}. In these models, ice shelf melting was represented through salinity and temperature fluxes, while the ice shelf geometry remained unchanged. Later models of ice shelf cavities allowed the ice shelf geometry to evolve as the ice shelf melted, permitting the study of coupled ocean-ice phenomena \citep{Gladish2012, Sergienko2013}. More recently, dynamic ice shelf models have been coupled the ocean cavity, allowing the study of grounding line migration, which is of key importance for sea level rise projections \citep{Grosfeld2004, Goldberg2012, De_Rydt2006}. As far as we know, all models of ice shelf cavities to date have neglected ice shelf breaking and iceberg detachment.
+The earliest models of ocean ice-shelf cavities were developed using a static ice shelves with a fixed shape \citep{Hellmer1989, Determan1994, Grosfeld1997, Holland2001, Losch2008}. In these models, ice-shelf melting was represented through salinity and temperature fluxes, while the ice-shelf geometry remained unchanged. Later models of ice-shelf cavities allowed the ice-shelf geometry to evolve as the ice shelf melted, permitting the study of coupled ocean-ice phenomena \citep{Gladish2012, Sergienko2013}. More recently, dynamic ice-shelf models have been coupled the ocean cavity, allowing the study of grounding line migration, which is of key importance for sea level rise projections \citep{Grosfeld2004, Goldberg2012, De_Rydt2006}. As far as we know, all models of ice-shelf cavities to date have neglected ice-shelf breaking and iceberg detachment.
 
-In parallel to these efforts to develop ice shelf cavity models, a number of iceberg drift models have been developed, and have been included in some global General Circulation Models \citep{Bigg1997, Gladstone2001, Martin2010, Marsh2015}. These iceberg drift models treat icebergs as Lagrangian point particles, which are advected by the flow, and melt according to certain parameterizations for icebergs melt. Since icebergs are treated as point particles, the iceberg drift models are mostly suitable for modeling smaller icebergs drifting across large distances, and as such iceberg drift models have mostly been used to represent icebergs smaller than 3.5km on a global scale \citep{Jongma2009, Martin2010, Marsh2015}. These models are not suitable for modeling larger tabular icebergs, which feel the ocean over many grid cells, depress the ocean surface and change circulation patterns \citep{Stern2016}. They also not suitable for studying  the local effects that icebergs have on the surrounding ocean. For this reason, tabular icebergs (L $>$ 5km) are currently not represented in the iceberg drift models used in climate models, even though observations suggest that tabular icebergs account for  the vast majority of the total Southern Hemisphere icebergs mass \citep{Tournadre2016}. 
+In parallel to these efforts to develop ice-shelf cavity models, a number of iceberg drift models have been developed, and have been included in some global General Circulation Models \citep{Bigg1997, Gladstone2001, Martin2010, Marsh2015}. These iceberg drift models treat icebergs as Lagrangian point particles, which are advected by the flow, and melt according to certain parameterizations for icebergs melt. Since icebergs are treated as point particles, the iceberg drift models are mostly suitable for modeling smaller icebergs drifting across large distances, and as such iceberg drift models have mostly been used to represent icebergs smaller than 3.5km on a global scale \citep{Jongma2009, Martin2010, Marsh2015}. These models are not suitable for modeling larger tabular icebergs, which feel the ocean over many grid cells, depress the ocean surface and change circulation patterns \citep{Stern2016}. They also not suitable for studying  the local effects that icebergs have on the surrounding ocean. For this reason, tabular icebergs (L $>$ 5km) are currently not represented in the iceberg drift models used in climate models, even though observations suggest that tabular icebergs account for  the vast majority of the total Southern Hemisphere icebergs mass \citep{Tournadre2016}. 
 
-The ice shelf cavity models and iceberg drift models described above have been developed separately from one another, and have not been designed to be used together in a physically consistent way.  As such, it has not been possible to model the calving of tabular icebergs away from an ice shelf, which is an important part of the Antarctic climate system.  The goal of this study is to develop a model which combines features of the ice shelf cavity models and the iceberg drift models, to create an ice shelf cavity model that is able to calve tabular icebergs. To do this, we create an ice shelf model out of Lagrangian elements which are `bonded' together by numerical bonds. In this framework, icebergs do not get created when a calving event takes place (as in iceberg drift models), but rather the icebergs `break away' from an existing ice shelf, thus changing the geometry of the ice shelf cavity. Modeling iceberg calving in a physically consistent way allows us to study the ocean response to iceberg detachment. 
+The ice-shelf cavity models and iceberg drift models described above have been developed separately from one another, and have not been designed to be used together in a physically consistent way.  As such, it has not been possible to model the calving of tabular icebergs away from an ice shelf, which is an important part of the Antarctic climate system.  The goal of this study is to develop a model which combines features of the ice-shelf cavity models and the iceberg drift models, to create an ice-shelf cavity model that is able to calve tabular icebergs. To do this, we create an ice-shelf model out of Lagrangian elements which are `bonded' together by numerical bonds. In this framework, icebergs do not get created when a calving event takes place (as in iceberg drift models), but rather the icebergs `break away' from an existing ice shelf, thus changing the geometry of the ice-shelf cavity. Modeling iceberg calving in a physically consistent way allows us to study the ocean response to iceberg detachment. 
 %(see Figures \ref{fig:Calving_fixed_side} and Figures \ref{fig:Calving_fixed_top}, for example).  
 Also, by allowing icebergs protrude deep into the water column we can study the ocean dynamics around individual tabular icebergs (which was not possible in iceberg drift models). 
 
-In all simulation in this study, the shape of the calving iceberg is prescribed. The question of how to correctly prescribe a calving law is undoubtably a very important question, which has rightfully received much attention in recent years \citep{Benn2007, Alley2008, Levermann2012}. \citet{Bassis2013}, for example, used a discrete element model (DEM) model to study the generation and propagation of cracks within an ice shelf (not coupled to an ocean model).  In this study, we bypass the question of how to correctly calve icebergs or break bonds. Instead we focus on developing a framework to model the ocean response to ice shelf breaking and the presence of tabular icebergs. This framework of representing ice shelves using a Lagrangian grid might be a step towards including giant tabular icebergs in climate models. Including ice fracture into this model will be a later step. 
+In all simulation in this study, the shape of the calving iceberg is prescribed. The question of how to correctly prescribe a calving law is undoubtably a very important question, which has rightfully received much attention in recent years \citep{Benn2007, Alley2008, Levermann2012}. \citet{Bassis2013}, for example, used a discrete element model (DEM) model to study the generation and propagation of cracks within an ice shelf (not coupled to an ocean model).  In this study, we bypass the question of how to correctly calve icebergs or break bonds. Instead we focus on developing a framework to model the ocean response to ice-shelf breaking and the presence of tabular icebergs. This framework of representing ice shelves using a Lagrangian grid might be a step towards including giant tabular icebergs in climate models. Including ice fracture into this model will be a later step. 
 
-The model developed in this study is referred to at the Lagrangian Iceberg/Ice Shelf Model (LIISM). Section 2 gives a description of many of the key aspects of the LIISM. Since this model is a new approach to modeling ice shelf cavities, we present many of the technical elements involved in constructing the model. Those readers who are more interested in the model capabilities, should skip directly to the numerical experiments presented in the later sections. In Section 3 and 4, the LIISM model is used to simulate the circulation beneath an idealized ice shelf. The LIISM model results are validated by comparing them to an existing Eularian ice-shelf model.  We then we move beyond the capabilities of the existing ice shelf model by allowing a piece of the ice shelf to break away, becoming a tabular icebergs, and consider the ocean response to this calving event.
+The model developed in this study is referred to at the Lagrangian Iceberg/Ice Shelf Model (LIISM). Section 2 gives a description of many of the key aspects of the LIISM. Since this model is a new approach to modeling ice-shelf cavities, we present many of the technical elements involved in constructing the model. Those readers who are more interested in the model capabilities, should skip directly to the numerical experiments presented in the later sections. In Section 3 and 4, the LIISM model is used to simulate the circulation beneath an idealized ice shelf. The LIISM model results are validated by comparing them to an existing Eularian ice-shelf model.  We then we move beyond the capabilities of the existing ice-shelf model by allowing a piece of the ice shelf to break away, becoming a tabular icebergs, and consider the ocean response to this calving event.
 
 %A prerequisite of a complete model of an ice shelf cavity with a calving ice shelf is an understanding of the physical processes involved in iceberg calving. The importance of this problem for projecting sea level has meant that the search for a ``calving law" has received much attention in recent years. However, even with a theory of ice shelf breaking, there are still significant technical barriers preventing us from modeling icebergs calving away from ice shelves in a dynamically consistent way. In this paper, we d
 
@@ -398,7 +398,7 @@ and
 \begin{equation}
 M_{bottom}=\frac{(N_{max}-N_{b})}{N_{max}}M_{b} +\frac{N_{b}}{N_{max}}M_{s}
 \end{equation}
-respectively.  In this way, elements with no bonds, melt like point particle icebergs, elements at the center of large structures melt like ice shelves, and elements at the sides of large structures have a combination of iceberg side and basal melt, and ice shelf melt. 
+respectively.  In this way, elements with no bonds, melt like point particle icebergs, elements at the center of large structures melt like ice shelves, and elements at the sides of large structures have a combination of iceberg side and basal melt, and ice-shelf melt. 
 
 
 
@@ -448,17 +448,17 @@ Keeping track of pairs of bonded elements that move across a processor edge requ
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  \section{Experiment Setup}
-The introduction of Lagrangian elements, numerical bonds and interpolation schemes between the Eularian and Lagrangian grids (discussed in Section 2) means that we are now able to model ice shelf cavities which undergo large calving events. We demonstrate this capability by performing numerical experiments with the LIISM model coupled to the MOM6 ocean model \citep{Hallberg2013}.
+The introduction of Lagrangian elements, numerical bonds and interpolation schemes between the Eularian and Lagrangian grids (discussed in Section 2) means that we are now able to model ice-shelf cavities which undergo large calving events. We demonstrate this capability by performing numerical experiments with the LIISM model coupled to the MOM6 ocean model \citep{Hallberg2013}.
 %This section describes the experimental setup of these numerical experiments. The results are shown in Section 4.
 
 \subsection{MISOMIP configuration}
-In order for our (pre-calving) simulations to be easily comparable to previous models of ice shelf cavities, we use an experimental setup based on the configuration created for the Marine Ice Ocean Modeling Inter-comparion Project (MISOMIP) \citep{Asay-Davis2016}.
-%For this experiment, we use the ice shelf geometry, ocean topography and various parameters used in the Marine Ice Ocean Modeling Intercomparion project (MISOMIP) [reference]. 
+In order for our (pre-calving) simulations to be easily comparable to previous models of ice-shelf cavities, we use an experimental setup based on the configuration created for the Marine Ice Ocean Modeling Inter-comparion Project (MISOMIP) \citep{Asay-Davis2016}.
+%For this experiment, we use the ice-shelf geometry, ocean topography and various parameters used in the Marine Ice Ocean Modeling Intercomparion project (MISOMIP) [reference]. 
 The MISOMIP configuration was developed as a standardized configuration to allow for a comparison between various ocean-ice coupled models. The configuration consists of an idealized ice shelf in a rectangular domain. The domain is $L_{x}=80$km wide and $L_{y}=480$km long, and contains an ice shelf which is grounded on the south side of the domain and has an ice front at y=650km. The ice thickness and bottom topography of this setup are shown in Figure \ref{fig:ISOMIP_mass_and_topog}a and \ref{fig:ISOMIP_mass_and_topog}b respectively, with the grounding line position drawn in for reference. The configuration is the same as that of the Ocean0 setup in the MISOMIP, with three changes made:
 \begin{enumerate}
 \item The `calving criteria' used in the MISOMIP study (which states that all points in the ice shelf with thickness less than 100m are set to zero thickness) has not been used.
 \item The ice shelf has been thickened on the flanks of the domain, so that the latitude of the grounding line increases away from the center of the ice shelf.
-\item The ice shelf is configured to be symmetric about its meridional center line ($x=\frac{L_{x}}{2}$). This was achieved by using the average of the left and right flanks of the ice shelf thickness. 
+\item The ice shelf is configured to be symmetric about its meridional center line ($x=\frac{L_{x}}{2}$). This was achieved by using the average of the left and right flanks of the ice-shelf thickness. 
 \end{enumerate}
 These three changes were made in order to make the circulation beneath the ice shelf easier to interpret. 
 
@@ -471,18 +471,18 @@ Ocean parameters are as specified in the MISOMIP configuration \citep{Asay-Davis
 %\textbf{Initializing Lagrangian elements:}\\
 \subsection{Initializing Lagrangian elements:}
 Ice elements in the LIISM model are set to be hexagonal and are arranged in a regular staggered lattice (as discussed in Section 2.3). The sides of the gridded hexagons are initialized with length $S=0.98$ km. Recall that the element size must be smaller than the ocean grid spacing (i.e.: $2S<\Delta x$ = 2 km). 
-Gaps along the boundaries are filled in using smaller elements so that the total ice shelf area is preserved. The initial mass of the ice elements is determined by a preprocessing inversion step, which is the inverse of the 'mass-spreading' interpolation procedure discussed in Section 2.3.
+Gaps along the boundaries are filled in using smaller elements so that the total ice-shelf area is preserved. The initial mass of the ice elements is determined by a preprocessing inversion step, which is the inverse of the 'mass-spreading' interpolation procedure discussed in Section 2.3.
 
-Figure \ref{fig:ISOMIP_mass_and_topog}c shows what the ice shelf draft would be if the draft were calculated from the mass of elements in each ocean grid cell without spreading an element's mass across neighboring cells (i.e.: treating elements as point masses). Figure \ref{fig:ISOMIP_mass_and_topog}b shows the draft after spreading the mass across grid cells. When the mass spreading interpolation scheme is not used, grid artifacts seen in the ice shelf draft (Figure \ref{fig:ISOMIP_mass_and_topog}c). The grid artifacts are much reduced when the mass spreading interpolation is used (Figure \ref{fig:ISOMIP_mass_and_topog}b). 
+Figure \ref{fig:ISOMIP_mass_and_topog}c shows what the ice-shelf draft would be if the draft were calculated from the mass of elements in each ocean grid cell without spreading an element's mass across neighboring cells (i.e.: treating elements as point masses). Figure \ref{fig:ISOMIP_mass_and_topog}b shows the draft after spreading the mass across grid cells. When the mass spreading interpolation scheme is not used, grid artifacts seen in the ice-shelf draft (Figure \ref{fig:ISOMIP_mass_and_topog}c). The grid artifacts are much reduced when the mass spreading interpolation is used (Figure \ref{fig:ISOMIP_mass_and_topog}b). 
 
 \subsection{Numerical experiment}
 \begin{enumerate}
 \item
-\textbf{Static ice shelf experiment:}\\
+\textbf{Static ice-shelf experiment:}\\
 %\subsection{Static ice shelf experiment}
-In the first experiment, we use a static ice shelf where the velocity of all ice elements is set to zero. In this experiment, the ice shelf is thermodynamically active and is able to `melt' but has a constant thickness (as in the Ocean0 experiement in the MISOMIP \citep{Asay-Davis2016}). In this setup, ice shelf melting generates a temperature and salinity flux into the ocean, but does not change the thickness of the ice shelf. This can be thought to represent an ice shelf in dynamic equilibrium where the melt is exactly balanced ice shelf advection. 
+In the first experiment, we use a static ice shelf where the velocity of all ice elements is set to zero. In this experiment, the ice shelf is thermodynamically active and is able to `melt' but has a constant thickness (as in the Ocean0 experiement in the MISOMIP \citep{Asay-Davis2016}). In this setup, ice-shelf melting generates a temperature and salinity flux into the ocean, but does not change the thickness of the ice shelf. This can be thought to represent an ice shelf in dynamic equilibrium where the melt is exactly balanced ice-shelf advection. 
  
-Results of the static ice shelf experiment using the LISSM model are compared to the results from an existing Eulerian ice shelf cavity model \citep{Goldberg2012}, run in an identical configuration (using the ice draft from Figure \ref{fig:ISOMIP_mass_and_topog}b). Results from the static ice shelf experiment are analyzed after 5 years of model spinup.
+Results of the static ice-shelf experiment using the LISSM model are compared to the results from an existing Eulerian ice-shelf cavity model \citep{Goldberg2012}, run in an identical configuration (using the ice draft from Figure \ref{fig:ISOMIP_mass_and_topog}b). Results from the static ice-shelf experiment are analyzed after 5 years of model spinup.
 
 %Another set of experiments were performed using a static ice shelf which decays as it melts. The results over a 5 year period were fairly similar to the non-decaying shelf, and are not shown.
 
@@ -492,13 +492,13 @@ Results of the static ice shelf experiment using the LISSM model are compared to
 \item
  \textbf{Tabular iceberg calving:}\\
 % \subsection{Tabular iceberg calving}
-Next, we preform a numerical experiment which demonstrates capabilities of the LIISM model that can not be performed by traditional Eularian ice shelf models. In this experiments we break off a large piece of the ice shelf and allow it to drift into the ocean as a tabular iceberg. 
+Next, we preform a numerical experiment which demonstrates capabilities of the LIISM model that can not be performed by traditional Eularian ice-shelf models. In this experiments we break off a large piece of the ice shelf and allow it to drift into the ocean as a tabular iceberg. 
 
-All ice elements initially within a 14.4 km radius of the center of the ice front are allowed to move freely while the other ice elements continue to be held are stationary.  Ice elements less than 12 km from the center of the ice front, are bonded together to form a semi-circular tabular iceberg. A ring of elements whose distance, $d$, from the ice front center obeys $12 \textrm{ km} \leq   d \leq14.4 \textrm{ km}$, are allowed to move freely, but have all their bonds removed. Elements in this half annulus represent fragments of the ice shelf which calve into small pieces during a large calving event. Breaking the bonds of these surrounding elements allows the tabular iceberg to move away from the ice shelf cavity more easily.
+All ice elements initially within a 14.4 km radius of the center of the ice front are allowed to move freely while the other ice elements continue to be held are stationary.  Ice elements less than 12 km from the center of the ice front, are bonded together to form a semi-circular tabular iceberg. A ring of elements whose distance, $d$, from the ice front center obeys $12 \textrm{ km} \leq   d \leq14.4 \textrm{ km}$, are allowed to move freely, but have all their bonds removed. Elements in this half annulus represent fragments of the ice shelf which calve into small pieces during a large calving event. Breaking the bonds of these surrounding elements allows the tabular iceberg to move away from the ice-shelf cavity more easily.
 
-A wind stress $\vec{\tau} = < 0.05, 0.05 >$  $\frac{N}{m^{2}}$ is applied to drive the tabular iceberg away from the ice shelf cavity. Perturbation experiments were performed using other wind stress values. 
+A wind stress $\vec{\tau} = < 0.05, 0.05 >$  $\frac{N}{m^{2}}$ is applied to drive the tabular iceberg away from the ice-shelf cavity. Perturbation experiments were performed using other wind stress values. 
 
-The tabular iceberg calving experiment is initialized using the ocean state from the static ice shelf experiment after 5 years of simulation time.
+The tabular iceberg calving experiment is initialized using the ocean state from the static ice-shelf experiment after 5 years of simulation time.
 In tabular iceberg calving experiment, the ice shelf and icebergs are allowed to decay as they melt. 
 \end{enumerate}
 
@@ -531,20 +531,20 @@ In tabular iceberg calving experiment, the ice shelf and icebergs are allowed to
 %When the model is run, the average ice draft in an ocean grid cell, is calculated from the total mass of ice elements in that grid cell by assuming that the ice elements are in hydrostatic balance. The total mass is found by summing up over all ice elements located in that grid cell, while allowing elements to spread their mass across neighboring grid cells (as discussed in Section 2.3). Figure \ref{fig:ISOMIP_mass_and_topog}b shows the draft of the ice shelf above the ice shelf cavity in the coupled static ice shelf simulation using this interpolation method, while Figure \ref{fig:ISOMIP_mass_and_topog}c shows the draft which is calculated without spreading an elements mass across neighboring cells (i.e.: treating elements as point masses). When the mass spreading interpolation scheme is not used, grid artifacts seen in the ice shelf draft (Figure \ref{fig:ISOMIP_mass_and_topog}c). The grid artifacts are much reduced when the mass spreading interpolation is used (Figure \ref{fig:ISOMIP_mass_and_topog}b). In simulations without mass spreading, irregularities in ice draft cause irregularities in the ocean surface pressure, which cause spurious motion in the ocean (not shown). This is much reduced or absent when mass spreading is used.
 
 %\subsection{Coupled simulation}
-\subsection{Static ice shelf experiment}
-The LIISM results from the static ice shelf experiment fit well within the current understanding of ice-shelf cavity circulations based on ice shelf observations \citep{MacAyeal1984, Lewis1986, Jacobs2011} and previous modeling efforts \citep{Determan1994, Holland2006, Losch2008}.
+\subsection{Static ice-shelf experiment}
+The LIISM results from the static ice-shelf experiment fit well within the current understanding of ice-shelf cavity circulations based on ice-shelf observations \citep{MacAyeal1984, Lewis1986, Jacobs2011} and previous modeling efforts \citep{Determan1994, Holland2006, Losch2008}.
 The initial water temperatures inside the domain are warmer than the in-situ freezing point, and cause melting at the ice-shelf base. The melt water entering the domain is more buoyant than the water around it, and rises  along the ice shelf as a cool fresh plume (Figure \ref{fig:static_solo_temp_temp_v}b, c). 
 As the plume rises, it entrains ambient water causing a warming of the upper ocean (Figure \ref{fig:static_solo_temp_temp_v}b).
-This injection of positive buoyancy at depth drives a clockwise circulation outside of the ice shelf cavity (Figure \ref{fig:Bt_comparison}a), providing the ice shelf cavity with a continuous supply of warm water which provides the thermal energy required for continuous ice shelf melt.
+This injection of positive buoyancy at depth drives a clockwise circulation outside of the ice-shelf cavity (Figure \ref{fig:Bt_comparison}a), providing the ice-shelf cavity with a continuous supply of warm water which provides the thermal energy required for continuous ice-shelf melt.
 
-The highest melt rates are observed within 100km of the grounding line (Figure  \ref{fig:static_solo_melt}a). These elevated melt rates are caused by the presence of warm water (Figure  \ref{fig:static_solo_melt}d) and increased ocean velocities (Figure  \ref{fig:static_solo_melt}c) near the grounding line, as well as the fact that freezing point of ice decreases with increasing pressure. Elevated melt rates are also seen near the ice front, caused by strong currents running along the ice shelf front.\\
+The highest melt rates are observed within 100km of the grounding line (Figure  \ref{fig:static_solo_melt}a). These elevated melt rates are caused by the presence of warm water (Figure  \ref{fig:static_solo_melt}d) and increased ocean velocities (Figure  \ref{fig:static_solo_melt}c) near the grounding line, as well as the fact that freezing point of ice decreases with increasing pressure. Elevated melt rates are also seen near the ice front, caused by strong currents running along the ice-shelf front.\\
 \\
 %\subsubsection{Comparison with Eularian ice shelf model}
-\textbf{Comparison of LIISM and Eularian ice shelf model}\\
-The LIISM results from the static ice shelf experiment are qualitatively similar to most of the simulations from the MISOMIP experiment \citep{Asay-Davis2016}, which use a similar configuration. To get a quantitative comparison, we compare the LIISM results to a simulation using an Eulerian ice shelf model with an identical configuration. 
+\textbf{Comparison of LIISM and Eularian ice-shelf model}\\
+The LIISM results from the static ice-shelf experiment are qualitatively similar to most of the simulations from the MISOMIP experiment \citep{Asay-Davis2016}, which use a similar configuration. To get a quantitative comparison, we compare the LIISM results to a simulation using an Eulerian ice-shelf model with an identical configuration. 
 The results show that two simulations have very similar circulations (Figures \ref{fig:Bt_comparison}), melt rates and temperature/salinity profiles (see supplementary materials). The differences between the barotropic stream functions of the two simulations (for example) are two orders of magnitude smaller than the differences between two simulations using the same Eularian ice shelf with different vertical coordinate systems [double check that this is correct].
 
-The good agreement between the Eularian and Lagrangian simulations is not too surprising since the two models are coupled to the same ocean model in exactly the same configuration. Recall that the role of the ice shelf model in these simulations is to (i) apply a pressure to the ocean surface, (ii) provide melt fluxes based on the three equation model, and (iii) alter the upper ocean boundary condition below the ice shelf. The agreement between the Eularian and Lagrangian simulations is a confirmation that these three tasks are being done correctly within the LIISM model, and that the LIISM is able to model sub-ice-shelf cavities as well as the Eularian model does. This is a good starting point for moving beyond the capabilities of the Eularian model.
+The good agreement between the Eularian and Lagrangian simulations is not too surprising since the two models are coupled to the same ocean model in exactly the same configuration. Recall that the role of the ice-shelf model in these simulations is to (i) apply a pressure to the ocean surface, (ii) provide melt fluxes based on the three equation model, and (iii) alter the upper ocean boundary condition below the ice shelf. The agreement between the Eularian and Lagrangian simulations is a confirmation that these three tasks are being done correctly within the LIISM model, and that the LIISM is able to model sub-ice-shelf cavities as well as the Eularian model does. This is a good starting point for moving beyond the capabilities of the Eularian model.
 
 
 %Figures \ref{fig:Melt_comparison} show the time-averaged melt rates of both the Lagrangian and Eulerian ice shelf models, averaged over the first 5 years of the simulation.   The melt rates of the Eulerian and Lagrangian models are very similar with slight difference showing up at the grounding line and ice front (Figure \ref{fig:Melt_comparison}). The slight difference at the grounding line are a result of the fact that elements in the LIISM model are smaller than a grid cell in length. This means that ice element near the grounding line may be ungrounded in the LIISM model, while the grid cell is considered grounded in the Eularian model. At the ice front, the Eularian model has a straight ice front, while the LIISM model has a staggered ice front, which is a result of the staggered hexagonal packing. 
@@ -558,14 +558,14 @@ The good agreement between the Eularian and Lagrangian simulations is not too su
 
 %As the ice shelf melts, there is a mass flux into the ocean. The integrated sea surface height north of the ice shelf does not change during the course of the simulation, since the extra mass flux into the ocean, is exactly offset by a decrease mass of the ice shelf, as expected.  
 
-\subsection{Tabular iceberg calving experiement}
-The tabular iceberg calving experiment demonstrates that the model is able to simulate a tabular iceberg being calved from an ice shelf. After the numerical bonds are severed, the tabular iceberg and smaller ice fragments calve away from the ice shelf and begin to move. The tabular iceberg drifts to the northward east, driven by the wind and steered by the Coriolis force (Figure \ref{fig:Spread_area}, \ref{fig:Temperature_section_Collapse}). After the iceberg has moved away from the ice shelf, we observed a warming of the surface waters nearby ice front and iceberg edge (Figure \ref{fig:SST_Collapse}). This surface warming is caused by an upwelling of the warmer waters from beneath the ice shelf and iceberg. As the icebergs drifts away from the ice front, these warmer waters remain at the surface, mapping of the wake of the iceberg  (Figure \ref{fig:SST_Collapse}). The signature of upwelling water in the wake of a drifting tabular iceberg bears some similarity to satellite observations of streaks of increased ocean color in the wake of tabular iceberg in the Southern Ocean \citep{Duprat2016}, suggesting that the increased productivity around iceberg may be driven by upwelling water delivering nutrients to the surface.
+\subsection{Tabular iceberg calving experiment}
+The tabular iceberg calving experiment demonstrates that the model is able to simulate a tabular iceberg being calved from an ice shelf (see animations of  in the supplementary materials). After the numerical bonds are severed, the tabular iceberg and smaller ice fragments calve away from the ice shelf and begin to move. The tabular iceberg drifts to the northward east, driven by the wind and steered by the Coriolis force (Figure \ref{fig:Spread_area}, \ref{fig:Temperature_section_Collapse}). After the iceberg has moved away from the ice shelf, we observed a warming of the surface waters nearby ice front and iceberg edge (Figure \ref{fig:SST_Collapse}). This surface warming is caused by an upwelling of the warmer waters from beneath the ice shelf and iceberg. As the icebergs drifts away from the ice front, these warmer waters remain at the surface, mapping of the wake of the iceberg  (Figure \ref{fig:SST_Collapse}). The signature of upwelling water in the wake of a drifting tabular iceberg bears some similarity to satellite observations of streaks of increased ocean color in the wake of tabular iceberg in the Southern Ocean \citep{Duprat2016}, suggesting that the increased productivity around iceberg may be driven by upwelling water delivering nutrients to the surface.
 
-The motion of the tabular iceberg disturbs the ocean surface, which drives ocean velocities through out the water column (Figure \ref{fig:Velocity_section_Collapse}). The elevated velocities around the tabular iceberg lead to increased vertical mixing in the vicinity of the iceberg, which alters the stratification of the water column (Figure \ref{fig:Temperature_section_Collapse}), heating the upper ocean. The increased ocean velocities and increased surface temperatures cause elevated melt rates at the base of the ice shelf and iceberg (Figure \ref{fig:Collapse_solo_melt}). Large melt rates are observed at the newly calved ice shelf front and on the rounded side of the iceberg (Figure \ref{fig:Collapse_solo_melt}a), where the iceberg calving has created steep ice cliffs. These sharp ice fronts allow for large ocean currents (Figure \ref{fig:Collapse_solo_melt}c), which drive the elevated melt rates. These elevated melt rates act to smooth out the ice front over time, making the ice cliff less steep. While this is likely a real phenomena that could be observed in nature, we should be wary of the modeled velocities at the ice cliffs, since large changes in ice shelf thicknesses are often associated with numerical pressure gradient errors which can drive spurious motion.
+The motion of the tabular iceberg disturbs the ocean surface, which drives ocean velocities through out the water column (Figure \ref{fig:Velocity_section_Collapse}). The elevated velocities around the tabular iceberg lead to increased vertical mixing in the vicinity of the iceberg, which alters the stratification of the water column (Figure \ref{fig:Temperature_section_Collapse}), heating the upper ocean. The increased ocean velocities and increased surface temperatures cause elevated melt rates at the base of the ice shelf and iceberg (Figure \ref{fig:Collapse_solo_melt}). Large melt rates are observed at the newly calved ice-shelf front and on the rounded side of the iceberg (Figure \ref{fig:Collapse_solo_melt}a), where the iceberg calving has created steep ice cliffs. These sharp ice fronts allow for large ocean currents (Figure \ref{fig:Collapse_solo_melt}c), which drive the elevated melt rates. These elevated melt rates act to smooth out the ice front over time, making the ice cliff less steep. While this is likely a real phenomena that could be observed in nature, we should be wary of the modeled velocities at the ice cliffs, since large changes in ice-shelf thicknesses are often associated with numerical pressure gradient errors which can drive spurious motion.
  
-As mentioned above, the direction (and speed) of the iceberg drift is largely determined by the wind speed and direction. Perturbation experiments using different wind stresses showed that the iceberg drifts to the north east for positive zonal wind stresses and to the north west for negative zonal wind stresses. For wind stresses less that $\tau= ???$ the iceberg does not move away from the ice shelf. While this result is partly an artifact of the artificial shape of the calving iceberg, it is also consistent with \citet{Bassis2013} who noted that calving is a two step process consisting of (i) ice shelf breaking and (ii) iceberg detachment. The results here suggest that strong wind may be required to drive large tabular icebergs away from their mother glaciers.
+As mentioned above, the direction (and speed) of the iceberg drift is largely determined by the wind speed and direction. Perturbation experiments using different wind stresses showed that the iceberg drifts to the north east for positive zonal wind stresses and to the north west for negative zonal wind stresses. For wind stresses less that $\tau= ???$ the iceberg does not move away from the ice shelf. While this result is partly an artifact of the artificial shape of the calving iceberg, it is also consistent with \citet{Bassis2013} who noted that calving is a two step process consisting of (i) ice-shelf breaking and (ii) iceberg detachment. The results here suggest that strong wind may be required to drive large tabular icebergs away from their mother glaciers.
 
-Finally, we note that the numerical bonds in the LIISM model are needed in order to allow the tabular iceberg to retain its shape. Comparing the iceberg calving simulation with an identical simulation where all numerical bonds have been removed, shows that in the absence of the bonds, the ice elements quickly disperse (Figure \ref{fig:Bond_vs_No_bond}). In this case, the model behavior is more similar to an ice shelf disintegration and does not create a cohesive tabular iceberg.
+Finally, we note that the numerical bonds in the LIISM model are needed in order to allow the tabular iceberg to retain its shape. Comparing the iceberg calving simulation with an identical simulation where all numerical bonds have been removed, shows that in the absence of the bonds, the ice elements quickly disperse (Figure \ref{fig:Bond_vs_No_bond}). In this case, the model behavior is more similar to an ice-shelf disintegration and does not create a cohesive tabular iceberg.
 
 %\subsubsection{Tabular iceberg with fixed velocity}
 %\textbf{Tabular iceberg with fixed velocity}\\
@@ -584,9 +584,9 @@ Finally, we note that the numerical bonds in the LIISM model are needed in order
  \section{Discussion}
 In order to accurately project future sea level, it is likely that we will need to develop fully-coupled global general climate models (GCM's) with dynamic ice-shelf cavities which are able to melt, break and interact with the ocean in physically realistic ways. In the sections above, we have seen that constructing ice shelves out of Lagrangian elements is a potentially useful method for introducing breakable ice shelves and tabular icebergs into climate models. In this section we briefly discuss a few of the things which still need to be done in order to introduce this technology into next generation GCM's. 
  
-One element which is missing from the LIISM ice shelf is that the ice shelf is not dynamic. Real-world ice shelves are non-Newtonian fluids which are able to flow, allowing the ice shelf geometry to change over time. Much progress has been made in modeling ice-shelf flows in an Eularian framework \citep{Grosfeld2004, Goldberg2012, De_Rydt2006}. A challenge will be to develop models with similar ice dynamics in a Lagrangian framework. This can perhaps be achieved using smooth particle hydrodynamics (SPH) methods, which allow partial differential equations to be solved on a Lagrangian gird \citep{Liu2010, Pan2013}. However, it is presently unclear how one would evolve the numerical bonds over time, so the bonds could still be used to hold the ice shelf and tabular icebergs together. This may involve performing a regridding of the ice element or a regridding of the numerical bonds after severa time steps, or perhaps allowing the numerical bonds to break and form in a dynamic way.
+One element which is missing from the LIISM ice shelf is that the ice shelf is not dynamic. Real-world ice shelves are non-Newtonian fluids which are able to flow, allowing the ice-shelf geometry to change over time. Much progress has been made in modeling ice-shelf flows in an Eularian framework \citep{Grosfeld2004, Goldberg2012, De_Rydt2006}. A challenge will be to develop models with similar ice dynamics in a Lagrangian framework. This can perhaps be achieved using smooth particle hydrodynamics (SPH) methods, which allow partial differential equations to be solved on a Lagrangian gird \citep{Liu2010, Pan2013}. However, it is presently unclear how one would evolve the numerical bonds over time, so the bonds could still be used to hold the ice shelf and tabular icebergs together. This may involve performing a regridding of the ice element or a regridding of the numerical bonds after severa time steps, or perhaps allowing the numerical bonds to break and form in a dynamic way.
 
-The other major innovation which will need to be introduced is a method for breaking numerical bonds. This is essentially equivalent to determining an ice shelf calving law, and is a famously difficult problem. One possible way that this could be done is to break bonds when the elastic stress in the bond is larger than a given yield stress of that bond. The yield stress in the bond would likely be proportional to the ice thickness. The bond strength could also evolve dynamically as bonds get `damaged'. The evolution of bond damage could be tracked using damage mechanics, as has been done in some Eularian ice shelf studies \citep{Pralong2005, Borstad2012}.
+The other major innovation which will need to be introduced is a method for breaking numerical bonds. This is essentially equivalent to determining an ice-shelf calving law, and is a famously difficult problem. One possible way that this could be done is to break bonds when the elastic stress in the bond is larger than a given yield stress of that bond. The yield stress in the bond would likely be proportional to the ice thickness. The bond strength could also evolve dynamically as bonds get `damaged'. The evolution of bond damage could be tracked using damage mechanics, as has been done in some Eularian ice-shelf studies \citep{Pralong2005, Borstad2012}.
 
 In addition to these two problems, more work needs to be done to determine the interaction between tabular icebergs and sea ice, as the presence of sea ice can arrest the motion of tabular icebergs and the presence of icebergs likely affects sea ice formation and dynamics. A possible path towards this is to model sea ice using a Lagrangian grid \citep{Hopkins1996, Li2014}, and to treat sea ice - iceberg interactions in the same way that iceberg - iceberg interactions are treated in this study. A number of preliminary experiments have been run using the LIISM model with some ice element representing collections of sea ice flows, and have yielded interesting results (to be presented elsewhere).
 % Finally, there are a number of open questions about how to correctly link tabular icebergs to ocean biology by allowing for icebergs to have nutrient concentration (especially iron). These will need to be considered in order to model the primary productivity around tabular icebergs.
@@ -995,8 +995,8 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_solo_D_spread_mass_mass.png}
-\caption{ {(a) Ocean bottom topography in MISOMIP configuration. (b) Ice shelf draft used in static shelf experiment. The ice draft is calculated from the ice mass in an ocean grid cell, which is found by spreading ice mass across ocean cells accounting for the size of each element (as explained in Section 2.3). (c) Same as in panel (b), except that the interpolation does not account for iceberg size, and instead treats elements as point masses.}}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_D_spread_mass_mass.png}
+\caption{ {(a) Ocean bottom topography in MISOMIP configuration. (b) ice-shelf draft used in static shelf experiment. The ice draft is calculated from the ice mass in an ocean grid cell, which is found by spreading ice mass across ocean cells accounting for the size of each element (as explained in Section 2.3). (c) Same as in panel (b), except that the interpolation does not account for iceberg size, and instead treats elements as point masses.}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:ISOMIP_mass_and_topog}
@@ -1009,7 +1009,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
  \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_temp_temp_v.png}
-\caption{ {Results of the static ice shelf experiment using the LIISM model coupled to MOM6. Panels show cross sections of the (a) initial temperature field, (b) temperature anomaly after 5-years (relative the the initial field), and (c) meridional velocity near the ice shelf base after 5 years of simulation. The region shown in panel (c) is indicated by the black box on panel (b),}}
+\caption{ {Results of the static ice-shelf experiment using the LIISM model coupled to MOM6. Panels show cross sections of the (a) initial temperature field, (b) temperature anomaly after 5-years (relative the the initial field), and (c) meridional velocity near the ice-shelf base after 5 years of simulation. The region shown in panel (c) is indicated by the black box on panel (b),}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:static_solo_temp_temp_v}
@@ -1020,7 +1020,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_melt_m_per_year_sst_ustar_iceberg.png}
-\caption{ {Results of the static ice shelf experiment using the LIISM model coupled to MOM6. The three panels show 5 year time average of the (a) melt rate, (b) top-of-ocean and (c) frictional velocity, $u^{*}$, at the base of the ice shelf. Fields are only shown in regions where the ice area fraction is $\geq 0.8$.}}
+\caption{ {Results of the static ice-shelf experiment using the LIISM model coupled to MOM6. The three panels show 5 year time average of the (a) melt rate, (b) top-of-ocean and (c) frictional velocity, $u^{*}$, at the base of the ice shelf. Fields are only shown in regions where the ice area fraction is $\geq 0.8$.}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:static_solo_melt}
@@ -1032,7 +1032,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_comparison_barotropic_sf.png}
-\caption{ {Time-averaged barotropic stream function in the (a) Eularian and (b) Lagrangian simulations in the static ice shelf configuration. Panel (c) shows the difference between panels (a) and (b). The time averages are taken over 5 years of model time, beginning at the end of the 5 year spin up period.}}
+\caption{ {Time-averaged barotropic stream function in the (a) Lagrangian and (b) Eularian simulations in the static ice-shelf configuration. Panel (c) shows the difference between panels (a) and (b). The time averages are taken over 5 years of model time, beginning at the end of the 5 year spin up period.}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:Bt_comparison}
@@ -1043,8 +1043,8 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Collapse_spread_area.png}
-\caption{ {Snapshots of the fraction of ice cover in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 15, (b) 30, and (c) 60 days after calving.}}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_spread_area.png}
+\caption{ {Snapshots of the fraction of ice cover in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The dashed line in panel (c) shows the location of the vertical transects shown in Figures \ref{fig:Temperature_section_Collapse}} and \ref{fig:Velocity_section_Collapse}.}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:Spread_area}
@@ -1054,7 +1054,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_temp_layers_x10.png}
-\caption{ {Snapshots of vertical sections of ocean temperature at $x=70 $km in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 15, (b) 30, and (c) 60 days after calving.}}
+\caption{ {Snapshots of vertical sections of ocean temperature at $x=58 $km in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the vertical transects is shown by the dashed lines in Figure \ref{ig:Spread_area}c.}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:Temperature_section_Collapse}
@@ -1066,8 +1066,8 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Collapse_temp.png}
-\caption{ {Snapshots of the sea surface temperature in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 15, (b) 30, and (c) 60 days after calving. Regions with ice area fraction = 1 area plotted in white.}}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_temp.png}
+\caption{ {Snapshots of the sea surface temperature in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. Regions with ice area fraction = 1 area plotted in white.}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:SST_Collapse}
@@ -1079,7 +1079,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_v_layers_x10.png}
-\caption{ {Snapshots of vertical sections of meridional velocity at $x=70 $km in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 15, (b) 30, and (c) 60 days after calving.}}
+\caption{ {Snapshots of vertical sections of meridional velocity at $x=58 $km in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the transects is shown by the dashed line in Figure \ref{fig:Spread_area}c.}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:Velocity_section_Collapse}
@@ -1091,7 +1091,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_melt_m_per_year_sst_ustar_iceberg_calved.png}
-\caption{ {Results of the tabular iceberg calving simulation 60 days after the iceberg calves. The three panels show snapshots of the (a) melt rate, (b) top-of-ocean temperature and (c) $u^{*}$ at the base of the ice shelf. Fields are only shown in regions where the ice area fraction is $\geq 0.8$.}}
+\caption{ {Results of the tabular iceberg calving simulation 30 days after the iceberg calves. The three panels show snapshots of the (a) melt rate, (b) top-of-ocean temperature and (c) $u^{*}$ at the base of the ice shelf. Fields are only shown in regions where the ice area fraction is $\geq 0.8$.}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:Collapse_solo_melt}
@@ -1131,6 +1131,41 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
   \clearpage
 
 
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{ |c c c c| }
+\hline
+Parameter & Symbol & Value &  Unit \\
+\hline
+Domain Length &  $L_{x}$ & 80  & km \\
+Domain Width &  $L_{y}$ & 480  & km \\
+Viscosity &  $3.3\times 10^{9}$ & 209 & 104 \\
+Time step &  $1.8\times 10^{10}$& 426  & 104\\
+Class 5 &  $3.8\times 10^{10}$ & 518 & 104 \\
+Class 6 &  $7.5\times 10^{10}$ & 728  & 104\\
+Class 7 &  $1.2\times 10^{11}$ & 920  & 104 \\
+Class 8 &  $2.2\times 10^{11}$ & 1246  & 104\\
+Class 9 &  $3.9\times 10^{11}$ & 1659 & 104 \\
+Class 10 & $7.4\times 10^{11}$ &  2285  & 104\\
+%Class 1 &  $8.8\times 10^{7}$ & 60  & 0.0026 & 40 & 2000 \\
+%Class 2 &  $4.1\times 10^{8}$ & 100 & 0.0072 & 67 & 200\\
+%Class 3 &  $3.3\times 10^{9}$ & 200  & 0.029 &133 & 50 \\
+%Class 4 &  $1.8\times 10^{10}$& 350 &  0.12 &175  & 20 \\
+%Class 5 &  $3.8\times 10^{10}$ & 500  & 0.18 &250 & 10\\
+%Class 6 &  $7.5\times 10^{10}$ & 700   & 0.35 &250 & 5\\
+%Class 7 &  $1.2\times 10^{11}$ & 900  & 0.56 &250  & 2 \\
+%Class 8 &  $2.2\times 10^{11}$ & 1200  & 1.0&250 & 1 \\
+%Class 9 &  $3.9\times 10^{11}$ & 1600 & 1.8&250 & 1  \\
+%Class 10 & $7.4\times 10^{11}$ &  2200 & 3.5 &250  &1\\
+\hline
+\end{tabular}
+%\caption{Description of the iceberg calving classes used in the model. {\it Mass}, {\it Length}, {\it Area} and {\it Th} refer to the iceberg mass, length, area, and thickness at the time of calving.  {\it Scaling} is the number of icebergs represented by one Lagrangian point particle. The iceberg mass and thickness for each class are the same as those reported in \citet{Gladstone2001}. The iceberg area and length for each class is calculated from the iceberg mass and thickness by assuming that the icebergs are cuboids with a length to width ratio of 1.5, using an iceberg density $\rho_{i}=850$kg/$\textrm{m}^{3}$.}
+% Note that the areas of the iceberg classes (calculated from the iceberg lengths and masses given in \citep{Gladstone2001}) are not monotonically increasing.
+\label{table:parameters2}
+\end{center}
+\end{table}
+
+\clearpage
 
 %\begin{figure}
 %\begin{center}
@@ -1215,7 +1250,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_comparison_salt_layers.png}
-\caption{ {Comparison of Eulerian ice shelf model and Lagrangian Ice shelf model salinity fields.}}
+\caption{ {Comparison of Eulerian ice-shelf model and Lagrangian ice-shelf model salinity fields.}}
 \end{center}
 %FIgure created by \end{center}
 %\label{fig:Salt_comparison}
@@ -1227,7 +1262,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_comparison_melt.png}
-\caption{ {Comparison of Eulerian ice shelf model and Lagrangian Ice shelf model melt fields.}}
+\caption{ {Comparison of Eulerian ice-shelf model and Lagrangian Ice shelf model melt fields.}}
 \end{center}
 %FIgure created by \end{center}
 %\label{fig:Melt_comparison}
@@ -1299,7 +1334,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_solo_temp_temp_v.png}
-\caption{ {Layered: Results of the static ice shelf experiment using the LIISM model. Panels show snapshots of cross sections of the (a) temperature field after 1 time step, (b) temperature anomaly after 5-years (relative the the initial field), and (c) meridional velocity after 5 years.}}
+\caption{ {Layered: Results of the static ice-shelf experiment using the LIISM model. Panels show snapshots of cross sections of the (a) temperature field after 1 time step, (b) temperature anomaly after 5-years (relative the the initial field), and (c) meridional velocity after 5 years.}}
 \end{center}
 %FIgure created by \end{center}
 %\label{fig:static_solo_temp_temp_v}
@@ -1313,7 +1348,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_solo_melt_m_per_year_sst_ustar_iceberg.png}
-\caption{ {Layer: Results of the static ice shelf experiment using the LIISM model. The three panels show 5 year time average of the (a) melt rate, (b) ocean surface temperature and (c) $u^{*}$  in the top layer of the simulation (at the surface or directly below the ice shelf).}}
+\caption{ {Layer: Results of the static ice-shelf experiment using the LIISM model. The three panels show 5 year time average of the (a) melt rate, (b) ocean surface temperature and (c) $u^{*}$  in the top layer of the simulation (at the surface or directly below the ice shelf).}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:}
@@ -1326,7 +1361,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_comparison_barotropic_sf.png}
-\caption{ {Layer: Comparison of Eulerian ice shelf model and Lagrangian Ice shelf model barotropic stream function}}
+\caption{ {Layer: Comparison of Eulerian ice-shelf model and Lagrangian ice-shelf model barotropic stream function}}
 \end{center}
 %FIgure created by \end{center}
 %\label{fig:Bt_comparison}
