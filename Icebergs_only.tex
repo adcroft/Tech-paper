@@ -236,9 +236,11 @@ Freshwater fluxes from iceberg melt impact ocean hydrography, influencing sea-ic
 In recent years, there has been an increased interest in iceberg drift and decay. This surge of interest has been driven by (i) the need to understand polar freshwater cycles in order to create realistic climate forecasts and sea level projections \citep{Silva2006, Shepherd2007, Rignot2013}, (ii) the increased use of high-latitudes iceberg-filled waters for shipping lanes and offshore hydrocarbon exploration \citep{Pizzolato2014, Unger2014, Henderson2016}. The increased interest in icebergs has led to the development of numerical models of iceberg drift and decay \citep{Mountain1980, Bigg1997, Gladstone2001, Kubat2005}, some of which have been included in global General Circulation Models \citep{Martin2010, Marsh2015}. These iceberg models treat icebergs as Lagrangian point particles, which are advected by the flow, and melt according to certain parameterizations for icebergs melt. Since icebergs are treated as point particles, the iceberg models are mostly suitable for modeling smaller icebergs drifting across large distances, and as such iceberg models have mostly been used to represent icebergs smaller than 3.5km on a global scale \citep{Jongma2009, Martin2010, Marsh2015}.
 These models are not suitable for modeling larger tabular icebergs (or smaller icebergs at fine scales), where the size and structure of the iceberg may be an important feature in determining their drift and decay \citep{Stern2016}. They also are not suitable for studying the local effects that icebergs have on the surrounding ocean. For this reason, tabular icebergs (L $>$ 5km) are currently not represented in the iceberg models used in climate models, even though observations suggest that tabular icebergs account for  the vast majority of the total Southern Hemisphere icebergs mass \citep{Tournadre2016}. Similarly, operational iceberg models are often inadequate for projecting iceberg drift at fine scales \citep{Turnbull2015}.
 
-The goal of this study is to develop a new iceberg model where tabular icebergs are explicitly resolved in the ocean. In this model, icebergs are no longer treated as point particles that feel the ocean at one point, but rather the icebergs have structure, depress the ocean surface, and can feel the ocean across multiple ocean grid cells. To do this, we create tabular icebergs out of many Lagrangian elements which are `bonded' together by numerical bonds. The numerical bonds hold the ice elements together and allow a collection elements to move as a unit. By manually breaking these bonds, we can simulate iceberg calving, allowing us to study the ocean response to giant iceberg detaching from an ice shelf or the fracturing of a large iceberg into smaller pieces.
+The goal of this study is to develop a new iceberg model where tabular icebergs are explicitly resolved in the ocean. In this model, icebergs are no longer treated as point particles that feel the ocean at one point, but rather the icebergs have structure, depress the ocean surface, and can feel the ocean across multiple ocean grid cells. To do this, we create tabular icebergs out of many Lagrangian elements which are `bonded' together by numerical bonds. The numerical bonds hold the ice elements together and allow a collection elements to move as a unit. By manually breaking these bonds, we can simulate iceberg calving, allowing us to study the ocean response to giant iceberg detaching from an ice shelf (e.g.: Figure \ref{fig:Spread_area} and \ref{fig:SST_Collapse}) or the fracturing of a large iceberg into smaller pieces.
 
-The discrete element model (DEM) developed in this study is referred to at the Lagrangian Tabular Iceberg Model (LTAM). Section 2 gives a description of many of the key aspects of the LTAM. Since this model is a new approach to modeling iceberg, we present many of the technical elements involved in constructing the model. In Section 3 and 4, we demonstrate the capabilities of the model by simulating a tabular iceberg detaching from an idealized ice shelf.
+The discrete element model (DEM) developed in this study is referred to at the Lagrangian Tabular Iceberg Model (LTAM). 
+%The LTAM model is coupled to the MOM6 numerical ocean model \citep{Hallberg2013}. 
+Section 2 gives a description of many of the key aspects of the LTAM. Since this model is a new approach to modeling iceberg, we present many of the technical elements involved in constructing the model. In Section 3 and 4, we demonstrate the capabilities of the model by simulating a tabular iceberg detaching from an idealized ice shelf.
 
 %A prerequisite of a complete model of an ice shelf cavity with a calving ice shelf is an understanding of the physical processes involved in iceberg calving. The importance of this problem for projecting sea level has meant that the search for a ``calving law" has received much attention in recent years. However, even with a theory of ice shelf breaking, there are still significant technical barriers preventing us from modeling icebergs calving away from ice shelves in a dynamically consistent way. In this paper, we d
 
@@ -540,7 +542,7 @@ Finally, we note that the numerical bonds in the LTAM model are needed in order 
 
 
  \section{Summary}
-In study above we have presented a novel method that can be used to representing tabular icebergs in numerical ocean models. In this framework, tabular icebergs (or ice shelves) are constructed out of Lagrangian particles which are held together by numerical bonds. In this way icebergs are not treated as point particles (as in previous iceberg models), but rather are explicitly resolved in the ocean. This allows the icebergs to apply pressure to the ocean surface over a wide area (larger than a grid cell), and affect circulation patterns in a way that is more physically realistic. 
+In study above we have presented a novel method that can be used to represent tabular icebergs in numerical ocean models. In this framework, tabular icebergs (or ice shelves) are constructed out of Lagrangian particles which are held together by numerical bonds. In this way icebergs are not treated as point particles (as in previous iceberg models), but rather are explicitly resolved in the ocean. This allows the icebergs to apply pressure to the ocean surface over a wide area (larger than a grid cell), and affect circulation patterns in a way that is more physically realistic. 
 
 A demonstration of the tabular iceberg model was performed using an idealized semi-circular iceberg drifting away from an idealized ice shelf. The results showed that explicitly resolving the iceberg in the ocean allowed for a complex interaction between the tabular iceberg and the surrounding ocean. In our setup, the tabular iceberg is driven way from the ice shelf by ocean currents, wind stress, and the Coriolis force. As the iceberg moves through the water, it disturbs the ocean surface, driving barotropic ocean currents. The motion of the iceberg and melt beneath the iceberg also drive upwelling along the sides of the iceberg, which entrains ambient water and causes a warming of the surface ocean in the wake of the iceberg. The changing ocean conditions feed back onto the iceberg, affecting its motion and melt rates. The highest melt rates are observed at edge of the iceberg which has the steepest ice cliff. These have the effect of smoothing out the ice edge over time.
 Simulations without using numerical bonds showed that these bonds are essential for allowing the iceberg to move as a unit. We also saw that by breaking these numerical bonds we can simulate iceberg fracture, which is important process which rapidly increases the rate of iceberg decay.
@@ -914,6 +916,29 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 
 \begin{figure}
 \begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_spread_area.png}
+\caption{ {Snapshots of the fraction of ice cover in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The dashed line in panel (c) shows the location of the vertical transects shown in Figures \ref{fig:Temperature_section_Collapse}} and \ref{fig:Velocity_section_Collapse}.}
+\end{center}
+\label{fig:Spread_area}
+\end{figure}
+ \clearpage
+
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_temp.png}
+\caption{ {Snapshots of the sea surface temperature in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. Regions with ice area fraction = 1 area plotted in white.}}
+\end{center}
+\label{fig:SST_Collapse}
+\end{figure}
+ \clearpage
+
+
+
+
+\begin{figure}
+\begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Regular_towards_coast}
 \caption{ {Results of an ice-only LIISM simulation with no bonds between ice elements. Ice elements are initialized throughout the domain, as shown in panel (a). The elements are forced by an imposed westward ocean current of u=0.1m/s (no ocean model is used). Forces due to sea surface slope, atmospheric drag, Coriolis and sea ice drag are set to zero. The figure shows snapshots of ice element positions at time (a) t=0, (b) 200, (c) 400, (d) 600 days. The size of the dots shows the surface area (and interaction diameter) of each ice element. Land points are shown by black circles.}}
 \end{center}
@@ -956,16 +981,6 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
  
  
 
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_spread_area.png}
-\caption{ {Snapshots of the fraction of ice cover in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The dashed line in panel (c) shows the location of the vertical transects shown in Figures \ref{fig:Temperature_section_Collapse}} and \ref{fig:Velocity_section_Collapse}.}
-\end{center}
-\label{fig:Spread_area}
-\end{figure}
- \clearpage
-
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_temp_layers_x10.png}
@@ -975,16 +990,6 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \end{figure}
  \clearpage
  
-
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_temp.png}
-\caption{ {Snapshots of the sea surface temperature in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. Regions with ice area fraction = 1 area plotted in white.}}
-\end{center}
-\label{fig:SST_Collapse}
-\end{figure}
- \clearpage
 
 
 
