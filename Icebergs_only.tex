@@ -283,9 +283,9 @@ where $\frac{D}{Dt}$ is the total (Lagrangian) derivative, $M$ is the mass of th
 The interactive force on an element is calculated by adding together the interactions with all other elements, such that the interactive force on element $i$, $(\vec{F}_{IA})_{i}$ is given by:
 \begin{equation}
 \label{F_interaction_i}
-(F_{IA})_{i}= \Sigma_{j \neq i} (F_{IA})_{ij},
+(\vec{F}_{IA})_{i}= \Sigma_{j \neq i} (\vec{F}_{IA})_{ij},
 \end{equation}
-where $(F_{IA})_{ij}$ is the force on element $i$ by element $j$. Both bonded and repulsive interactions are modeled using elastic stresses with frictional damping. The elastic component of the force is a function of the distance between the two elements, while the  frictional damping force depends on the relative velocity of the two elements.
+where $(\vec{F}_{IA})_{ij}$ is the force on element $i$ by element $j$. Both bonded and repulsive interactions are modeled using elastic stresses with frictional damping. The elastic component of the force is a function of the distance between the two elements, while the  frictional damping force depends on the relative velocity of the two elements.
 
 To describe the forces between two elements, we begin by introducing some notation.  Let $\vec{x_{i}}$, $\vec{x_{j}}$ be the positions of elements i and j. The distance between elements i and j is
 \begin{equation}
@@ -306,15 +306,15 @@ which governs interactions between elements i and j.
 Repulsive forces are only applied when $d_{i,j} \textless L_{i,j}$, while for $d_{i,j} \textgreater L_{i,j}$ attractive bonded forces are applied when a bond exists between element i and j.  Bond and repulsive forces are designed such that in the absence of other forces, bonded particles will settle in an equilibrium position where elements are separated by the critical interaction length scale $L_{i,j}$.
 % (see schematic in Figure \ref{fig:Interactive_forces}).
 
-To aid in notation, we define a bond matrix $B_{ij}$ such that $B_{ij}=1$ if elements i and j are bonded together and  $B_{ij}=0$ otherwise. Using this notation, the interactive force $(\vec{F_{IA}})_{ij}$ on an element i by an element j is given by
+To aid in notation, we define a bond matrix $B_{ij}$ such that $B_{ij}=1$ if elements i and j are bonded together and  $B_{ij}=0$ otherwise. Using this notation, the interactive force $(\vec{F}_{IA})_{ij}$ on an element i by an element j is given by
 \begin{equation}
 \label{F_interactione}
-(\vec{F_{IA}})_{ij}= \left\{%
+(\vec{F}_{IA})_{ij}= \left\{%
   \begin{array}{ll}
-   (\vec{F_{e}})_{ij} + (\vec{F_{d}})_{ij}
+   (\vec{F}_{e})_{ij} + (\vec{F}_{d})_{ij}
     & \mbox{if $d_{ij} \leq L_{ij} $ }\\
  %     & \mbox{if $|x_{i} -x_{j}| \leq \frac{1}{2}(D_{i}+D_{j}) $ }\\
-    (\vec{F_{e}})_{ij} + (\vec{F_{d}})_{ij}
+    (\vec{F}_{e})_{ij} + (\vec{F}_{d})_{ij}
  %     & \mbox{if $|x_{i} -x_{j}| > \frac{1}{2}(D_{i}+D_{j}) \textrm{ and } B_{ij}=1 $ }\\
        & \mbox{if $d_{ij} >  L_{ij}  \textrm{ and } B_{ij}=1 $ }\\
       0
@@ -327,11 +327,11 @@ $(\vec{F_{e}})_{ij}$ and $(\vec{F_{d}})_{ij}$ are the elastic and frictional dam
 The elastic force $(\vec{F_{e}})_{ij}$ between elements is given by
 \begin{equation}
 \label{F_elastic}
-(\vec{F_{e}})_{ij}= -\kappa_{e}  \bigg( d_{i,j}-L_{i,j} \bigg) T_{i,j} \vec{r},
+(\vec{F_{e}})_{ij}= -\kappa_{e}  \bigg( d_{i,j}-L_{i,j} \bigg) T_{i,j} \vec{r}_{ij},
 \end{equation}
-where $\vec{r}= \frac{(\vec{x_{i}} -\vec{x_{j}})}{|\vec{x_{i}} -\vec{x_{j}}|}$ is the directional unit vector between the position of element i and j, $\kappa_{e}$ is the spring constant, and $T_{i,j}$ is the minimum of the thickness of elements i, j. We choose $(\vec{F_{b}})_{ij}$ proportional to $T_{i,j}$ (the minimum thickness of elements i and j) so the formulation of interactive forces has the desired property that it obeys Newton's 3rd Law (i.e.: $(\vec{F}_{IA})_{ij}=-(\vec{F}_{IA})_{ji}$).
+where $\vec{r}_{ij}= \frac{(\vec{x_{i}} -\vec{x_{j}})}{|\vec{x_{i}} -\vec{x_{j}}|}$ is the directional unit vector between the position of element i and j, $\kappa_{e}$ is the spring constant, and $T_{i,j}$ is the minimum of the thickness of elements i, j. We choose $(\vec{F_{b}})_{ij}$ proportional to $T_{i,j}$ (the minimum thickness of elements i and j) so the formulation of interactive forces has the desired property that it obeys Newton's 3rd Law (i.e.: $(\vec{F}_{IA})_{ij}=-(\vec{F}_{IA})_{ji}$).
 %This is in contrast to some other DEM models in the literature (e.g. \citet{Li2014}). 
-The minimum thickness is preferred to the average thickness, since this means that the for two bonded elements a fixed distance apart, acceleration due to elastic forces is bounded, even when the thickness of one of the elements approaches zero. 
+The minimum thickness is preferred to the average thickness, since this means that for two bonded elements a fixed distance apart, the acceleration due to elastic forces is bounded, even when the thickness of one of the elements approaches zero. 
 %
 %Since ice elements are able to melt entirely, the repulsive forces between elements need to be carefully defined so that they are stable even for very small elements with mass approaching zero. We define the elastic repulsive force $(F_{r})_{ij}$ between elements i and j as
 %\begin{equation}
@@ -341,11 +341,11 @@ The minimum thickness is preferred to the average thickness, since this means th
 %where $A_{o}(i,j)$ is the overlap area of the two circles centered at $\vec{x_{i}}$ and $\vec{x_{j}}$, with diameter $D_{i}$ and $D_{j}$ (see Figure \ref{fig:Interactive_forces}), respectively, and $\kappa_{r}$ is the repulsive spring constant. We choose $(F_{r})_{ij}$ to be proportional to the overlap area between the interactive circles surrounding each element so that the acceleration due to this repulsive force is bounded, even as the element mass approaches zero.   This consideration is not needed for the bonded force, since element bonds will be broken when elements are smaller than a threshold size. 
 %[Should we use a bonded force given by  $(F_{b})_{ij}= -\kappa_{b}  \bigg( d_{i,j}-L_{i,j}) \bigg)^{2} T_{i,j} \vec{r}$ rather? Come back to this.]
 
-The frictional damping force has components that damp both the relative radial velocity and relative transverse velocities of the two elements. If $\vec{r}^{\perp}$ is the direction vector perpendicular to $\vec{r}$, and $P_{\vec{r}}$ and $P_{\vec{r^{\perp}}}$ are the projection matrices that project onto $\vec{r}$ and $\vec{r}^{\perp}$ respectively, then the frictional damping force is given by
+The frictional damping force has components that damp both the relative radial velocity and relative transverse velocities of the two elements. If $\vec{r}_{ij}^{\perp}$ is the direction vector perpendicular to $\vec{r}_{ij}$, and $P_{\vec{r}_{ij}}$ and $P_{\vec{r}_{ij}^{\perp}}$ are the projection matrices that project onto $\vec{r}_{ij}$ and $\vec{r}_{ij}^{\perp}$ respectively, then the frictional damping force is given by
 \begin{equation}
 \label{F_damping} 
 %(F_{d})_{ij}=   -C_{r}|(u_{i} -u_{j}) \cdot \vec{r}   | \vec{r}  - C_{t}|(u_{i} -u_{j})\cdot  \vec{r}^{\perp} | \vec{r}^{\perp})
-(\vec{F_{d}})_{ij}=   \Bigg (-c_{r} P_{\vec{r}}  - c_{t} P_{\vec{r}^{\perp}} \Bigg ) \cdot (\vec{u_{i}} -\vec{u_{j}} ) 
+(\vec{F_{d}})_{ij}=   \Bigg (-c_{r} P_{\vec{r}_{ij}}  - c_{t} P_{\vec{r}_{ij}^{\perp}} \Bigg ) \cdot (\vec{u_{i}} -\vec{u_{j}} ) 
 \end{equation}
 Here $c_{r}$ and $c_{t}$ are the radial and transverse drag coefficients. For the simulation below, we set $c_{r}=2\sqrt{\kappa_{e} }$ and  $c_{t}=\frac{1}{4}c_{r}$ so that the radial elastic force is critically damped, and the transverse damping is sub critical. The damping forces are implemented using an implicit time stepping scheme, to avoid stability issues for very small elements (details found in Appendix B). 
 
@@ -359,7 +359,9 @@ Some experiments were also performed using rectangular elements, arranged in a r
 \subsection{Ocean-ice and ice-ocean coupling}
 The LTAM model is coupled to the ocean model via a two-way synchronous coupling, meaning that ocean model fields are passed to the LTAM model and the LTAM model fields are passed back to the ocean model at every time step. Passing fields between the two models involves interpolating fields between the Eulerian grid of the ocean model and the `Lagrangian grid' of the LTAM model (i.e.: onto the ice elements). 
 
-The coupling from the ocean model to the LTAM model is straight forward: at every time step, the ocean mixed layer temperature, salinity, velocity and sea-ice concentration are passed from the ocean model to the LTAM model, to be used in the momentum and thermodynamic equations of the ice elements. Within the LTAM model, the ocean model fields are interpolated onto the Lagrangian grid using a bilinear interpolation scheme. The LTAM model is not sensitive to the chosen interpolation scheme. 
+The coupling from the ocean model to the LTAM model is straight forward: at every time step, the ocean mixed layer temperature, salinity, velocity and sea-ice concentration are passed from the ocean model to the LTAM model, to be used in the momentum and thermodynamic equations of the ice elements. 
+Since tabular icebergs are explicitly resolved in the ocean, it is sufficient for each element to interact with ocean mixed layer only (i.e.: there is no need to manually embed icebergs into the ocean by integrating ocean fields over the icebergs' thickness, as suggested in \citet{Merino2016}).
+Within the LTAM model, the ocean model fields are interpolated onto the Lagrangian grid using a bilinear interpolation scheme. The LTAM model is not sensitive to the chosen interpolation scheme. 
 
 %More care needs to be taken when passing fields back from the LTAM model to the ocean model. 
 The coupling in the other direction, from the LTAM model to the ocean model, is more complex.
@@ -372,9 +374,6 @@ For example, consider a hexagonal element in the LTAM model, which is positioned
 The numerical calculation of the intersection between hexagons and the ocean grid is simplified by dividing the hexagon into 6 equilateral triangles. This method allows for the intersection to be found even when the hexagon is not aligned with the grid. %The LTAM model can be run using hexagonal or rectangular elements. 
 
 The field-spreading scheme is coded with the restriction that an element's area can only intersect a maximum of four ocean grid cells at a time. A consequence of this is that this sets a limit on the maximum size of elements that can be represented using this model, i.e.: the longest horizontal dimension of an ice element must be smaller than the ocean grid spacing. Larger ice structures are constructed by bonding together smaller elements. 
-
-Finally, we note that since the tabular iceberg are explicitly resolved in the ocean, it is sufficient for each element to interact with ocean mixed layer (i.e. there is no need to manually embed the iceberg into the ocean by integrating ocean fields over the iceberg thickness, as in \citet{Merino2016}).
-
 
 \subsection{Thermodynamics}
 The ice elements decay according to a number of melt parameterizations.  As the ice elements melt, their mass decreases, and the appropriate salt, mass and heat fluxes are passed to the ocean. In this section we described the melt parametrization for bonded, unbonded and partially bonded elements.
@@ -391,7 +390,7 @@ and
 \begin{equation}
 M_{bottom}=\frac{(N_{max}-N_{b})}{N_{max}}M_{b} +\frac{N_{b}}{N_{max}}M_{s}
 \end{equation}
-respectively.  In this way, elements with no bonds, melt like point particle icebergs, elements at the center of large structures melt like ice shelves, and elements at the sides of large structures have a combination of iceberg side and basal melt, and ice-shelf melt. 
+respectively.  In this way, elements with no bonds, melt like point-particle icebergs, elements at the center of large structures melt like ice shelves, and elements at the sides of large structures have a combination of iceberg side and basal melt, and ice-shelf melt. 
 
 
 
@@ -449,7 +448,7 @@ The introduction of Lagrangian elements, numerical bonds and interpolation schem
  
  \subsection{Model configuration}
 We initialized our simulation using the experimental setup created for the Marine Ice Ocean Modeling Inter-comparion Project (MISOMIP) \citep{Asay-Davis2016}.
-The configuration consists of an idealized ice shelf in a rectangular domain. The domain is $L_{x}=80$km wide and $L_{y}=480$km long, and contains an ice shelf which is grounded on the south side of the domain and has an ice front at y=650 km. The ice thickness and bottom topography of this setup are shown in Figure \ref{fig:ISOMIP_mass_and_topog}a and \ref{fig:ISOMIP_mass_and_topog}b respectively, with the grounding line position drawn in for reference. The configuration is the same as that of the Ocean0 setup in the MISOMIP, with minor changes to the ice-shelf geometry (see Appendix D for details).
+The configuration consists of an idealized ice shelf in a rectangular domain. The domain is $L_{x}=80$km wide and $L_{y}=480$km long, and contains an ice shelf which is grounded on the south side of the domain and has an ice front at y=650 km. The ice thickness and bottom topography of this setup are shown in Figure \ref{fig:ISOMIP_mass_and_topog}a and \ref{fig:ISOMIP_mass_and_topog}b respectively, with the grounding line position drawn in for reference. The configuration is the same as that of the Ocean0 setup in the MISOMIP, with a few minor changes to the ice-shelf geometry (see Appendix D for details).
 % (see supplementary materials for details).
 %
 %with three changes made:
@@ -470,8 +469,7 @@ The pre-interpolation ice draft (treating elements as point masses) contains lar
 %Figure \ref{fig:ISOMIP_mass_and_topog}c shows what the ice-shelf draft would be if the draft were calculated from the mass of elements in each ocean grid cell without spreading an element's mass across neighboring cells (i.e.: treating elements as point masses). Figure \ref{fig:ISOMIP_mass_and_topog}b shows the draft after spreading the mass across grid cells. When the mass spreading interpolation scheme is not used, grid artifacts seen in the ice-shelf draft (Figure \ref{fig:ISOMIP_mass_and_topog}c). These grid artifacts are much reduced when the mass spreading interpolation is used (Figure \ref{fig:ISOMIP_mass_and_topog}b). 
 
 \subsection{Ocean model setup}
-The LTAM model is coupled to the MOM6 ocean model.
-The ocean model is run using a vertical coordinate system which is a hybrid between a sigma-level and a z-level coordinate. In particular, model layers bend underneath the ice shelf as they would in a sigma-coordinate model, but collapse to zero thickness when they intersect with bottom topography, as they would in a z-level model. The coordinate system was achieve using ALE regridding-remapping scheme \citep{White2009}. The model uses a horizontal resolution of 2km, and 72 vertical layers.
+The LTAM model is coupled to the MOM6 ocean model \citep{Hallberg2013}. The ocean model is run using a vertical coordinate system which is a hybrid between a sigma-level and a z-level coordinate. In particular, model layers bend underneath the ice shelf as they would in a sigma-coordinate model, but collapse to zero thickness when they intersect with bottom topography, as they would in a z-level model. The coordinate system was achieved using ALE regridding-remapping scheme \citep{White2009}. The model uses a horizontal resolution of 2km, and 72 vertical layers.
 All simulation were repeated using the ocean model run layered mode (results were similar and are not presented here).
 %(select results are shown in the supplementary material). 
 
@@ -482,7 +480,7 @@ Ocean parameters are as specified in the MISOMIP configuration \citep{Asay-Davis
 % \subsection{Tabular iceberg calving}
 The model is spun up for 5 years with all ice elements being held stationary. After spinup, a giant tabular iceberg is `broken off' from the ice shelf, and allowed to drift into the open ocean. This is achieved by allowing all ice elements initially within a 14.4 km radius of the center of the ice front to move freely while the other ice elements continue to be held stationary. Ice elements less than 12 km from the center of the ice front, are bonded together to form a semi-circular tabular iceberg. A ring of elements whose distance, $d$, from the ice front center obeys $12 \textrm{ km} \leq   d \leq14.4 \textrm{ km}$, are allowed to move freely, but have all their bonds removed. Elements in this half annulus represent fragments of the ice shelf which calve into small pieces during a large calving event. Breaking the bonds of these surrounding elements allows the tabular iceberg to move away from the ice-shelf cavity more easily.
 
-After the spinup period, a wind stress $\vec{\tau} = < 0.05, 0.05 >$  $\frac{N}{m^{2}}$ is applied to drive the tabular iceberg away from the ice-shelf cavity. Perturbation experiments were performed using other wind stress values. 
+After the spinup period, a wind stress $\vec{\tau} = <\tau_{x},\tau_{y}> = < 0.05, 0.05 >$  $\frac{N}{m^{2}}$ is applied to drive the tabular iceberg away from the ice-shelf cavity. Perturbation experiments were performed using other wind stress values. 
 
 %\begin{enumerate}
 %\item
@@ -528,17 +526,19 @@ After the spinup period, a wind stress $\vec{\tau} = < 0.05, 0.05 >$  $\frac{N}{
 
 %\subsection{Tabular iceberg calving experiment}
 
-During spinup, the injection of buoyant meltwater at the base of the ice shelf drives a circulation within the domain (not shown). The circulation compares well with an identical static ice-shelf experiment run using an Eularian ice shelf model \citep{Goldberg2012}  (a detailed comparison of the Lagrangian and Eularian ice shelf models is presented in a separate study, and is not shown here). 
+During spinup, the injection of buoyant meltwater at the base of the ice shelf drives a clockwise circulation within the domain (not shown). The circulation compares well with an identical static ice-shelf experiment run using an Eularian ice shelf model \citep{Goldberg2012}  (a detailed comparison of the Lagrangian and Eularian ice shelf models is presented in a separate study, and is not shown here). 
 
-Once spinup is complete, numerical bonds are severed and the icebergs begin to move away from the ice shelf (see animations in the supplementary materials). The semi-circular tabular iceberg moves as a cohesive unit due to the presence of the numerical bonds, while the smaller ice fragments quickly disperse (Figure \ref{fig:Spread_area}). The tabular iceberg drifts towards the northward east, driven by the wind and steered by the Coriolis force. A warming of the surface waters is observed around the tabular iceberg, with the largest warming occurring at the ice-shelf front and along the tabular iceberg's rounded edge (Figure \ref{fig:SST_Collapse}). This surface warming is caused by upwelling of the warmer waters from beneath the ice shelf and iceberg. As the icebergs drifts away from the ice shelf, these warmer waters remain at the surface, mapping of the wake of the iceberg  (Figure \ref{fig:SST_Collapse}). The signature of upwelling water in the wake of a drifting tabular iceberg bears some similarity to satellite observations of streaks of increased ocean color in the wake of tabular iceberg in the Southern Ocean \citep{Duprat2016}, suggesting that the increased productivity around icebergs may be driven by upwelling water delivering nutrients to the surface.
+Once spinup is complete, the elements near the ice-shelf front are allowed to move freely, and the icebergs begin to drift away from the ice shelf (see animations in the supplementary materials). The semi-circular tabular iceberg moves as a cohesive unit due to the presence of the numerical bonds, while the smaller ice fragments quickly disperse (Figure \ref{fig:Spread_area}). The tabular iceberg drifts towards the northward east, driven by the wind and steered by the Coriolis force.
+
+A warming of the surface waters is observed around the tabular iceberg, with the largest warming occurring at the ice-shelf front and along the tabular iceberg's rounded edge (Figure \ref{fig:SST_Collapse}). This surface warming is caused by upwelling of the warmer waters from beneath the ice shelf and iceberg. As the icebergs drifts away from the ice shelf, these warmer waters remain at the surface, mapping of the wake of the iceberg  (Figure \ref{fig:SST_Collapse}). The signature of upwelling water in the wake of a drifting tabular iceberg bears some similarity to satellite observations of streaks of increased ocean color in the wake of tabular iceberg in the Southern Ocean \citep{Duprat2016}, suggesting that the increased productivity around icebergs may be driven by upwelling water delivering nutrients to the surface.
 
 The motion of the tabular iceberg disturbs the ocean surface, which drives ocean velocities through out the water column (Figure \ref{fig:Velocity_section_Collapse}). The elevated velocities around the tabular iceberg lead to increased vertical mixing in the vicinity of the iceberg, which alters the stratification of the water column (Figure \ref{fig:Temperature_section_Collapse}), heating the upper ocean. The increased ocean velocities and increased surface temperatures cause elevated melt rates at the base of the ice shelf and iceberg (Figure \ref{fig:Collapse_solo_melt}). The largest melt rates are observed at the newly calved ice-shelf front and on the rounded side of the iceberg (Figure \ref{fig:Collapse_solo_melt}a), where the iceberg calving has created steep ice cliffs. These sharp ice fronts allow for large ocean currents (Figure \ref{fig:Collapse_solo_melt}c), which drive the elevated melt rates. The elevated melt rates act to smooth out the ice front over time, making the ice cliff less steep. While this is likely a real phenomena that could be observed in nature, we should be wary of the modeled velocities at the ice cliffs, since large changes in ice thicknesses are often associated with numerical pressure gradient errors which can drive spurious motion.
  
-As mentioned above, the direction (and speed) of the iceberg drift is largely determined by the wind speed and direction. Perturbation experiments using different wind stresses show that for sufficiently large winds, the tabular iceberg drifts to the north east when the zonal component of the wind stresses is positive, and to the north west when the zonal component of the wind stress is negative (not shown). For a purely zonal wind stress with $|\tau_{x}| \leq 0.01 \frac{\textrm{N}}{\textrm{m}^{2}}$, the iceberg does not move away from the ice shelf. 
+As mentioned above, the direction (and speed) of the iceberg drift is largely determined by the wind speed and direction. Perturbation experiments using different wind stresses show that for sufficiently large winds, the tabular iceberg drifts to the north east when $\tau_{x} >0$, and to the north west when $\tau_{x} <0$ (not shown). For a purely zonal wind stress with $|\tau_{x}| \leq 0.01 \frac{\textrm{N}}{\textrm{m}^{2}}$, the iceberg does not move away from the ice shelf. 
 When the wind is purely offshore ($\tau_{x} = 0.0 \frac{\textrm{N}}{\textrm{m}^{2}}$), a meridional wind stress $\tau_{y} \geq 0.05 \frac{\textrm{N}}{\textrm{m}^{2}}$ is needed to move the tabular iceberg away from the ice shelf.
 While this result is partly an artifact of the artificial shape of the calving iceberg, it is also consistent with \citet{Bassis2013} who noted that calving is a two step process consisting of (i) ice-shelf breaking and (ii) iceberg detachment. The results here suggest that strong (cross-shore) winds may be required to drive large tabular icebergs away from their mother glaciers.
 
-Finally, we note that the numerical bonds in the LTAM model are needed in order to allow the tabular iceberg to retain its shape. Comparing the iceberg calving simulation with an identical simulation where all numerical bonds have been removed, shows that in the absence of the bonds, the ice elements quickly disperse (Figure \ref{fig:Bond_vs_No_bond}). In this case, the model behavior is more similar to an ice-shelf disintegration and does not create a cohesive tabular iceberg.
+Finally, we note that the numerical bonds in the LTAM model are needed in order to allow the tabular iceberg to retain its shape. Comparing the iceberg calving simulation with an identical simulation where all numerical bonds have been removed, shows that in the absence of the bonds, the ice elements quickly disperse (Figure \ref{fig:Bond_vs_No_bond}). In this case, the model behavior is more similar to an ice-shelf disintegration and does not create a cohesive tabular iceberg. By breaking some (but not all) numerical bonds, we can simulate the fracturing of tabular icebergs, allowing tabular icebergs to break into smaller pieces (Figure ???). The breaking of a tabular iceberg increases decay rate of the iceberg by increasing the surface area of ice exposed to the ocean. Splitting the tabular iceberg into smaller fragments also allows the fragments of the iceberg to move more rapidly, and be more strongly influenced by the wind. 
 
 %\subsubsection{Tabular iceberg with fixed velocity}
 %\textbf{Tabular iceberg with fixed velocity}\\
@@ -557,10 +557,10 @@ Finally, we note that the numerical bonds in the LTAM model are needed in order 
  \section{Summary}
 In this study we present a novel framework for representing tabular icebergs in numerical ocean models. In this framework, giant tabular icebergs are constructed from collections of Lagrangian elements that are held together by numerical bonds. Constructing tabular icebergs out of many independent elements allows the icebergs to interact with the ocean across a wide area (larger than a grid cell), and behave as if they had a finite size and structure. This is in contrast to previous representations of icebergs in numerical models \citep{Jongma2009, Martin2010, Marsh2015} that represent icebergs as point particles. Explicitly resolving tabular icebergs in the ocean allows the icebergs to interact with the ocean in a more realistic way, and allows us to study the effect that tabular icebergs have on the ocean circulation. Including numerical bonds between elements allows for the possibility of breaking bonds to simulation iceberg calving and fracture. 
 
-The capabilities of the tabular iceberg model was demonstrated by modeling a tabular iceberg drifting away from an idealized ice shelf (also constructed using Lagrangian elements). The results show that explicitly resolving the iceberg in the ocean allowed for a complex interaction between the tabular iceberg and the surrounding ocean. In our setup, the tabular iceberg is driven away from the ice shelf by ocean currents, wind stress, and the Coriolis force. As the iceberg moves through the water, it disturbs the ocean surface, driving barotropic ocean currents. The motion of the iceberg and melt beneath the iceberg drive upwelling along the sides of the iceberg, which entrains ambient water and causes a warming of the surface ocean in the wake of the iceberg. The changing ocean conditions feed back onto the iceberg, affecting its motion and melt rates. The highest melt rates are observed at edge of the iceberg which has the steepest ice cliff. These have the effect of smoothing out the ice edge over time.
-Simulations without using numerical bonds showed that these bonds are essential for allowing the iceberg to move as a unit. We also demonstrate that by breaking these numerical bonds we can simulate iceberg fracture, which is important process which rapidly increases the rate of iceberg decay.
+The capabilities of the tabular iceberg model were demonstrated by modeling a tabular iceberg drifting away from an idealized ice shelf (also constructed using Lagrangian elements). The results show that explicitly resolving the iceberg in the ocean allowed for a complex interaction between the tabular iceberg and the surrounding ocean. In our setup, the tabular iceberg is driven away from the ice shelf by ocean currents, wind stress, and the Coriolis force. As the iceberg moves through the water, it disturbs the ocean surface, driving barotropic ocean currents. The motion of the iceberg and melt beneath the iceberg drive upwelling along the sides of the iceberg, which entrains ambient water and causes a warming of the surface ocean in the wake of the iceberg. The changing ocean conditions feed back onto the iceberg, affecting its motion and melt rates. The highest melt rates are observed at edge of the iceberg which has the steepest ice cliff. These have the effect of smoothing out the ice edge over time.
+Simulations without using numerical bonds showed that these bonds are essential for allowing the iceberg to move as a unit. We also demonstrate that by breaking these numerical bonds we can simulate iceberg fracture, which is important process that increases the rate of iceberg decay.
 
-To our knowledge, the model presented in this study is the first model to explicitly resolve drifting tabular icebergs in an ocean model. As such, a natural extension of this work is to try to include tabular icebergs into a general circulation model (GCM) used for climate projections. 
+To our knowledge, the model presented in this study is the first model to explicitly resolve drifting tabular icebergs in an ocean model. A natural extension of this work is to try to include tabular icebergs into a general circulation model (GCM) used for climate projections. 
 However, before this can be done, there are a number of issues that need to be resolved:
 firstly, the question of how and when to introduce tabular icebergs into the ocean needs to be addressed. For GCM's with active ice shelves, a calving law is needed to decide when to release the tabular iceberg into the ocean. The question of what calving law to use is a topic of ongoing research \citep{Benn2007, Alley2008, Levermann2012, Bassis2013} and is still unresolved. One potential way to temporarily bypass this problem would be to run hindcast simulations using historically observed calving events. 
 A related issue is the question of how and when to break the bonds within the freely floating icebergs to simulation iceberg breakup. Without a rule for iceberg breakup, the tabular icebergs would likely drift to unrealistically low latitudes. Finally, further work is needed to understand (and model) the interactions between tabular icebergs and sea ice, and to parametrize the effects of iceberg grounding, as these interactions play a large role in dictating the trajectories of tabular icebergs. None-the-less, the technical framework described in this article is potentially a using step towards including tabular icebergs in global GCM's, and hence a step towards making more accurate projections of future sea level. 
@@ -581,7 +581,7 @@ The forces on an element due to air (a), ocean (o) and sea ice (si) drag are giv
 \begin{equation}
 (\vec{F}_{si}) = \rho_{si} (0.5 c_{si,v} W T_{si}F + c_{si,h} L W) | \vec{u}_{si} - \vec{u}|(\vec{u}_{si} - \vec{u}).
 \end{equation}
-Here $\rho_{a}$, $\rho_{o}$, $\rho_{si}$, are the density of air, ocean and sea ice, respectively. $c_{a,v}$, $c_{o,v}$ and $c_{si,v}$ are the vertical drag coefficients with air, ocean and sea ice, while $c_{a,h}$, $c_{o,h}$ and $c_{si,h}$ are the respective horizontal drag coefficients. $\vec{u}_{a}$, $\vec{u}_{o}$, $\vec{u}_{si}$, are the velocities air, ocean and sea ice, respectively. L, W, T, F and D are the length, width, thickness, freeboard and draft of the ice element. The element thickness is related to the draft and freeboard by $T=F+D$ and $D=\frac{\rho}{\rho_{o}} T$, where $\rho$ is the ice element density.
+Here $\rho_{a}$, $\rho_{o}$, $\rho_{si}$, are the density of air, ocean and sea ice, respectively. $c_{a,v}$, $c_{o,v}$ and $c_{si,v}$ are the vertical drag coefficients with air, ocean and sea ice, while $c_{a,h}$, $c_{o,h}$ and $c_{si,h}$ are the respective horizontal drag coefficients. $\vec{u}_{a}$, $\vec{u}_{o}$, $\vec{u}_{si}$, are the velocities air, ocean and sea ice, respectively. L, W, T, F and D are the length, width, thickness, freeboard and draft of the ice element. The element thickness is related to the draft and freeboard by $T=F+D$ and $D=\frac{\rho}{\rho_{o}} T$, where $\rho$ is the ice element density. $T_{si}$ is the sea ice thickness.
 
 The  wave radiation force $(\vec{F}_{R})$ is given by
 \begin{equation}
@@ -632,7 +632,7 @@ For elements inside larger structures, the melt due to wave erosion  and melt du
 \subsection{Modified Verlet Algorithm}
 The LTAM model uses a version velocity verlet time-stepping algorithm, which has been modified to allow part of the forcing to be calculated implicitly. The traditional velocity verlet algorithm is commonly used in molecular dynamics, as it is simple to implement, second order accurate and computationally efficient \citep{Swope1982, Omelyan2002}.
 Here we modify the tradition scheme to allow for the drag forces to be modeled implicitly, which prevents large accelerations for element's whose mass approaches zero. 
-To do this, we modify the traditional verlet algorithm to include both an implicit and explicit acceleration, $a=a^{exp} +a^{imp}$. The explicit acceleration, $a^{exp}$ includes all forcing terms which depend only on the previous time step, while the implicit acceleration, $a^{imp}$  includes forcing terms which depend on the current time step (in particular the drag and Coriolis forces).  
+To do this, we modify the traditional verlet algorithm to include both an implicit and explicit acceleration, $a=a^{exp} +a^{imp}$. The explicit acceleration, $a^{exp}$ includes all forcing terms which depend only on the previous time step and the current position, while the implicit acceleration, $a^{imp}$ includes forcing terms which depend on the velocity at the current time step (in particular the drag and Coriolis forces).  
 
 %1) $ x(t_{n+1}) = x(t_{n}) + u(t_{n}) \Delta t  + \frac{1}{2} \Delta t^{2} a(t_{n}) $.\\
 %2) Calculate $a(t_{n+1})$\\
@@ -641,16 +641,18 @@ To do this, we modify the traditional verlet algorithm to include both an implic
 
 Using a time step of $\Delta t$, and subscripts to denote the time step (so that $t_{n+1}= t_{n} + \Delta t$), the modified velocity verlet scheme can be written as:\\
 1) $ x_{n+1} = x_{n} + u_{n} \Delta t  + \frac{1}{2} \Delta t^{2} \Bigg(a^{exp}_{n} + a^{imp}_{n} \Bigg) $.\\
-2) Calculate $a^{exp}_{n+1}$, which is a function of $x_{n+1}$, and other quantities measured at time $t_{n}$. \\
+2) Calculate $a^{exp}_{n+1}$\\
+% (which is a function of $x_{n+1}$, and other quantities measured at time $t_{n}$). \\
 3) Calculate $a^{imp}_{n+1}$ and $u_{n+1} = u_{n} + \frac{\Delta t}{2} \Bigg(a^{exp}_{n} + a^{exp}_{n+1} \Bigg) +  (\Delta t) a^{imp}_{n+1}$\\
-This scheme reduces to the traditional velocity verlet when $a^{imp}$ is set to zero. Note that $a^{exp}_{n+1} = a^{exp}_{n+1}(x_{n+1}, t_{n})$ is an explicit function of  $x_{n+1}$ and other quantities evaluated at time $t_{n}$, while $a^{imp}_{n+1}=a^{imp}_{n+1}(u_{n+1}, x_{n+1}, t_{n})$ additionally depends on $u_{n+1}$, and needs to be solved implicitly. For this reason, in step 3 $a^{imp}_{n+1}$ and $u_{n+1}$ need to be solved simultaneously, as described in the next subsection.
+%  (which is a function of $u_{n+1}$, $x_{n+1}$, and other quantities measured at time $t_{n}$)
+This scheme reduces to the traditional velocity verlet when $a^{imp}$ is set to zero. Note that $a^{exp}_{n+1} = a^{exp}_{n+1}(x_{n+1}, t_{n})$ is an explicit function of  $x_{n+1}$ and other quantities evaluated at time $t_{n}$, while $a^{imp}_{n+1}=a^{imp}_{n+1}(u_{n+1}, x_{n+1}, t_{n})$ additionally depends on $u_{n+1}$, and needs to be solved implicitly. For this reason in step three, $a^{imp}_{n+1}$ and $u_{n+1}$ need to be solved simultaneously, as described in the next subsection.
 
 In equation (1), the forces due to ocean drag, atmospheric drag and sea ice drag are treated implicitly. The force due to sea surface slope and wave radiation are treated explicitly. The Coriolis term is handled using Crank-Nicolson scheme so that half of the effect is implicit and half is explicit. The elastic part of the interactive forces is treated explicitly, while the interactive damping is handled semi-implicitly in that the drag force on element A by element B depends on the velocities of elements A and B evaluated at time $t_{n+1}$ and $t_{n}$, respectively. 
  
  %A full description of how the scheme is implemented is provided below.
  
  \subsection{Solving for the velocity implicitly}
-Since this modified scheme contains some forcing terms which are handled implicitly, steps 2 and 3 need to be solved together.  We demonstrate how this is done, using a simplified one-dimensional version of equation (1), neglecting the atmospheric drag, sea ice drag and Coriolis force, so that the only implicitly treated term is the ocean drag. In this demonstration, we use a superscript to denote the ocean drag force, $F^{o}$ and ocean velocity, $u^{o}$ to avoid confusion with the subscripts indicating time step. We also define an explicit force $F^{exp}$, which accounts for all forces not proportional the element velocity. With these simplifications, the implicit and explicit accelerations are
+Since this modified scheme contains some forcing terms which are handled implicitly, $a^{imp}_{n+1}$ and $u_{n+1}$ need to be calculated simultaniously.  We demonstrate how this is done, using a simplified one-dimensional version of equation (1), neglecting the atmospheric drag, sea ice drag and Coriolis force, so that the only implicitly treated term is the ocean drag. In this demonstration, we use a superscript to denote the ocean drag force, $F^{o}$, and ocean velocity, $u^{o}$, to avoid confusion with the subscripts indicating time step. We also define an explicit force, $F^{exp}$, which accounts for all forces not proportional the element velocity. With these simplifications, the implicit and explicit accelerations are
  \begin{equation}
 a^{exp} =\frac{1}{M} ( \vec{F}^{exp} )
 \end{equation}
@@ -667,7 +669,7 @@ where $\tilde{c}^{o}$ is the effective drag coefficient, accounting for the dime
 %The consequences of the drag not being fully implicit are discussed below. 
 Step 3 of the modified velocity verlet scheme can be rewritten by introducing an intermediate velocity $u^{*}$, which only depends on the velocity and acceleration at time $t_{n}$,
  \begin{equation}
- u^{*}_{n} =  u_{n}  + \frac{1}{2} (\Delta t) a_{n}. 
+ u^{*}_{n} =  u_{n}  + \frac{1}{2} (\Delta t) a^{exp}_{n}. 
  \end{equation}
 Using this, the updated velocity (Step 3) can be written 
  %\begin{equation}
@@ -716,7 +718,7 @@ All four of these tests must pass in order to make sure that the memory is corre
 
 
 \section{Appendix D}
-The experiment configuration used in this study is the same as that of the Ocean0 setup in the MISOMIP, with the following three changes made:
+The experiment configuration used to initialize the calving tabular iceberg simulation (in this study) is the same as that of the Ocean0 setup in the MISOMIP, with the following three changes made:
 \begin{enumerate}
 \item The `calving criteria' used in the MISOMIP study (which states that all points in the ice shelf with thickness less than 100m are set to zero thickness) has not been used.
 \item The ice shelf has been thickened on the flanks of the domain, so that the latitude of the grounding line increases away from the center of the ice shelf.
@@ -725,11 +727,6 @@ The experiment configuration used in this study is the same as that of the Ocean
 These three changes were made in order to make the circulation beneath the ice shelf easier to interpret. 
 
 \clearpage
-
-
-\section{Possibly add}
-\subsection{Orientation}
-Possibly add a section where we spread mass using the orientation of the icebergs. 
 
 \newpage
 \begin{thebibliography}{9}
@@ -944,12 +941,56 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regriddingÐremapping s
 
 
 
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{ |c c c c| }
+\hline
+Parameter & Symbol & Value &  Unit \\
+\hline
+Domain Length &  $L_{x}$ & 80  & km \\
+Domain Width &  $L_{y}$ & 480  & km \\
+Horizontal Resolution &  $\Delta x$ & 2  & km \\
+Number of vertical layers &  $N_{l}$ & 72  & non-dim\\
+Horizontal Viscosity &  $\nu_{H}$ & 6.0 & $\frac{m^{2}}{s}$ \\
+Diapycnal Viscosity &  $\nu_{V} $ & $10^{-3}$ & $\frac{m^{2}}{s}$ \\
+Horizontal Diffusivity & $ \epsilon_{H}$ & 1.0 & $ \frac{m^{2}}{s}$ \\
+Diapycnal Diffusivity &  $\epsilon_{V} $ & $5 \times 10^{-5}$ & $\frac{m^{2}}{s}$ \\
+Initial Surface Temperature &  $ T_{t}$& -1.9   & $ ^{o} C$\\
+Initial Bottom Temperature &  $ T_{b}$&  1.0  & $ ^{o} C$\\
+Initial Surface Salinity &  $ S_{t}$& 33.8   & psu\\
+Initial Bottom Salinity &  $ S_{b}$&  34.7  & psu\\
+Maximum Ocean depth &  $H_{ocean} $ & 720 & m \\
+Relaxation Time of Sponge Layer &  $T_{sponge}$ & 0.1  & days\\
+%Background Frictional Velocity Below Ice &  $u^{*}_{bg}$ & 0.0  & 104 \\
+%Drag Coefficient Below Ice&  c_{d} & $0.0025$  & (non dim)\\
+%Class 9 &  $3.9\times 10^{11}$ & 1659 & 104 \\
+Time Step for Static Shelf Experiment & $dt_{Static}$ &  1000  & s\\
+Time Step for Iceberg Calving Experiment & $dt_{Calving}$ &  10  & s\\
+%Class 1 &  $8.8\times 10^{7}$ & 60  & 0.0026 & 40 & 2000 \\
+%Class 2 &  $4.1\times 10^{8}$ & 100 & 0.0072 & 67 & 200\\
+%Class 3 &  $3.3\times 10^{9}$ & 200  & 0.029 &133 & 50 \\
+%Class 4 &  $1.8\times 10^{10}$& 350 &  0.12 &175  & 20 \\
+%Class 5 &  $3.8\times 10^{10}$ & 500  & 0.18 &250 & 10\\
+%Class 6 &  $7.5\times 10^{10}$ & 700   & 0.35 &250 & 5\\
+%Class 7 &  $1.2\times 10^{11}$ & 900  & 0.56 &250  & 2 \\
+%Class 8 &  $2.2\times 10^{11}$ & 1200  & 1.0&250 & 1 \\
+%Class 9 &  $3.9\times 10^{11}$ & 1600 & 1.8&250 & 1  \\
+%Class 10 & $7.4\times 10^{11}$ &  2200 & 3.5 &250  &1\\
+\hline
+\end{tabular}
+%\caption{Description of the iceberg calving classes used in the model. {\it Mass}, {\it Length}, {\it Area} and {\it Th} refer to the iceberg mass, length, area, and thickness at the time of calving.  {\it Scaling} is the number of icebergs represented by one Lagrangian point particle. The iceberg mass and thickness for each class are the same as those reported in \citet{Gladstone2001}. The iceberg area and length for each class is calculated from the iceberg mass and thickness by assuming that the icebergs are cuboids with a length to width ratio of 1.5, using an iceberg density $\rho_{i}=850$kg/$\textrm{m}^{3}$.}
+% Note that the areas of the iceberg classes (calculated from the iceberg lengths and masses given in \citep{Gladstone2001}) are not monotonically increasing.
+\label{table:parameters2}
+\end{center}
+\end{table}
+
+\clearpage
 
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_spread_area.png}
-\caption{ {Snapshots of the fraction of ice cover in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The dashed line in panel (c) shows the location of the vertical transects shown in Figures \ref{fig:Temperature_section_Collapse}} and \ref{fig:Velocity_section_Collapse}.}
+\caption{ {Snapshots of the fraction of ice cover in the LTAM tabular iceberg calving simulation. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The dashed line in panel (c) shows the location of the vertical transects shown in Figures \ref{fig:Velocity_section_Collapse} and \ref{fig:Temperature_section_Collapse}}.}
 \end{center}
 \label{fig:Spread_area}
 \end{figure}
@@ -960,7 +1001,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regriddingÐremapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_temp.png}
-\caption{ {Snapshots of the sea surface temperature in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. Regions with ice area fraction = 1 area plotted in white.}}
+\caption{ {Snapshots of the sea surface temperature in the LTAM tabular iceberg calving simulation. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. Regions with ice area fraction = 1 area plotted in white.}}
 \end{center}
 \label{fig:SST_Collapse}
 \end{figure}
@@ -972,7 +1013,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regriddingÐremapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Regular_towards_coast}
-\caption{ {Results of an ice-only LIISM simulation with no bonds between ice elements. Ice elements are initialized throughout the domain, as shown in panel (a). The elements are forced by an imposed westward ocean current of u=0.1m/s (no ocean model is used). Forces due to sea surface slope, atmospheric drag, Coriolis and sea ice drag are set to zero. The figure shows snapshots of ice element positions at time (a) t=0, (b) 200, (c) 400, (d) 600 days. The size of the dots shows the surface area (and interaction diameter) of each ice element. Land points are shown by black circles.}}
+\caption{ {Results of an ice-only LTAM simulation with no bonds between ice elements. Ice elements are initialized throughout the domain, as shown in panel (a). The elements are forced by an imposed westward ocean current of u=0.1m/s (no ocean model is used). Forces due to sea surface slope, atmospheric drag, Coriolis and sea ice drag are set to zero. The figure shows snapshots of ice element positions at time (a) t=0, (b) 200, (c) 400, (d) 600 days. The size of the dots shows the surface area (and interaction diameter) of each ice element. Land points are shown by black circles.}}
 \end{center}
 \label{fig:Regular_Uncoupled_sim}
 \end{figure}
@@ -982,7 +1023,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regriddingÐremapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Tabular_and_regular_towards_coast_manual}
-\caption{ {Results of an ice-only LIISM simulation using bonds between elements. Ice elements are initialized throughout the domain, as shown in panel (a). Three tabular icebergs are included, with 25, 16 and 4 elements respectively. The elements are forced by an imposed westward ocean current of u=0.1m/s (no ocean model is used). Forces due to sea surface slope, atmospheric drag, Coriolis and sea ice drag are set to zero. The figure shows snapshots of ice element positions at time (a) t=0, (b) 300, (c) 600, (d) 900 days. The size of the dots shows the surface area (and interaction diameter) of each ice element.  Bonds between ice elements are plotted in magenta. Land points are shown by black circles.}}
+\caption{ {Results of an ice-only LTAM simulation using bonds between elements. Ice elements are initialized throughout the domain, as shown in panel (a). Three tabular icebergs are included, with 25, 16 and 4 elements respectively. The elements are forced by an imposed westward ocean current of u=0.1m/s (no ocean model is used). Forces due to sea surface slope, atmospheric drag, Coriolis and sea ice drag are set to zero. The figure shows snapshots of ice element positions at time (a) t=0, (b) 300, (c) 600, (d) 900 days. The size of the dots shows the surface area (and interaction diameter) of each ice element.  Bonds between ice elements are plotted in magenta. Land points are shown by black circles.}}
 \end{center}
 \label{fig:Uncoupled_sim}
 \end{figure}
@@ -993,7 +1034,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regriddingÐremapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/hex_intersecting_rectangles}
-\caption{ {(a) Hexagonal elements are initialized in a staggered lattice as shown. Adjacent elements are bonded together. The centers of bonded elements are plotted in pink. The element bonds form equilateral triangles which give the larger structure rigidity. The black circles shows to the interactive length scales used in element interactions. (b) Intersection of a hexagonal element and an ocean grid. The colors indicate the fraction of the hexagon that lies in each grid cell. These fractions are used as weights to spread LIISM properties to the ocean grid (see text for more details).}}
+\caption{ {(a) Hexagonal elements are initialized in a staggered lattice as shown. Adjacent elements are bonded together. The element bonds (plotted in pink) form equilateral triangles which give the larger structure rigidity. The black circles show the circular element shape used in element interactions, and are inscribed inside the hexagonal shape used for mass-spreading. (b) Intersection of a hexagonal element and the ocean grid. The colors indicate the fraction of the hexagon that lies in each grid cell. These fractions are used as weights to spread LTAM properties to the ocean grid (see text for more details).}}
 \end{center}
 \label{fig:Hex_intersections}
 \end{figure}
@@ -1004,7 +1045,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regriddingÐremapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_D_spread_mass_mass.png}
-\caption{ {(a) Ocean bottom topography in MISOMIP configuration. (b) ice-shelf draft used in static shelf experiment. The ice draft is calculated from the ice mass in an ocean grid cell, which is found by spreading ice mass across ocean cells accounting for the size of each element (as explained in Section 2.3). (c) Same as in panel (b), except that the interpolation does not account for iceberg size, and instead treats elements as point masses.}}
+\caption{ {(a) Ocean bottom topography and (b) ice-shelf draft used to initialized the tabular iceberg calving simulation. The ice draft is calculated from the total mass in an ocean grid cell after the mass-spreading interpolation has been applied (as explained in Section 2.3). (c) Initial ice draft that would be calculated if the mass-spreading interpolation were not used (i.e.: elements treated as point masses).}}
 \end{center}
 \label{fig:ISOMIP_mass_and_topog}
 \end{figure}
@@ -1018,7 +1059,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regriddingÐremapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_v_layers_x10.png}
-\caption{ {Snapshots of vertical sections of meridional velocity at $x=58 $km in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the transects is shown by the dashed line in Figure \ref{fig:Spread_area}c.}}
+\caption{ {Snapshots of vertical sections of meridional velocity at $x=58 $km in the LTAM tabular iceberg calving simulation. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the transects is shown by the dashed line in Figure \ref{fig:Spread_area}c.}}
 \end{center}
 \label{fig:Velocity_section_Collapse}
 \end{figure}
@@ -1030,7 +1071,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regriddingÐremapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_temp_layers_x10.png}
-\caption{ {Snapshots of vertical sections of ocean temperature at $x=58 $km in the LIISM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the vertical transects is shown by the dashed lines in Figure \ref{fig:Spread_area}c.}}
+\caption{ {Snapshots of vertical sections of ocean temperature at $x=58 $km in the LTAM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the vertical transects is shown by the dashed lines in Figure \ref{fig:Spread_area}c.}}
 \end{center}
 \label{fig:Temperature_section_Collapse}
 \end{figure}
@@ -1067,9 +1108,22 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regriddingÐremapping s
 
 
  \clearpage
- \end{article} 
+ 
+ 
 
-
+ 
+ \end{article}
+ \clearpage 
+\section{Extra Figure:}
+ \clearpage 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/three_melt_melt_m_per_year.png}
+\caption{ {Melt rate 30 days after calving for simulations using melt rates derived using (a) three equation model, (b) icebergs drift parametrization, (c) a mixture between the two (as described in Section 2.5.}}
+\end{center}
+\label{fig:threemelt}
+\end{figure}
+ \clearpage
 
  
 
