@@ -41,7 +41,7 @@ cd(path_name)
 % filename='Two_particle_spring';
 % filename='Two_particle_Jacobi';
 % filename='Big_and_small_bergs_curved_coast_again';
- filename='New_test_curved_coast';
+filename='New_test_curved_coast';
 % filename='New_test_curved_coast_up_pia';
 %filename='New_test_curved_coast_up_pia_and_q_ia';
 %filename='From_saved_test';
@@ -60,6 +60,7 @@ plot_the_bonds=1;
 plot_land_each_time=0;
 plot_L_eff=1;
 make_a_movie=0;
+plot_tails=1;
 
 %Defining the grid
 Lx=500*1000;%100*1000; %Length of the domain
@@ -146,19 +147,19 @@ for time_count=time_ind_list;
     set(gca,'fontsize',fontsize)
     text(500,505,letter_list(plot_count,:),'fontsize',fontsize)
     
-        %Plotting the land
-        hold on
-        for i=1:Nx
-            for j=1:Ny
-                if Land(i,j)==1
-                    count=count+1;
-                    %hline10(i,j)=plot(x(i)/1000,y(j)/1000,'k*');
-                    mult=5;
-                    hline11(i,j)=fill((x(i)/1000)+(((mult*dx/2)/1000).*cos(circ_ind)),(y(j)/1000)+(((mult*dx/2)/1000).*sin(circ_ind)),'k');
-                    %hline11(i,j)=plot((x(i)/1000)+(((dx/2)/1000).*cos(circ_ind)),(y(j)/1000)+(((dx/2)/1000).*sin(circ_ind)),'k','linewidth',4);
-                end
+    %Plotting the land
+    hold on
+    for i=1:Nx
+        for j=1:Ny
+            if Land(i,j)==1
+                count=count+1;
+                %hline10(i,j)=plot(x(i)/1000,y(j)/1000,'k*');
+                mult=5;
+                hline11(i,j)=fill((x(i)/1000)+(((mult*dx/2)/1000).*cos(circ_ind)),(y(j)/1000)+(((mult*dx/2)/1000).*sin(circ_ind)),'k');
+                %hline11(i,j)=plot((x(i)/1000)+(((dx/2)/1000).*cos(circ_ind)),(y(j)/1000)+(((dx/2)/1000).*sin(circ_ind)),'k','linewidth',4);
             end
         end
+    end
     
     
     if plot_the_area==1
@@ -184,42 +185,60 @@ for time_count=time_ind_list;
         
         
         
-    
         
-            end
+        
+    end
     
     if plot_dots_and_circ==1
         for berg_count=1:Num_bergs
-        %    hline(:,berg_count)=plot(berg_pos_x(berg_count,time_count)/1000,berg_pos_y(berg_count,time_count)/1000,'*w');
+            %    hline(:,berg_count)=plot(berg_pos_x(berg_count,time_count)/1000,berg_pos_y(berg_count,time_count)/1000,'*w');
             %hline2(:,berg_count)=plot((berg_pos_x(berg_count,time_count)/1000)+(((berg_pos_L(berg_count,time_count)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((berg_pos_L(berg_count,time_count)/2)/1000).*sin(circ_ind)),'g');
             hline2(:,berg_count)=fill((berg_pos_x(berg_count,time_count)/1000)+(((berg_pos_L(berg_count,time_count)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((berg_pos_L(berg_count,time_count)/2)/1000).*sin(circ_ind)),'w');
-            if plot_L_eff==1
-                hline8(:,berg_count)=plot((berg_pos_x(berg_count,time_count)/1000)+(((berg_pos_L_eff(berg_count,time_count)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((berg_pos_L_eff(berg_count,time_count)/2)/1000).*sin(circ_ind)),'w');
-            end
-        end
-    end
-    
-    if plot_the_bonds==1
-        %Plotting the bonds
-        for berg_count=1:Num_bergs
-            for pair_berg=1:berg_count
-                if (Bond(pair_berg,berg_count)==1)
-                    hline4(:,berg_count,pair_berg)=plot([berg_pos_x(berg_count,time_count)/1000 berg_pos_x(pair_berg,time_count)/1000],[berg_pos_y(berg_count,time_count)/1000 berg_pos_y(pair_berg,time_count)/1000],'m','linewidth',2);
+            
+            if plot_tails==1
+                N_tail=25;
+                tail_count=0;
+                if time_count-N_tail>0
+                    x_tail=zeros(N_tail,1);
+                    for k_tail=1:1:N_tail
+                        tail_count=tail_count+1;
+                        x_tail(tail_count,1)=berg_pos_x(berg_count,time_count-k_tail)/1000;
+                        y_tail(tail_count,1)=berg_pos_y(berg_count,time_count-k_tail)/1000;
+                        tail_mult=1/10;
+                    end
+                    hline62(:,berg_count)=plot(x_tail,y_tail,'w','linewidth',0.5);
+                    %hline62(:,berg_count)=fill((berg_pos_x(berg_count,time_count-k_tail)/1000)+(((tail_mult*berg_pos_L(berg_count,time_count-k_tail)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((tail_mult*berg_pos_L(berg_count,time_count)/2)/1000).*sin(circ_ind)),'w');
+                    %hline62(:,berg_count)=plot((berg_pos_x(berg_count,time_count-k_tail)/1000)+(((tail_mult*berg_pos_L(berg_count,time_count-k_tail)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((tail_mult*berg_pos_L(berg_count,time_count)/2)/1000).*sin(circ_ind)),'w');
                 end
             end
-            if (L_Bond(pair_berg,berg_count)==1)
-                hline5(:,berg_count,pair_berg)=plot([berg_pos_x(berg_count,time_count)/1000 berg_pos_x(pair_berg,time_count)/1000],[berg_pos_y(berg_count,time_count)/1000 berg_pos_y(pair_berg,time_count)/1000],'r','linewidth',3);
-            end
+        
+        if plot_L_eff==1
+            hline8(:,berg_count)=plot((berg_pos_x(berg_count,time_count)/1000)+(((berg_pos_L_eff(berg_count,time_count)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((berg_pos_L_eff(berg_count,time_count)/2)/1000).*sin(circ_ind)),'w');
         end
     end
-    
- %   hline3=text((Lx/2/1000)-(Lx/20/1000),(Ly/1000)+(Ly/20/1000),['time = ' num2str(round(10*time/60/60/24)/10) ' days'],'fontsize',fontsize);
-    drawnow
-    
-    
 end
 
-'About to save figure', 
+if plot_the_bonds==1
+    %Plotting the bonds
+    for berg_count=1:Num_bergs
+        for pair_berg=1:berg_count
+            if (Bond(pair_berg,berg_count)==1)
+                hline4(:,berg_count,pair_berg)=plot([berg_pos_x(berg_count,time_count)/1000 berg_pos_x(pair_berg,time_count)/1000],[berg_pos_y(berg_count,time_count)/1000 berg_pos_y(pair_berg,time_count)/1000],'m','linewidth',2);
+            end
+        end
+        if (L_Bond(pair_berg,berg_count)==1)
+            hline5(:,berg_count,pair_berg)=plot([berg_pos_x(berg_count,time_count)/1000 berg_pos_x(pair_berg,time_count)/1000],[berg_pos_y(berg_count,time_count)/1000 berg_pos_y(pair_berg,time_count)/1000],'r','linewidth',3);
+        end
+    end
+end
+
+%   hline3=text((Lx/2/1000)-(Lx/20/1000),(Ly/1000)+(Ly/20/1000),['time = ' num2str(round(10*time/60/60/24)/10) ' days'],'fontsize',fontsize);
+drawnow
+
+
+end
+
+'About to save figure',
 saveas(gcf,'/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Rregular_towards_coast.png')
 
 

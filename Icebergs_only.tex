@@ -989,10 +989,23 @@ Time Step for Iceberg Calving Experiment & $dt_{Calving}$ &  10  & s\\
 
 \begin{figure}
 \begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/PIIB_with_hexagons.png}
+\caption{Schematic showing how Lagrangian elements are used when modeling tabular icebergs. Lagrangian elements (blue dots) are initialized in a staggered lattice covering the surface area of the iceberg. For purposed of mass aggregation, the ice elements are assumed to have hexagonal shape (grey hexagons). For purposed of element interactions, the ice elements are assumed to be circular (black circles). Elements are initially bonded to adjacent elements using numerical bonds (dashed white lines). These numerical bonds form equilateral triangles which give the shape rigidity. The inset panel shows a schematic of the intersection of a hexagonal element and the ocean grid. The colors indicate the fraction of the hexagon that lies in each grid cell. These fractions are used as weights to spread LTIM properties to the ocean grid (see text for more details) The background photo in the larger schematic is an areal photograph of iceberg PIIB (Area= 42 $\textrm{km}^{2}$) taken in Baffin Bay in 2012. The red ship can be identified on the bottom of the photo for scale. }
+\end{center}
+\label{fig:Spread_area}
+\end{figure}
+ \clearpage
+
+
+(a) Hexagonal elements are initialized in a staggered lattice as shown. Adjacent elements are bonded together. The element bonds (plotted in pink) form equilateral triangles which give the larger structure rigidity. The black circles show the circular element shape used in element interactions, and are inscribed inside the hexagonal shape used for mass-spreading. (b) Intersection of a hexagonal element and the ocean grid. The colors indicate the fraction of the hexagon that lies in each grid cell. These fractions are used as weights to spread LTIM properties to the ocean grid (see text for more details).
+
+
+\begin{figure}
+\begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_spread_area.png}
 \caption{ {Snapshots of the fraction of ice cover in the LTIM tabular iceberg calving simulation. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The dashed line in panel (c) shows the location of the vertical transects shown in Figures \ref{fig:Velocity_section_Collapse} and \ref{fig:Temperature_section_Collapse}}.}
 \end{center}
-\label{fig:Spread_area}
+\label{fig:Hex_intersections}
 \end{figure}
  \clearpage
 
@@ -1031,14 +1044,14 @@ Time Step for Iceberg Calving Experiment & $dt_{Calving}$ &  10  & s\\
 
 
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/hex_intersecting_rectangles}
-\caption{ {(a) Hexagonal elements are initialized in a staggered lattice as shown. Adjacent elements are bonded together. The element bonds (plotted in pink) form equilateral triangles which give the larger structure rigidity. The black circles show the circular element shape used in element interactions, and are inscribed inside the hexagonal shape used for mass-spreading. (b) Intersection of a hexagonal element and the ocean grid. The colors indicate the fraction of the hexagon that lies in each grid cell. These fractions are used as weights to spread LTIM properties to the ocean grid (see text for more details).}}
-\end{center}
-\label{fig:Hex_intersections}
-\end{figure}
- \clearpage
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/hex_intersecting_rectangles}
+%\caption{ {(a) Hexagonal elements are initialized in a staggered lattice as shown. Adjacent elements are bonded together. The element bonds (plotted in pink) form equilateral triangles which give the larger structure rigidity. The black circles show the circular element shape used in element interactions, and are inscribed inside the hexagonal shape used for mass-spreading. (b) Intersection of a hexagonal element and the ocean grid. The colors indicate the fraction of the hexagon that lies in each grid cell. These fractions are used as weights to spread LTIM properties to the ocean grid (see text for more details).}}
+%\end{center}
+%\label{fig:Hex_intersections}
+%\end{figure}
+ %\clearpage
 
 
 
