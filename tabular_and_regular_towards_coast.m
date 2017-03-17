@@ -60,6 +60,8 @@ plot_the_bonds=1;
 plot_land_each_time=0;
 plot_L_eff=1;
 make_a_movie=0;
+plot_tails=1;
+
 
 %Defining the grid
 Lx=500*1000;%100*1000; %Length of the domain
@@ -198,6 +200,22 @@ for time_count=time_ind_list;
             hline2(:,berg_count)=fill((berg_pos_x(berg_count,time_count)/1000)+(((berg_pos_L(berg_count,time_count)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((berg_pos_L(berg_count,time_count)/2)/1000).*sin(circ_ind)),'w');
             if plot_L_eff==1
                 hline8(:,berg_count)=plot((berg_pos_x(berg_count,time_count)/1000)+(((berg_pos_L_eff(berg_count,time_count)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((berg_pos_L_eff(berg_count,time_count)/2)/1000).*sin(circ_ind)),'w');
+            end
+            if plot_tails==1
+                N_tail=25;
+                tail_count=0;
+                if time_count-N_tail>0
+                    x_tail=zeros(N_tail,1);
+                    for k_tail=1:1:N_tail
+                        tail_count=tail_count+1;
+                        x_tail(tail_count,1)=berg_pos_x(berg_count,time_count-k_tail)/1000;
+                        y_tail(tail_count,1)=berg_pos_y(berg_count,time_count-k_tail)/1000;
+                        tail_mult=1/10;
+                    end
+                    hline62(:,berg_count)=plot(x_tail,y_tail,'w','linewidth',0.5);
+                    %hline62(:,berg_count)=fill((berg_pos_x(berg_count,time_count-k_tail)/1000)+(((tail_mult*berg_pos_L(berg_count,time_count-k_tail)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((tail_mult*berg_pos_L(berg_count,time_count)/2)/1000).*sin(circ_ind)),'w');
+                    %hline62(:,berg_count)=plot((berg_pos_x(berg_count,time_count-k_tail)/1000)+(((tail_mult*berg_pos_L(berg_count,time_count-k_tail)/2)/1000).*cos(circ_ind)),(berg_pos_y(berg_count,time_count)/1000)+(((tail_mult*berg_pos_L(berg_count,time_count)/2)/1000).*sin(circ_ind)),'w');
+                end
             end
         end
     end
