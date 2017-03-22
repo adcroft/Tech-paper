@@ -57,6 +57,9 @@ def parseCommandLine():
 	parser.add_argument('-broken_shelf', type='bool', default=False,
 		                        help=''' When true, figure plots data after ice shelf breakoff ''')
 	
+	parser.add_argument('-use_Mixed_Melt', type='bool', default=False,
+		                        help=''' When true, figure plots using Mixed_melt_data ''')
+	
 	parser.add_argument('-three_fields_flag', type=str, default='plot_melt_sst_ustar_berg',
 		                        help='''String determines which set three fields to plot. Options are plot_vel_vel_sst, plot_depth_spread_mass_mass
 					plot_melt_sst_ustar_berg.  Other values will plot the 1 field given in the script''')
@@ -107,6 +110,11 @@ def parseCommandLine():
 	#parser.add_argument('-dir_slice_num', type=int, default=1,
 	#	                        help='''The index of the transect used (in the direction not plotted''')
 
+	parser.add_argument('-ylim_min', type=float, default=0.0,
+		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
+
+	parser.add_argument('-ylim_max', type=float, default=480.0,
+		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
 
 
 
@@ -139,6 +147,7 @@ def main(args):
 	broken_path=''
 	if broken_shelf is True:
 		Folder_name= 'After_melt_Collapse_diag_Strong_Wind/' 
+		Folder_name= 'After_melt_Collapse_diag_Strong_Wind/' 
 		broken_path='_calved'
 	Berg_path=Path+'Bergs/' + Folder_name
 
@@ -147,11 +156,19 @@ def main(args):
 	ice_geometry_filename=Shelf_path+'/MOM_Shelf_IC.nc'
 	ISOMIP_IC_filename=Shelf_path+'ISOMIP_IC.nc'
 	
+
+	#Using Mixed_melt_flag
+	use_mixed_melt_flag=''
+	if args.use_Mixed_Melt is True:
+		use_mixed_melt_flag='Mixed_Melt_'
+		Folder_name= 'Mixed_Melt_' +Folder_name
+
 	#Using ALE ice shelf
 	use_ALE_flag=''
 	if use_ALE is True:
 		use_ALE_flag='ALE_z_'
 		Folder_name='ALE_z_' +Folder_name
+		
 		Shelf_path=Path+'Shelf/' + Folder_name
 		Berg_path=Path+'Bergs/' + Folder_name
 		
@@ -176,6 +193,8 @@ def main(args):
 	#Deciding which time to plot (time_slice_num overridded sometimes)
 	time_slice=args.time_slice
 	time_slice_num=args.time_slice_num
+	ylim_min=args.ylim_min
+	ylim_max=args.ylim_max
 		
 	cmap=args.cmap
 
@@ -227,7 +246,7 @@ def main(args):
 			vmax_list=np.array([3.0, -0.5, 0.001])
 			if use_ALE is True:
 				vmin_list=np.array([0.0, -1.9, 0.0])
-				vmax_list=np.array([8.0, -0.5, 0.005])
+				vmax_list=np.array([10.0, -0.5, 0.005])
 			cmap_list=np.array(['jet', 'jet', 'jet'])
 			mask_grounded=np.array([True,True, True])
 			#mask_open_ocean=np.array([True,False, True])
@@ -237,7 +256,7 @@ def main(args):
 
 		#if plot_depth_spread_mass_mass is True:
 		if three_fields_flag=='plot_depth_spread_mass_mass':
-			field_list=np.array(['D','spread_mass','mass'])
+			field_list=np.array(['D','mass','spread_mass'])
 			title_list=np.array(['Ocean Bottom','Ice Shelf Draft', 'Ice Shelf Draft (no spreading)'])
 			colorbar_unit_list=np.array(['Ice Shelf Draft (m)','Ice Shelf Draft (m)','Ice Shelf Draft (m)'])
 			filename_list=np.array([ocean_geometry_filename,Berg_iceberg_file,Berg_iceberg_file])
@@ -273,6 +292,8 @@ def main(args):
 					data=mask_ocean(data,ice_data)
 				else:
 					data=mask_ocean(data,ice_base)
+			plot_data_field((ice_base*0),x,y,-5.0, 10.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
+					ylim_max=ylim_max,return_handle=False)
 			if mask_grounded[k] == True:
 				data=mask_grounded_ice(data,depth,ice_base)
 			if scale_data is True:
@@ -281,7 +302,7 @@ def main(args):
 				title=title_list[k]
 			plot_colorbar=not args.just_one_colorbar
 			datamap=plot_data_field(data,x,y,vmin,vmax,flipped,colorbar=plot_colorbar,cmap=cmap,title=title,\
-					xlabel='x (km)',ylabel='',return_handle=True, colorbar_units=colorbar_unit_list[k],colorbar_shrink=0.5)	
+					xlabel='x (km)',ylabel='',return_handle=True, colorbar_units=colorbar_unit_list[k],colorbar_shrink=0.5,ylim_min=ylim_min, ylim_max=ylim_max)	
 			if k==0:
 				plt.ylabel('y (km)')
 			text(1,1,letter_labels[k], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)

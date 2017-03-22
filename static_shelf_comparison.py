@@ -114,18 +114,33 @@ def mask_grounded_ice(data,depth,base):
 
    return data
 
-def mask_ocean(data,area):
+def mask_ice_old(data,ice_base):
+   """
+   Mask regions where the ice shelf is above ocean Works with 2D or 3D arrays.
+   This is not coded so well, a bit of a hack.
+   """
+   mask=np.zeros([data.shape[1],data.shape[2]])+1.
+   mask[np.where(ice_base>0)]=np.nan
+   if len(data.shape) == 2: # 2D array
+	   data[k,:,:]=data[:,:]*mask[:,:]
+   if len(data.shape) == 3: # 3D array
+	   for k in range(data.shape[0]):
+		   data[k,:,:]=data[k,:,:]*mask[:,:]
+   
+   return data
+
+def mask_ocean(data,area,tol=0.0):
    """
    Mask open ocean. Works with 2D or 3D arrays.
    """
    if len(data.shape) == 2: # 2D array
-     data = np.ma.masked_where(area==0.0,data)
+     data = np.ma.masked_where(area<=tol,data)
      #data[np.where(area<0.5)]=np.nan
 
    else: # 3D array
      NZ,NY,NX = data.shape
      area=np.resize(area,(NZ,NY,NX))
-     data = np.ma.masked_where(area==0,data)
+     data = np.ma.masked_where(area<=tol,data)
 
    return  data
 
@@ -367,7 +382,7 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 		tmp=y ; y=x ; x=tmp
 		x=transpose_matrix(x)
 		y=transpose_matrix(y)
-		y=-y+(np.max(y))
+		#y=-y+(np.max(y))
 		(xlabel , ylabel) = switch_x_and_y(xlabel , ylabel)
 		(xlim_max , ylim_max) = switch_x_and_y(xlim_max , ylim_max)
 		(xlim_min , ylim_min) = switch_x_and_y(xlim_min , ylim_min)
@@ -403,6 +418,9 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 	plt.ylabel(ylabel,fontsize=20)
 	#plt.grid(True)
 	plt.title(title,fontsize=20)
+
+	if flipped is True:
+		plt.gca().invert_yaxis()
 
 	if return_handle is True:
 		return datamap
