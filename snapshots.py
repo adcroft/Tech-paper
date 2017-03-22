@@ -51,9 +51,13 @@ def parseCommandLine():
 	#General flags
 	parser.add_argument('-rotated', type='bool', default=True,
 		                        help=''' Rotates the figures so that latitude runs in the vertical (involves switching x and y. ''')
+	
 	parser.add_argument('-use_ALE', type='bool', default=True,
 		                        help='''When true, it uses the results of the ALE simulations. When false, layed simulations are used.    ''')
-	use_ALE=True
+	
+	parser.add_argument('-use_Mixed_Melt', type='bool', default=False,
+		                        help=''' When true, figure plots using Mixed_melt_data ''')
+	
 	parser.add_argument('-use_days_title', type='bool', default=False,
 		                        help=''' When true, the day number is used as a title for the figures. ''')
 	#What to plot?
@@ -112,8 +116,18 @@ def parseCommandLine():
 	parser.add_argument('-xmax', type=float, default=960.0,
 		                        help='''Minimum x used for plotting (only applies to vertical sectins for now)''')
 
+	parser.add_argument('-ylim_min', type=float, default=240.0,
+		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
+
+	parser.add_argument('-ylim_max', type=float, default=440.0,
+		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
+
 	parser.add_argument('-dir_slice_num', type=int, default=1,
 		                        help='''The index of the transect used (in the direction not plotted''')
+	
+	parser.add_argument('-dashed_num', type=int, default=1,
+		                        help='''The index where the dashed line is plotted''')
+
 
 	parser.add_argument('-colorbar_units', type=str, default='',
 		                        help='''The units for the colorbar''')
@@ -136,6 +150,7 @@ def main(args):
 	rotated=args.rotated
 	use_ALE=args.use_ALE
 	use_days_title=args.use_days_title
+	use_Mixed_Melt=args.use_Mixed_Melt
 
 	#What to plot?
         plot_horizontal_field=args.plot_horizontal_field
@@ -150,6 +165,10 @@ def main(args):
 	if use_ALE is True:
 		ALE_flag='ALE_z_'
 		berg_path=berg_path+ALE_flag
+	Mixed_Melt_flag=''
+	if use_Mixed_Melt is True:
+		Mixed_Melt_flag='Mixed_Melt_'
+		berg_path=berg_path+Mixed_Melt_flag
 	if simulation=='high_melt':
 		Berg_path=berg_path+'Melt_on_high_melt_with_decay/'
 		Berg_path_init=berg_path+'Melt_on_high_melt_with_decay_initialize/'
@@ -162,6 +181,12 @@ def main(args):
 	elif simulation=='Collapse':
 		Berg_path=berg_path+'After_melt_Collapse_diag_Strong_Wind/'
 		Berg_path_init=berg_path+'After_melt_Collapse_diag_Strong_Wind/'
+	elif simulation=='Splitting':
+		Berg_path=berg_path+'After_melt_Collapse_diag_Strong_Wind_Splitting/'
+		Berg_path_init=berg_path+'After_melt_Collapse_diag_Strong_Wind_Splitting/'
+	elif simulation=='Drift':
+		Berg_path=berg_path+'After_melt_drift_diag_Strong_Wind/'
+		Berg_path_init=berg_path+'After_melt_drift_diag_Strong_Wind/'
 	else:
 		return
 
@@ -188,6 +213,14 @@ def main(args):
 		Berg_ocean_file2=Berg_path+'00060101.'
 		Berg_ocean_file3=Berg_path+'00060101.'
 	if simulation=='Collapse':
+		Berg_ocean_file1=Berg_path+'00060101.'
+		Berg_ocean_file2=Berg_path+'00060101.'
+		Berg_ocean_file3=Berg_path+'00060101.'
+	if simulation=='Splitting':
+		Berg_ocean_file1=Berg_path+'00060101.'
+		Berg_ocean_file2=Berg_path+'00060101.'
+		Berg_ocean_file3=Berg_path+'00060101.'
+	if simulation=='Drift':
 		Berg_ocean_file1=Berg_path+'00060101.'
 		Berg_ocean_file2=Berg_path+'00060101.'
 		Berg_ocean_file3=Berg_path+'00060101.'
@@ -227,6 +260,7 @@ def main(args):
 	plot_anomaly=args.plot_anomaly
 	vertical_coordinate=args.vertical_coordinate
 	dir_slice_num=args.dir_slice_num
+	dashed_num=args.dashed_num
 
 	######################################################################################################################
 	################################  Plotting melt comparison  ##########################################################
@@ -236,8 +270,8 @@ def main(args):
 		fig, axes = plt.subplots(nrows=1,ncols=3)
 		fig.set_size_inches(15.0,10.0, forward=True)
 		#fig=plt.figure(figsize=(15,10),facecolor='grey')
-		ylim_min=550.-320.0
-		ylim_max=750.-320.0
+		ylim_min=args.ylim_min
+		ylim_max=args.ylim_max
 		for n in range(3):
 			#flipped=False
 			#field='spread_area'  ;vmin=0.0  ; vmax=1.0
@@ -259,14 +293,24 @@ def main(args):
 				time=time-1825
 				print 'Subtracting t0', time
 			time_str=str(int(np.round(time)))
+			ax=plt.subplot(1,3,n+1)
 			if args.mask_using_bergs is True:
 				iceberg_filename=Iceberg_file_list[n]
 				print iceberg_filename
-				ice_data=load_and_compress_data(iceberg_filename,field='spread_area',time_slice='',time_slice_num=time_slice_num[n],\
+				#ice_data=load_and_compress_data(iceberg_filename,field='spread_area',time_slice='',time_slice_num=time_slice_num[n],\
+				#		rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num)
+				#data1=mask_ice(data1,ice_data,tol=0.9)
+				
+				ice_data=load_and_compress_data(iceberg_filename,field='spread_mass',time_slice='',time_slice_num=time_slice_num[n],\
 						rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num)
-				data1=mask_ice(data1,ice_data)
+				data1=mask_ice(data1,ice_data,tol=1e4)
+				
+			        e=load_and_compress_data(filename,field='e',time_slice='',time_slice_num=time_slice_num[n]\
+					,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=False)
+				
+				plot_data_field(e,x,y,-150.0, 50.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
+					ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=False)  
 			#data1=mask_ocean(data1,shelf_area)
-			ax=plt.subplot(1,3,n+1)
 			if use_days_title is True:
 				title='Time = '+ time_str + ' days'
 			datamap=plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=False,cmap=cmap,title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
@@ -277,8 +321,8 @@ def main(args):
 				plt.ylabel('y (km)',fontsize=20)
 			if n>0:
 				ax.set_yticks([])
-			if (n==2) and (args.field=='spread_area'):
-				plt.plot(np.array([xvec[10], xvec[10]]), np.array([450.0-320., 750.0-320.]),'--', color='k',linewidth=3 )
+			if (n==2) and ( (args.field=='spread_area') or (args.field=='temp')) and (simulation=='Collapse'):
+				plt.plot(np.array([xvec[dashed_num], xvec[dashed_num]]), np.array([130., 460.]),'--', color='k',linewidth=3 )
 		#Creating colorbar
 		fig.subplots_adjust(right=0.85)
 		cbar_ax = fig.add_axes([0.88,0.12 , 0.025, 0.75])
@@ -377,7 +421,7 @@ def main(args):
 
 
 	if save_figure==True:
-		output_file='Figures/snapshots_'+ALE_flag+simulation +'_'+ field + '.png'
+		output_file='Figures/snapshots_'+ALE_flag+Mixed_Melt_flag +simulation +'_'+ field + '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 		#print 'Saving file not working yet'
