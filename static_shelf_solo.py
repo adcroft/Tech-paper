@@ -292,6 +292,8 @@ def main(args):
 					data=mask_ocean(data,ice_data)
 				else:
 					data=mask_ocean(data,ice_base)
+			plot_data_field((ice_base*0),x,y,-5.0, 10.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
+					ylim_max=ylim_max,return_handle=False)
 			if mask_grounded[k] == True:
 				data=mask_grounded_ice(data,depth,ice_base)
 			if scale_data is True:

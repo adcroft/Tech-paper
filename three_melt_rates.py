@@ -132,6 +132,8 @@ def main(args):
 			if mask_open_ocean == True:
 				ice_data=load_and_compress_data(filename_list[k],field='spread_area' ,time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated)
 				data=mask_ocean(data,ice_data)
+				plot_data_field((ice_base*0),x,y,-5.0, 10.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylo,\
+						ylim_max=yhi,return_handle=False)
 
 
 			datamap=plot_data_field(data,x,y,vmin,vmax,flipped,colorbar=False ,cmap='jet',\
