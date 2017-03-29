@@ -316,7 +316,8 @@ def main(args):
 			datamap=plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=False,cmap=cmap,title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
 					ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
 
-			text(1,1,letter_labels[n], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
+			#text(1,1,letter_labels[n], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
+			text(0.1,1,letter_labels[n], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 			if n==0:
 				plt.ylabel('y (km)',fontsize=20)
 			if n>0:

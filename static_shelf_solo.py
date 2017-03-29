@@ -305,7 +305,7 @@ def main(args):
 					xlabel='x (km)',ylabel='',return_handle=True, colorbar_units=colorbar_unit_list[k],colorbar_shrink=0.5,ylim_min=ylim_min, ylim_max=ylim_max)	
 			if k==0:
 				plt.ylabel('y (km)')
-			text(1,1,letter_labels[k], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
+			text(0.1,1,letter_labels[k], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 			#plt.ylim([550., 750])
 			if k>0:
 				ax.set_yticks([])
@@ -436,7 +436,7 @@ def main(args):
 			if k==2:
 				plt.xlabel('y (km)',fontsize=20)
 			plt.ylabel('Depth (m)',fontsize=20)
-			text(1,1,letter_labels[k], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
+			text(0.1,1,letter_labels[k], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 		
 		#For plotting purposes
 		field=field+'_'+ vertical_coordinate

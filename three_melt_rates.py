@@ -140,7 +140,7 @@ def main(args):
 					xlabel='x (km)',ylabel='', ylim_min=ylo,ylim_max=yhi, return_handle=True)	
 					#title=Title_list[k],xlabel='x (km)',ylabel='', ylim_min=ylo,ylim_max=yhi, return_handle=True)	
 			#plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
-			text(1,1,letter_labels[k], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
+			text(0.1,1,letter_labels[k], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 
 			if k==0:
 				plt.ylabel('y (km)',fontsize=20)
