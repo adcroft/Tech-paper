@@ -170,7 +170,8 @@ for k=[1 2]
     axis('off')
     axis([-1 L -1 2])
     caxis([0 1])
-    text(L-L/20,2.1,letters(k,:),'fontsize',20)
+    %text(L-L/20,2.1,letters(k,:),'fontsize',20)
+    text(-1,2.1,letters(k,:),'fontsize',20)
 
     
 end

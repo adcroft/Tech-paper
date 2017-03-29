@@ -139,7 +139,7 @@
 
 \begin{keypoints}
 \item A novel modeling framework is developed to explicitly model large tabular icebergs submerged in the ocean.
-\item Tabular icebergs are constructed out of Lagrangian elements that drift in the ocean, and are held together by numerical bonds.
+\item Tabular icebergs are represented using Lagrangian elements that drift in the ocean, and are held together by numerical bonds.
 %\item The model capabilities are demonstrated by modeling a tabular iceberg drifting away an idealized ice shelf.
 \item Breaking the numerical bonds allows us to model iceberg breakup and calving.
 \end{keypoints}
@@ -157,12 +157,12 @@
 %% \begin{abstract} starts the second page 
 
 \begin{abstract}
-Large tabular icebergs calved from Antarctic ice shelves have long lifetimes (due to their large size), during which they drift across large distances, altering regional ocean circulation, bottom-water formation, sea-ice formation and biological primary productivity in the icebergs' vicinity.
-However, despite their importance, the current generation of ocean circulation models is unable to represent large tabular icebergs.
-In this study we develop a novel framework to model large tabular icebergs submerged in the ocean. In this framework, tabular icebergs are composed of Lagrangian elements that drift in the ocean, and are held together and interact with each other via bonds.
+Large tabular icebergs calved from Antarctic ice shelves have long lifetimes (due to their large size), during which they drift across large distances, altering ambient ocean circulation, bottom-water formation, sea-ice formation and biological primary productivity in the icebergs' vicinity.
+However, despite their importance, the current generation of ocean circulation models do not represent large tabular icebergs.
+In this study we develop a novel framework to model large tabular icebergs submerged in the ocean. In this framework, tabular icebergs are represented by Lagrangian elements that drift in the ocean, and are held together and interact with each other via bonds.
 %We describe the Lagrangian bonded iceberg model and discuss a number of the technical elements involved in its development. 
 %We demonstrate the capabilities of the model by modeling a tabular iceberg drifting away an idealized ice shelf.} 
-A break of these bonds allows the model to emulate calving events (i.e. detachment of a tabular iceberg from an ice shelf), and tabular icebergs breaking up into smaller pieces. Idealized simulations of a calving tabular iceberg, its drift, and of a tabular iceberg breaking into two pieces, demonstrate capabilities of the developed framework.
+A break of these bonds allows the model to emulate calving events (i.e. detachment of a tabular iceberg from an ice shelf) and tabular icebergs breaking up into smaller pieces. Idealized simulations of a calving tabular iceberg, its drift, and breaking into two pieces, demonstrate capabilities of the developed framework.
 \end{abstract}
 
 
@@ -219,29 +219,30 @@ Large tabular icebergs \-- pieces of floating ice with horizontal dimensions sub
 The infrequently-calved tabular icebergs (horizontal extent larger than 5 km) account for more than 90\% of the Southern Hemisphere iceberg mass \citep{Tournadre2016}.
 %While the majority of calving icebergs are small (horizontal extent smaller than 1 km), the far less numerous large tabular icebergs (horizontal extent larger than 5 km) account for more than 90$\%$ of Southern Hemisphere iceberg mass \citep{Tournadre2016}. 
 
-After calving, icebergs slowly drift away from their origins, often becoming stuck in sea ice, or grounding on bathymetric highs along the Antarctic coast \citep{Lichey2001, Dowdeswell2007}. Large tabular icebergs extend deep into the water column, and have the potential to disrupt ocean circulation patterns for months or even years after calving \citep{Robinson2012, Stern2015}.
-The freshwater flux from iceberg melt impacts ocean hydrography around the iceberg, influencing sea-ice production and bottom-water formation \citep{Arrigo2002, Robinson2012, Nicholls2009, Fogwill2016}. Because of their large size, the tabular icebergs have long lifetimes during which they drift over long distances injecting meltwater along the way and impacting the Southern Ocean state (e.g. hydrography, sea ice conditions, etc.) far away from their calving origins \citep{Stern2016}. Meltwater injection (and the accompanying upwelling) from icebergs can also influence biological productivity by bringing nutrients to the surface ocean or changing sea ice conditions \citep{Arrigo2002, Vernet2012, Biddle2015}. The increased productivity associated with free-floating tabular icebergs has been linked with local increases in ocean carbon uptake, potentially large enough to be a significant fraction of the Southern Ocean carbon sequestration \citep{Smith2007}.
+After calving, icebergs drift away from their origins, often becoming stuck in sea ice, or grounding on bathymetric highs along the Antarctic coast \citep{Lichey2001, Dowdeswell2007}. Large tabular icebergs extend deep into the water column, and have the potential to disrupt ocean circulation patterns for months or even years after calving \citep{Robinson2012, Stern2015}.
+The freshwater flux from iceberg melt impacts ocean hydrography around the iceberg, influencing sea-ice production and bottom-water formation \citep{Arrigo2002, Robinson2012, Nicholls2009, Fogwill2016}. Because of their large size, the tabular icebergs have long lifetimes during which they drift over long distances injecting meltwater along the way and impacting the Southern Ocean state (e.g. hydrography, sea ice conditions, etc.) far away from their calving origins \citep{Stern2016, Rackow2017}. Meltwater injection (and the accompanying upwelling) from icebergs can also influence biological productivity by bringing nutrients to the surface ocean or changing sea ice conditions \citep{Arrigo2002, Vernet2012, Biddle2015}. The increased productivity associated with free-floating tabular icebergs has been linked with local increases in ocean carbon uptake, potentially large enough to be a significant fraction of the Southern Ocean carbon sequestration \citep{Smith2007}.
 
 %either increasing it by providing nutrients to the surface ocean, or decreasing by changing sea ice conditions
 
-In recent years, there has been an increased interest in iceberg drift and decay. This surge of interest has been driven by (i) the need to understand polar freshwater cycles in order to create realistic climate forecasts and sea level projections \citep{Silva2006, Shepherd2007, Rignot2013}; and (ii) the increased navigation and exploration activities in high-latitude iceberg-filled waters in the Arctic \citep{Pizzolato2014, Unger2014, Henderson2016}. The increased interest in icebergs has led to the development of numerical models of iceberg drift and decay \citep{Mountain1980, Bigg1997, Gladstone2001, Kubat2005}, some of which have been included in global General Circulation Models \citep{Martin2010, Marsh2015}. These iceberg drift models treat icebergs as Lagrangian point particles, which are advected by the flow, and melt according to certain parameterizations for icebergs melt. Since icebergs are treated as point particles, iceberg drift models are mostly suitable for modeling icebergs smaller than an ocean grid cell. Consequently, these models have mostly been used to represent icebergs smaller than 3.5~km on a global scale \citep{Jongma2009, Martin2010, Marsh2015}.
+In recent years, there has been an increased interest in iceberg drift and decay. This surge of interest has been driven by (i) the need to understand polar freshwater cycles in order to create realistic climate change and sea level projections \citep{Silva2006, Shepherd2007, Rignot2013}; and (ii) the increased navigation and exploration activities in high-latitude iceberg-filled waters in the Arctic \citep{Pizzolato2014, Unger2014, Henderson2016}. The increased interest in icebergs has led to the development of numerical models of iceberg drift and decay \citep{Mountain1980, Bigg1997, Gladstone2001, Kubat2005}, some of which have been included in global General Circulation Models \citep{Martin2010, Marsh2015}. These iceberg drift models treat icebergs as Lagrangian point particles, which are advected by the flow, and melt according to parameterizations for icebergs melt. Since icebergs are treated as point particles, iceberg drift models are mostly suitable for modeling icebergs smaller than an ocean grid cell. Consequently, these models have mostly been used to represent icebergs smaller than 3.5~km on a global scale \citep{Jongma2009, Martin2010, Marsh2015}.
 
-Point-particle iceberg drift models are less suitable for modeling larger tabular icebergs, where the size and structure of the iceberg may be an important feature in determining their drift and decay \citep{Stern2016}. They also are not suitable for studying the local effects that icebergs have on the surrounding ocean, or the small scale processes that influence iceberg melt and decay \citep{Wagner2014, Stern2015}. For these reasons, tabular icebergs are currently not represented in the iceberg drift models used as components of climate models, despite accounting for the vast majority of the total Southern Hemisphere iceberg mass \citep{Tournadre2016}. Point-particle iceberg models also do not have any representation of iceberg breakup and calving, which is know to be an important iceberg decay mechanism and influences iceberg trajectories.
+Point-particle iceberg drift models are less suitable for modeling larger tabular icebergs, where the size and structure of the iceberg may be an important feature in determining their drift and decay \citep{Stern2016}. They also are not suitable for studying the local effects that icebergs have on the surrounding ocean, or the small scale processes that influence iceberg melt and decay \citep{Wagner2014, Stern2015}. For these reasons, tabular icebergs are currently not represented in the iceberg drift models used as components of climate models, despite accounting for the vast majority of the total Southern Hemisphere iceberg mass \citep{Tournadre2016}. Point-particle iceberg models also do not have any representation of iceberg breakup and calving, which is known to be an important iceberg decay mechanism that influences iceberg trajectories.
 %Similarly, operational iceberg models are often inadequate for projecting iceberg drift at fine scales \citep{Turnbull2015}.
 
-The goal of this study is to develop a new framework to model all kinds of icebergs, where tabular icebergs are explicitly resolved in the ocean. Our new representation of icebergs aims to include the following key properties: (i) icebergs should be able to travel large distances within the ocean, (ii)  icebergs should melt and decay as they drift in the ocean, (iii) icebergs should behave as if they has finite extent (so that we can use the model to study local effects that icebergs have on the surrounding ocean), and (iv) tabular icebergs should be able to break away from ice shelves or break into smaller pieces. Properties (i) and (ii) are common to point-particle icebergs models, while properties (iii) and (iv) are new to the framework developed in this study. A further requirement of the new framework is that the model should run sufficiently quickly to be used in general circulation models used for climate. 
+The goal of this study is to develop a new framework to model all kinds of icebergs, where tabular icebergs are explicitly resolved in the ocean. Our new representation of icebergs aims to include the following key properties: (i) icebergs should be able to travel large distances within the ocean, (ii)  icebergs should melt and decay as they drift in the ocean, (iii) icebergs should behave as if they have finite extent (in order to study local effects that icebergs have on the surrounding ocean), and (iv) tabular icebergs should be able to break away from ice shelves or break into smaller pieces. Properties (i) and (ii) are common to point-particle icebergs models, while properties (iii) and (iv) are new to the framework developed in this study. A further requirement of the new framework is that the model should run sufficiently quickly to be used in general circulation models used for climate. 
 
-In order to allow icebergs to travel large distances, it is natural to model the icebergs in a Lagrangian framework (as in the point particle iceberg drift models described above). In our model we therefore represent icebergs using Lagrangian elements. However in our model icebergs are no longer treated as point particles that interact with the ocean at a single location, but rather icebergs are given physical structure, so that they interact with the ocean across multiple ocean grid cells, depress the ocean surface over a wide area, and can interact with other icebergs  (see schematic in Figure \ref{fig:Hex_schematic}). This is done by assigning a finite surface area and shape to the Lagrangian elements, which allows the elements to behave as if they has a finite extent. 
+In order to allow icebergs to travel large distances, we model the icebergs in a Lagrangian framework (as in the point particle iceberg drift models described above). However in our model icebergs are no longer treated as point particles that interact with the ocean at a single location. Instead icebergs are given physical structure, so that they interact with the ocean across multiple ocean grid cells, depress the ocean surface over a wide area, and can interact with other icebergs (Figure \ref{fig:Hex_schematic}). This is done by assigning a finite surface area and shape to the Lagrangian elements, which allows the elements to behave as if they have a finite extent. 
 %Element interact with the ocean by distributing their weight, surface area and melt fluxes over multiple ocean grid cells in a way which is consistent with the shape of the ice element.
-The finite extent of an element is transmitted by the ocean by distributing the element's weight, surface area and melt fluxes over multiple ocean grid cells in a way which is consistent with the shape of the ice element. The finite extent of an element is felt by other elements through repulsive forces which are applied when the boundaries of the elements overlap.
+The finite extent of an element is transmitted by the ocean by distributing the element's weight, surface area and melt fluxes over multiple ocean grid cells in a way which is consistent with the shape of the ice element. 
+Finite-extent elements interact with each other via repulsive forces which are applied when the boundaries of the elements overlap.
 %Elements interact with other elements when the boundaries of the elements overlap (see schematic in Figure \ref{fig:Hex_schematic}).
 
-Large tabular icebergs can then be represented by `bonding' together multiple ice elements using numerical bonds (see schematic in Figure \ref{fig:Hex_schematic}).
+Large tabular icebergs can then be represented by `bonding' together multiple ice elements into larger structures using numerical bonds (Figure \ref{fig:Hex_schematic}).
 The numerical bonds hold the ice elements together and allow a collection of elements to move as a unit. 
-This allows us to study how tabular icebergs drift in the ocean when forced by ocean currents and wind.
+This allows tabular icebergs to drift in the ocean when forced by ocean currents and wind.
 %Figure \ref{fig:Hex_schematic}) shows a schematic of the difference between point-particle icebergs, finite extent icebergs and tabular icebergs constructed out of multiple elements. 
 %Figure \ref{fig:Hex_schematic} shows a schematic of point-particle elements, elements with finite extent and bonded elements, and shows schematically how tabular icebergs can be constructed out of multiple elements.
-An advantage of representing tabular icebergs using numerical bonds is that by manually breaking the bonds, we can simulate iceberg calving, allowing us to study the ocean response to tabular icebergs detaching from ice shelves (e.g.: Figure \ref{fig:SST_Collapse}), or the response to an iceberg fracturing into multiple smaller pieces. 
+An advantage of representing tabular icebergs using numerical bonds is that by breaking the bonds, we can simulate iceberg calving (e.g.: Figure \ref{fig:SST_Collapse}), or the response to an iceberg fracturing into multiple smaller pieces. 
 
 %The goal of this study is to develop a new framework to model all kinds of icebergs where tabular icebergs are explicitly resolved. Our new representation of icebergs aims to include the following key properties: (i) icebergs should be able to travel large distances within the ocean, (ii)  icebergs should melt and decay as they drift in the ocean, (iii) icebergs should behave as if they has finite extent (so that we can use the model to study local effects that icebergs have on the surrounding ocean), and (iv) tabular icebergs should be able to break away from ice shelves or break into smaller pieces. Properties (i) and (ii) are common to point-particle icebergs models, while properties (iii) and (iv) are new to the framework developed in this study. A further requirement of the new framework is that the model should run sufficiently quickly to be used in general circulation models used for climate. 
 
@@ -255,7 +256,7 @@ An advantage of representing tabular icebergs using numerical bonds is that by m
 %The iceberg model presented in this study is developed in order to be used a component of general circulation models used for climate. As such, the numerical tools used are limited to those which allow the model to be sufficiently computationally efficient to run for multiple years while coupled to an ocean model.
 
 The manuscript is organized as follows. 
-Section 2 gives a description of many of the key aspects of the model developed in this study. Since this model is a new approach to modeling icebergs, we present many of the technical aspects of the model.  In Sections 3 and 4, we demonstrate the capabilities of the model by simulating a tabular iceberg detaching from an idealized ice shelf. In a further simulation we break some numerical bonds within the tabular iceberg to demonstrate an iceberg splitting in two.
+Section 2 gives a description of the key aspects of the model developed in this study. Since this model is a new approach to modeling icebergs, we present technical aspects of the model.  In Sections 3 and 4, we demonstrate the capabilities of the model by simulating a tabular iceberg detaching from an idealized ice shelf. In a further simulation we break some numerical bonds within the tabular iceberg to demonstrate an iceberg splitting in two.
 
 %A prerequisite of a complete model of an ice shelf cavity with a calving ice shelf is an understanding of the physical processes involved in iceberg calving. The importance of this problem for projecting sea level has meant that the search for a ``calving law" has received much attention in recent years. However, even with a theory of ice shelf breaking, there are still significant technical barriers preventing us from modeling icebergs calving away from ice shelves in a dynamically consistent way. In this paper, we d
 
@@ -282,35 +283,37 @@ Section 2 gives a description of many of the key aspects of the model developed 
 %In order represent large tabular icebergs with complex shapes, we introduce numerical bonds that allow multiple ice elements to be bonded together to form larger structures (Figure \ref{fig:Hex_schematic}). The numerical bonds hold the ice elements together and allow a collection of elements to move as a unit (e.g.: Figure \ref{fig:SST_Collapse}). An advantage of this approach is that we can then break the numerical bonds to simulate an iceberg detaching from an ice shelf or an iceberg breaking up into smaller pieces.
 
 
-The Lagrangian Bonded Iceberg Model (LBIM) is a Lagrangian particle-based model in that the objects of the model are Lagrangian elements. Each element represents a column of ice that is floating in the ocean, and has a position, velocity, mass, and a set of dimensions, which can evolve in time. The motion of each element is determined by a momentum equation which is solved in the (Lagrangian) reference frame of the element. The elements experience oceanic and atmospheric forces, which are either prescribed, or computed by coupling the LBIM to an ocean/atmosphere model. The LBIM elements also interact with one another and can be bonded together to form larger structures. The angular momentum of the elements is not modeled explicitly; instead rotational motion of larger structures emerge as a consequence of bond orientation and collective motion. 
+The Lagrangian Bonded Iceberg Model (LBIM) is a Lagrangian particle-based model in that the objects of the model are Lagrangian elements. Each element represents a column of ice that is floating in the ocean, and has a position, velocity, mass, and a set of dimensions, which can evolve in time. The motion of each element is determined by a momentum equation which is solved in the (Lagrangian) reference frame of the element. The elements experience oceanic and atmospheric forces, which are either prescribed, or computed by coupling the LBIM to an ocean/atmosphere model. The LBIM elements also interact with one another via attractive and repulsive interactive forces, and can be bonded together to form larger structures. The angular momentum of the elements is not modeled explicitly; instead rotational motion of larger structures emerge as a consequence of bond orientation and collective motion. 
 
 In different contexts, the LBIM elements can be thought to represent individual icebergs, sea ice flows, or, when the elements are bonded together, they can represent larger structures such as tabular icebergs or ice shelves. 
 
 %In this latter case, the LBIM can be categorized as a discrete element model (DEM). 
 % in the sense that large structures are constructed from smaller independent Lagrangian elements. 
 
-The LBIM is developed on the code base of an existing iceberg drift model \citep{Martin2010, Stern2016}. When run with the correct set of runtime flags, the model runs as a traditional iceberg drift model.
+The LBIM is developed on the code base of an existing iceberg drift model \citep{Martin2010, Stern2016}. When run with the correct set of runtime flags, the model runs as a traditional point-particle iceberg drift model.
 %
 %In this section, we discuss the equations of motion governing the element movement and the thermodynamic equations governing the decay of the elements. The also discuss the interactive forces
 
 \subsection{Equations of motion}
-The elements drift in the ocean, in response to atmosphere, ocean and sea-ice drag forces, as well as the Coriolis force and a force due to the sea surface slope.  When these ice elements move alone (without interactions with other elements), they can be thought of as representing individual (or clusters of) small icebergs, and follow the same equations described in the iceberg drift model of \citet{Martin2010} (based on the equations outlined in \citet{Bigg1997} and \citet{Gladstone2001}).
-
-In addition to the external forces, the elements in the LBIM experience interactive forces due to the presence of other elements. Two types of interactive forces are included between elements. The first force is a repulsive force which is applied to elements to prevent them from overlapping the boundaries of the neighboring elements. The second interactive force is a force due to numerical `bonds', and is only applied if two elements are labelled as `bonded'. When two elements are bonded, each element feels an attractive force that prevents the elements from moving too far apart from one another. 
-%The interactive forces between two bonded elements are defined such that in the absence of other forces the elements come to rest adjacent to one another, with no overlap of the iceberg areas. \textcolor{red}{???The last sentence is unclear???}
-
-The momentum equation for each element is given by 
+The elements drift in the ocean in response to atmosphere, ocean and sea-ice drag forces, as well as the Coriolis force, a wave radiation force, a force due to the sea surface slope and interactive forces with other elements. The momentum equation for each element is given by 
 \begin{equation}
 \label{Iceberg_mom_eq}
 M \frac{D \vec{u}}{Dt}=\vec{F}_{A} + \vec{F}_{W}+ \vec{F}_{R}+\vec{F}_{C} +\vec{F}_{SS}+\vec{F}_{SI}+\vec{F}_{IA} ,
 \end{equation}
-where $\frac{D}{Dt}$ is the total (Lagrangian) derivative, $M$ is the mass of the element, $\vec{u}$ is the velocity of the element, and the terms on the right hand side give the forces on the element due to air drag $(\vec{F}_{A})$, water drag $(\vec{F}_{W})$, sea ice drag $(\vec{F}_{SI})$, Coriolis force $(\vec{F}_{C})$, wave radiation force $(\vec{F}_{R})$, sea surface slope $(\vec{F}_{SS})$, and interactions with other elements ($\vec{F}_{IA}$). The environmental forces are the same as those presented in \citet{Martin2010}, and are provided for completeness in Appendix A.  The details of the interactive forces are provided in below. 
+where $\frac{D}{Dt}$ is the total (Lagrangian) derivative, $M$ is the mass of the element, $\vec{u}$ is the velocity of the element, and the terms on the right hand side give the forces on the element due to air drag $(\vec{F}_{A})$, water drag $(\vec{F}_{W})$, sea ice drag $(\vec{F}_{SI})$, Coriolis force $(\vec{F}_{C})$, wave radiation force $(\vec{F}_{R})$, sea surface slope $(\vec{F}_{SS})$, and interactions with other elements ($\vec{F}_{IA}$). 
+
+% 
+When ice elements move alone (without interactions with other elements), they can be thought of as representing individual (or clusters of) small icebergs, and follow the same equations described in the iceberg drift model of \citet{Martin2010} (based on the equations outlined in \citet{Bigg1997} and \citet{Gladstone2001}).
+These environmental forces are provided for completeness in Appendix A. 
+
+In addition to the external forces, the elements in the LBIM experience interactive forces due to the presence of other elements. Two types of interactive forces are included between elements. The first force is a repulsive force which is applied to elements to prevent them from overlapping the boundaries of the neighboring elements. The second interactive force is a force due to numerical `bonds', and is only applied if two elements are labelled as `bonded'. When two elements are bonded, each element feels an attractive force that prevents the elements from moving too far apart from one another.  The details of the interactive forces are provided in below. 
+%The interactive forces between two bonded elements are defined such that in the absence of other forces the elements come to rest adjacent to one another, with no overlap of the iceberg areas. \textcolor{red}{???The last sentence is unclear???}
 
 
 \subsection{Interactive Forces} 
 %As described above, our model treats icebergs as rigid icebergs with finite extent, which move through the ocean.
-The interactive forces in the LBIM model are used to (i) prevent the ice elements from overlapping and (ii) to connect multiple ice elements together so that the collection of elements moves as a rigid body.
-Modeling the collisions and movements of rigid objects precisely, requires very small time steps and precise collision detection algorithms, which are very computationally expensive. Models using these methods are typically only run for a few days or even a few seconds, and are used to study rapid processes like crack formation or ridging \citep{Hopkins2004, Bassis2013, Rabatel2015}). The tabular iceberg framework presented in this study is developed in order to be used in general circulation models used for climate, and therefore must be run for many years. In order to gain the required computational efficiency, we relax the requirement that icebergs must be perfectly rigid and that ice elements can not overlap. Instead, we model the interactive forces between ice elements using damped elastic forces, which can be calculated more rapidly. %A consequence of this is that the tabular icebergs can bend slightly, and ice elements can overlap slightly. However, these effects are sufficiently small that it 
+The interactive forces in the model are used to (i) prevent the ice elements from overlapping and (ii) to connect multiple ice elements together so that the collection of elements moves as a rigid body.
+Modeling the collisions and movements of rigid objects precisely, requires very small time steps and precise collision detection algorithms, which are very computationally expensive. Models using these methods are typically only run for a few days or even a few seconds, and are used to study rapid processes like crack formation or ridging \citep{Hopkins2004, Bassis2013, Rabatel2015}). The tabular iceberg framework presented in this study is developed in order to be used in general circulation models used for multi-year simulations. In order to gain the required computational efficiency, we relax the requirement that icebergs must be perfectly rigid and that ice elements can not overlap. Instead, we model the interactive forces between ice elements using damped elastic forces, which can be calculated more efficiently. %A consequence of this is that the tabular icebergs can bend slightly, and ice elements can overlap slightly. However, these effects are sufficiently small that it 
 
 %
 %
@@ -336,7 +339,7 @@ To describe the forces between two elements, we begin by introducing some notati
 \label{distance}
 d_{ij}= | \vec{x_{i}} - \vec{x_{j}}|.
 \end{equation}
-When calculating the interactive forces between elements, the elements are assumed to be circular. We define the interaction radius of an element by 
+In calculations of the interactive forces between elements, the elements are assumed to be circular. We define the interaction radius of an element by 
 \begin{equation}
 \label{Diameter}
 R_{i}=\sqrt{\frac{A_{i}}{\pi}},
@@ -374,11 +377,11 @@ $(\vec{F_{e}})_{ij}$ and $(\vec{F_{d}})_{ij}$ are the elastic and frictional dam
 The elastic force $(\vec{F_{e}})_{ij}$ between elements is given by
 \begin{equation}
 \label{F_elastic}
-(\vec{F_{e}})_{ij}= -\kappa_{e}  \bigg( d_{i,j}-L_{i,j} \bigg) T_{i,j} \vec{r}_{ij},
+(\vec{F_{e}})_{ij}= -\kappa_{e}  \bigg( d_{i,j}-L_{i,j} \bigg) M_{i,j} \vec{r}_{ij},
 \end{equation}
-where $\vec{r}_{ij}= \frac{(\vec{x_{i}} -\vec{x_{j}})}{|\vec{x_{i}} -\vec{x_{j}}|}$ is the directional unit vector between the position of element $i$ and $j$, $\kappa_{e}$ is the spring constant, and $T_{i,j}$ is the minimum of the thickness of elements $i$ and $j$. The interactive forces obey Newton's 3rd Law (i.e.: $(\vec{F}_{IA})_{ij}=-(\vec{F}_{IA})_{ji}$).
+where $\vec{r}_{ij}= \frac{(\vec{x_{i}} -\vec{x_{j}})}{|\vec{x_{i}} -\vec{x_{j}}|}$ is the directional unit vector between the position of element $i$ and $j$, $\kappa_{e}$ is the spring constant, and $M_{i,j}$ is the minimum of the masses of elements $i$ and $j$. The interactive forces obey Newton's 3rd Law (i.e.: $(\vec{F}_{IA})_{ij}=-(\vec{F}_{IA})_{ji}$).
 %This is in contrast to some other DEM models in the literature (e.g. \citet{Li2014}). 
-The minimum thickness, $T_{i,j}$, is preferred to the average thickness, since this means that for two bonded elements a fixed distance apart, the acceleration due to elastic forces is bounded, even when the thickness of one of the elements approaches zero. 
+The minimum mass, $M_{i,j}$, is preferred to the average thickness, since this means that for two bonded elements a fixed distance apart, the acceleration due to elastic forces is bounded, even when the thickness of one of the elements approaches zero. 
 
 %
 %Since ice elements are able to melt entirely, the repulsive forces between elements need to be carefully defined so that they are stable even for very small elements with mass approaching zero. We define the elastic repulsive force $(F_{r})_{ij}$ between elements i and j as
@@ -389,7 +392,7 @@ The minimum thickness, $T_{i,j}$, is preferred to the average thickness, since t
 %where $A_{o}(i,j)$ is the overlap area of the two circles centered at $\vec{x_{i}}$ and $\vec{x_{j}}$, with diameter $D_{i}$ and $D_{j}$ (see Figure \ref{fig:Interactive_forces}), respectively, and $\kappa_{r}$ is the repulsive spring constant. We choose $(F_{r})_{ij}$ to be proportional to the overlap area between the interactive circles surrounding each element so that the acceleration due to this repulsive force is bounded, even as the element mass approaches zero.   This consideration is not needed for the bonded force, since element bonds will be broken when elements are smaller than a threshold size. 
 %[Should we use a bonded force given by  $(F_{b})_{ij}= -\kappa_{b}  \bigg( d_{i,j}-L_{i,j}) \bigg)^{2} T_{i,j} \vec{r}$ rather? Come back to this.]
 
-The frictional damping force acts to oppose the relative velocity of the two particles.
+The frictional damping force acts to dampen the relative motion of the two particles.
 %, both in the direction parallel to $\vec{r}_{ij}$ and in the direction perpendicular to  $\vec{r}_{ij}$.
 If $\vec{r}_{ij}^{\perp}$ is the direction vector perpendicular to $\vec{r}_{ij}$, and $P_{\vec{r}_{ij}}$ and $P_{\vec{r}_{ij}^{\perp}}$ are the projection matrices that project onto $\vec{r}_{ij}$ and $\vec{r}_{ij}^{\perp}$ respectively, then the frictional damping force is given by
 \begin{equation}
@@ -397,19 +400,22 @@ If $\vec{r}_{ij}^{\perp}$ is the direction vector perpendicular to $\vec{r}_{ij}
 %(F_{d})_{ij}=   -C_{r}|(u_{i} -u_{j}) \cdot \vec{r}   | \vec{r}  - C_{t}|(u_{i} -u_{j})\cdot  \vec{r}^{\perp} | \vec{r}^{\perp})
 (\vec{F_{d}})_{ij}=   \Bigg (-c_{r_{||}} P_{\vec{r}_{ij}}  - c_{r_{\perp}} P_{\vec{r}_{ij}^{\perp}} \Bigg ) \cdot (\vec{u_{i}} -\vec{u_{j}} ) 
 \end{equation}
-Here $c_{r_{||}}$ and $c_{r_{\perp}}$ are the drag coefficients for the damping parallel and perpendicular to $r_{ij}$, respectively. We set $c_{r_{||}}=2\sqrt{\kappa_{e} }$, so that the elastic force parallel to $\vec{r}_{ij}$ is critically damped. The damping coefficient in the the perpendicular direction is set to $c_{r_{\perp}}=\frac{1}{4}c_{r_{||}}$. 
+Here $c_{r_{||}}$ and $c_{r_{\perp}}$ are the drag coefficients for the damping motion parallel and perpendicular to $r_{ij}$, respectively. We set $c_{r_{||}}=2\sqrt{\kappa_{e} }$, so that the elastic force parallel to $\vec{r}_{ij}$ is critically damped. The perpendicular drag coefficient is set to $c_{r_{\perp}}=\frac{1}{4}c_{r_{||}}$. The perpendicular damping force is used reduce the relative motion of ice elements passing by one another with overlapping boundaries.
+%The perpendicular damping force is used to damping coefficient in the the perpendicular direction is set to $c_{r_{\perp}}=\frac{1}{4}c_{r_{||}}$. 
 %The frictional damping force perpendicular to $\vec{r}_{ij}$ helps to reduce the motion of particles when many particles are packed tightly together (as in the uncoupled experiments below), and also acts to reduce the vibrations within larger bonded structures. 
 The damping forces are implemented using an implicit time stepping scheme, to avoid stability issues for very small elements (details found in Appendix B). 
 
 Figure \ref{fig:Regular_Uncoupled_sim} illustrates the effectiveness of the repulsive forces in an uncoupled (ice-only) simulation of ice elements forced to drift westward into a bay. The elements eventually come to rest in the bay with minimal overlap between elements. 
-In this simulation we find that the frictional damping forces (both parallel and perpendicular to $\vec{r}_{ij}$) are needed to reduce the motion (vibrations) of particles packed tightly together at the coast.
-Figure \ref{fig:Uncoupled_sim} illustrates the effectiveness of the numerical bonds in simulations of small icebergs (individual un-bonded elements) and large icebergs (constructed from many ice elements bonded together) forced to drift towards a convex coast line. When the tabular icebergs arrive at the coast, they bump into the coastline and begin to rotate, influencing the paths of the other icebergs (see movie S1 in the supplementary material). This example illustrates an advantage of using small elements bonded together, to represent large-scale structure and rotational motion without explicitly accounting for  the angular momentum of the elements (as discussed in \citet{Jakobsen2001}).
+%The overlap between elements can be reduced by increasing the spring constant, $\kappa_{e}$.
+%Since the Courant-Friedrichs-Lewy (CFL) condition for a critically damped spring is $(dt)^{2} < 4 /  \kappa_{e}$, a value of $ \kappa_{e}=10^{-5}$ is used which is large enough to prevent a lot of overlap between elements, but sufficiently small to make the model stable for 5 minute time steps . 
+%The overlap of the elements can be reduced by increasing the spring constant, $\kappa_{e}$. A value of $ \kappa_{e}=10^{-5}$ is used which since this is large enough to prevent too much overlap, and small enough to satisfy to the Courant-Friedrichs-Lewy (CFL) stability condition $(dt)^{2} < 4 /  \kappa_{e}$, using a 5 minute time step (see Supporting Information for details).
+Figure \ref{fig:Uncoupled_sim} illustrates the effectiveness of the numerical bonds in simulations of small icebergs (individual un-bonded elements) and large icebergs (constructed from many ice elements bonded together) forced to drift towards a convex coast line. When the tabular icebergs arrive at the coast, they bump into the coastline and begin to rotate, influencing the paths of the other icebergs (movies S1 and S2 in the Supporting Information). This example illustrates an advantage of using small elements bonded together, to represent large-scale structure and rotational motion without explicitly accounting for  the angular momentum of the elements (as discussed in \citet{Jakobsen2001}).
 
 \subsection{Initializing element geometry and packing}
-For purposes of packing, we assume that elements have surface areas which are shaped as equally-sized regular hexagons (note that the elements are assumed to be circular for proposes of interactions, but are assumed to be hexagonal for packing purposes). When packing these elements together, the hexagonal elements are initially arranged in a staggered lattice, with each element bonded to the adjacent elements (Figure \ref{fig:Hex_intersections}a). In this arrangement, each element (away from the edges) is bonded to six other elements. The bonds between elements form a pattern of equilateral triangles, which give the larger structure rigidity. The circular shape of elements (used for interactions) is inscribed within the hexagonal shape used for packing (Figure  \ref{fig:Hex_intersections}a). The centers of adjacent elements are initially separated by a distance $d_{i,j}=L_{i,j}=2A_{p}$, where $A_{p}$ is the length the apothems of the hexagons.
+For purposes of initialization, we assume that elements have surface areas which are shaped as equally-sized regular hexagons (note that the elements are assumed to be circular for proposes of interactions). When packing elements together, the hexagonal elements are initially arranged in a staggered lattice, with each element bonded to the adjacent elements (Figure \ref{fig:Hex_intersections}a). In this arrangement, each element (away from the edges) is bonded to six other elements. The bonds between elements form a pattern of equilateral triangles, which gives rigidity to the larger structure. The circular shape of elements (used for interactions) is inscribed within the hexagonal shape used for packing (Figure  \ref{fig:Hex_intersections}a). The centers of adjacent elements are initially separated by a distance $d_{i,j}=L_{i,j}=2A_{p}$, where $A_{p}$ is the length the apothems of the hexagons.
 % and \ref{fig:Hex_schematic}
 
-Some experiments were also performed using rectangular elements, arranged in a regular (non-staggered) lattice. In this case, each element forms four bonds with adjacent elements. However, the resultant structures were found to be much less rigid and tended to collapse when sufficient forces was applied. For this reason, hexagonal elements are used here.
+Some experiments were also performed using rectangular elements, arranged in a regular (non-staggered) lattice. In this case, each element forms four bonds with adjacent elements. However, the resultant structures were found to be much less rigid and tended to collapse when sufficient forces was applied. For this reason, we only show the results using hexagonal elements.
 
 
 \subsection{Ocean-ice and ice-ocean coupling}
@@ -457,17 +463,20 @@ respectively.  In this way, elements with no bonds, melt like point-particle ice
 Including interactions between elements leads to an increase in the computational complexity of the model. In this subsection we comment on some of the algorithmic procedures that have been used to increase the computational efficiency.
 
 \subsubsection{Interactions and Bonds}
-At every time step, we calculate the force on each element due to interactions with every other element. This involves order $N^{2}$ operations (for N elements). However, since each element only has repulsive interactions with elements that are less than one ocean grid cell away, and each element only has bonded interactions with a small number of other elements, we are able to reduce the number of computations. 
+At every time step, we calculate the force on each element due to interactions with every other element. This involves order $N^{2}$ operations (for N elements), which becomes computational expensive as N grows large. 
+We reduce the number of computations by leveraging the fact that each element only has repulsive interactions with elements that are less than one ocean grid cell away, and each element only has bonded interactions with a small number of other elements. 
+%Using these features we are able to avoid preforming an exhaustive search through all element pairs.
+%However, since each element only has repulsive interactions with elements that are less than one ocean grid cell away, and each element only has bonded interactions with a small number of other elements, we are able to reduce the number of computations. 
 
-This is achieved by storing the element data in an efficient way that eliminates a search through all element pairs to check if they are close to one another or are bonded with one another. The data storage system is organized as follows: pointers to the memory structures containing each element are stored in linked list data structures, which allow elements to be added and removed from the lists easily without restructuring the entire list. Instead of using one list for all the elements on a processor (as was done in the original code \citep{Martin2010}), we use a separate linked list for each ocean grid cell. When an element moves between ocean grid cells, it is removed from its original list and added to the list corresponding to its new ocean grid cell. Since the area of elements has to be smaller than the area of an ocean grid cell, the critical interaction length scale (equation \ref{eq:Interaction_crit}) is less than the size of a grid cell. This means that elements only experience repulsive forces with other elements in the same ocean grid cell, or in one of the 8 adjacent cells. At each time step and for each element $i$, the code traverses the linked lists of the 9 surrounding grid cells, and applies a repulsive force if $d_{i,j} < L_{ij}$ (whether the elements are bonded or not). Limiting the possible repulsive interactions to elements in these 9 linked lists substantially reduces the computational time needed to calculate the total interactive forces. 
+The computation reduction is achieved by storing the element data in an efficient way that eliminates a search through all element pairs to check if they are close to one another or are bonded with one another. The data storage system is organized as follows: pointers to the memory structures containing each element are stored in linked list data structures, which allow elements to be added and removed from the lists easily without restructuring the entire list. Instead of using one list for all the elements on a processor (as was done in the original code \citep{Martin2010}), we use a separate linked list for each ocean grid cell. When an element moves between ocean grid cells, it is removed from its original list and added to the list corresponding to its new ocean grid cell. Since the area of elements has to be smaller than the area of an ocean grid cell, the critical interaction length scale (equation \ref{eq:Interaction_crit}) is less than the size of a grid cell. This means that elements only experience repulsive forces with other elements in the same ocean grid cell, or in one of the 8 adjacent cells. At each time step and for each element $i$, the code traverses the linked lists of the 9 surrounding grid cells, and applies a repulsive force if $d_{i,j} < L_{ij}$ (whether the elements are bonded or not). Limiting the possible repulsive interactions to elements in these 9 linked lists substantially reduces the computational time needed to calculate the total interactive forces. 
  
 The attractive forces are computed in a following way. Each bond is assigned a piece of memory. Each ice element contains a linked list of each of its bonds (typically up to six bonds per element). At every time step, the code traverses the lists of bonded elements, and adds an attractive bonded force corresponding to these bonds if $d_{i,j} > L_{ij}$ (the repulsive bonded force to be applied when $d_{i,j} < L_{ij}$ is already accounted for by the procedure outlined in the previous paragraph). Having a list of bonds stored with each element reduces the computations needed for bonded interactions from order $N^{2}$ to order N. Computing attractive forces separately from the repulsive forces allows us to avoid checking whether two elements are bonded, which further increases the computational efficiency. 
 
 \subsubsection{Parallelization and halos}
-The LBIM runs on multiple processors in parallel (using the same grid decomposition as the ocean model). When elements move from an ocean cell on one processor to an ocean cell on a second processor, the memory has to be passed from one processor the next, added and removed to the appropriate lists and the memory has to be allocated and deallocated correctly. Element interactions across the edge of processors are handled using computational halos. A computational halo is a copy of the edge of a one processor which is appended to the edge of a second processor, so that the first processor can interact with the second processor during a time step. Before each time step, elements at the edges of each processor are copied onto the halos of adjacent processors so that they can be used in calculating the interactive forces. After each time step, these halos are removed, and the process is repeated. These halo updates are one of the most computationally expensive parts of the LBIM. Details of how the bonds are broken and reconnected across processor boundaries are provided in Appendix~C.
+The LBIM runs on multiple processors in parallel (using the same grid decomposition as the ocean model). When elements move from an ocean cell on one processor to an ocean cell on a second processor, the memory has to be passed from one processor the next, added and removed to the appropriate lists and the memory has to be allocated and deallocated correctly. Element interactions across the edge of processors are handled using computational halos. A computational halo is a copy of the edge of a one processor which is appended to the edge of a second processor, so that the first processor can interact with the second processor during a time step. Before each time step, elements at the edges of each processor are copied onto the halos of adjacent processors so that they can be used in calculating the interactive forces. After each time step, these halos are emptied, and the process is repeated. These halo updates are one of the most computationally expensive parts of the LBIM. Details of how the bonds are broken and reconnected across processor boundaries are provided in Appendix~C.
 
 \subsubsection{Time stepping}
-The elements in the LBIM are advected using a semi-implicit velocity Verlet time-stepping scheme. The velocity Verlet time stepping scheme is commonly used in discrete element models in video games because it is computational efficient and has desirable stability properties \citep{Jakobsen2001}. This time stepping scheme was preferred to the Runge-Kutta  4, which was used in the iceberg model of \citet{Martin2010} since the Verlet time stepping only requires one calculation of the interactive forces once per time step (while the Runge-Kutta scheme requires the interactive forces to be calculated four times). Since the calculation of the interactive forces is one of the most computationally expensive part of the algorithm, the Verlet scheme leads to a significant increase in the computational efficiency of the model. The Verlet scheme used in the LBIM contains a modification of the original (fully explicit) velocity Verlet time stepping scheme in that damping terms are treated implicitly (which increases the numerical stability). The details of this time stepping schemed are outline in Appendix B.
+The elements in the LBIM are advected using a semi-implicit velocity Verlet time-stepping scheme. The velocity Verlet time stepping scheme is commonly used in discrete element models in video games because it is computational efficient and has desirable stability properties \citep{Jakobsen2001}. This time stepping scheme was preferred to the Runge-Kutta  4, which was used in the iceberg model of \citet{Martin2010} since the Verlet time stepping only requires one calculation of the interactive forces once per time step (while the Runge-Kutta scheme requires the interactive forces to be calculated four times). Since the calculation of the interactive forces is one of the most computationally expensive part of the algorithm, the Verlet scheme leads to a significant increase in the computational efficiency of the model. The Verlet scheme used in the LBIM contains a modification of the original (fully explicit) velocity Verlet time stepping scheme in that damping terms are treated implicitly (which increases the numerical stability). The details of this time stepping schemed are outlined in Appendix B.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -503,7 +512,7 @@ The introduction of Lagrangian elements, numerical bonds and interpolation schem
  
  \subsection{Model configuration}
 We use the geometric setup of the Marine Ice Ocean Modeling Inter-comparison Project (MISOMIP) \citep{Asay-Davis2016}.
-The configuration consists of an idealized ice shelf in a rectangular domain. The domain is $L_{x}=80$~km wide and $L_{y}=480$~km long, and contains an ice shelf which is grounded on the south side of the domain and has an ice front at y=650~km. The ice thickness and bottom topography of this setup are shown in Figure \ref{fig:ISOMIP_mass_and_topog}a and \ref{fig:ISOMIP_mass_and_topog}c respectively, with the grounding line position drawn in for reference. The configuration is the same as that of the Ocean0 setup in the MISOMIP, with a few minor changes to the ice-shelf geometry (see Supplementary Material for details).
+The configuration consists of an idealized ice shelf in a rectangular domain. The domain is $L_{x}=80$~km wide and $L_{y}=480$~km long, and contains an ice shelf which is grounded on the south side of the domain and has an ice front at y=650~km. The ice thickness and bottom topography of this setup are shown in Figure \ref{fig:ISOMIP_mass_and_topog}a and \ref{fig:ISOMIP_mass_and_topog}c respectively, with the grounding line position drawn in for reference. The configuration is the same as that of the Ocean0 setup in the MISOMIP, with a few minor changes to the ice-shelf geometry (see Supporting Information for details).
 % (see supplementary materials for details).
 %
 %with three changes made:
@@ -549,7 +558,7 @@ After spinup, a large tabular iceberg detaches from the ice shelf, and is allowe
 %Breaking the bonds of these surrounding elements allows the tabular iceberg to move away from the ice-shelf cavity more easily.\textcolor{red}{??? this is unclear???}
 
 %\subsection{Wind stress and bond breaking:}
-After the spinup period, a wind stress $\vec{\tau} = <\tau_{x},\tau_{y}> = < 0.05, 0.05 >$  $\frac{N}{m^{2}}$ is applied to drive the tabular iceberg away from the ice-shelf cavity.  This is referred to as the control simulation. Perturbation experiments were also performed using other wind stress values. Further perturbation experiments were performed by breaking some numerical bonds in order to break the tabular iceberg into smaller pieces. %The details of these bond breaking simulations are described below. 
+After the spinup period, a wind stress $\vec{\tau} = <\tau_{x},\tau_{y}> = < 0.05, 0.05 >$  $\frac{N}{m^{2}}$ is applied to drive the tabular iceberg away from the ice-shelf cavity.  This is referred to as the Control simulation. Perturbation experiments were also performed using other wind stress values. Further perturbation experiments were performed by breaking some numerical bonds in order to break the tabular iceberg into smaller pieces. %The details of these bond breaking simulations are described below. 
 
 %\begin{enumerate}
 %\item
@@ -577,11 +586,11 @@ After the spinup period, a wind stress $\vec{\tau} = <\tau_{x},\tau_{y}> = < 0.0
 %\subsection{Ocean spinup}
 
 %\subsection{Iceberg motion}
-After spinup, the elements near the ice-shelf front are allowed to move freely, and the icebergs begin to drift away from the ice shelf while fully submerged in the ocean (see Figures \ref{fig:SST_Collapse} and \ref{fig:Temperature_section_Collapse}, and the animations in the supplementary materials).
+After spinup of the Control simulation, the elements near the ice-shelf front are allowed to move freely, and the icebergs begin to drift away from the ice shelf while fully submerged in the ocean (see Figures \ref{fig:SST_Collapse} and \ref{fig:Temperature_section_Collapse}, and the movies in the Supporting Information ).
 At this point, the LBIM and the ocean model are fully coupled: changes to the iceberg position alter the top-of-ocean pressure and dynamical boundary condition; and changes to the iceberg melt rates alter the top-of-ocean temperature, salt and mass fluxes. These changing ocean boundary conditions influence the ocean by triggering gravity waves, driving surface mixing, and affecting the ocean stratification. The evolving ocean velocities, temperatures and salinities feedback onto the ice elements by changing the force balance on the ice elements (leading to changes in the elements' position), and altering the melt rates. The various feedbacks within this coupled system offer many opportunities for the model to become unstable. The fact that the model is stable and that we are able to simulate tabular icebergs moving in the ocean without the modeling crashing and introducing artificial effects like tsunamis, is a non-trivial technical milestone.
 
 \subsection{Iceberg motion}
-In the control simulation, the semi-circular tabular iceberg moves as a cohesive unit due to the presence of the numerical bonds, while the smaller ice fragments quickly disperse (Figure \ref{fig:SST_Collapse}). The tabular iceberg drifts towards the north east, driven by the wind and steered by the Coriolis force. As the tabular iceberg drifts northwards, it rotates in a counterclockwise direction (the direction of the Coriolis force in the Southern Hemisphere), and makes contact with the eastern boundary of the domain, before continuing northward. Most of the smaller ice fragments also move to the northeast, but not as a cohesive unit. Some of these element also move to other parts of the domain. 
+In the Control simulation, the semi-circular tabular iceberg moves as a cohesive unit due to the presence of the numerical bonds, while the smaller ice fragments quickly disperse (Figure \ref{fig:SST_Collapse}). The tabular iceberg drifts towards the north east, driven by the wind and steered by the Coriolis force. As the tabular iceberg drifts northwards, it rotates in a counterclockwise direction (the direction of the Coriolis force in the Southern Hemisphere), and makes contact with the eastern boundary of the domain, before continuing northward. Most of the smaller ice fragments also move to the northeast, but not as a cohesive unit. Some of these element also move to other parts of the domain. 
 
 %The fact that the model does not crash after a few time steps shows that the methods described above are fairly robust, and... of this work is that this tabular iceberg-ocean is stable while the coupled to the ocean model and does not crash immediately. The bonded
 %
@@ -591,40 +600,40 @@ When the wind is purely offshore ($\tau_{x} = 0.0 \frac{\textrm{N}}{\textrm{m}^{
 While this result is partly an artifact of the chosen shape of the calving iceberg, it is also consistent with \citet{Bassis2013} who noted that calving is a two step process consisting of (i) ice-shelf rifting that forms an iceberg and (ii) iceberg detachment. The results here suggest that strong (cross-shore) winds may be required to drive large tabular icebergs away from their source ice shelves.
 
 \subsection{Breaking bonds}
-The numerical bonds in the LBIM enable the tabular iceberg to retain its shape. This is demonstrated by comparing the control simulation to an identical simulation where all numerical bonds have been removed (Figure \ref{fig:Drift_berg}). In the bond-free simulation, the ice elements disperse and the calved iceberg quickly loses its original structure. This bond-free simulation does not adequately represent tabular iceberg, which can move long distances through the ocean as a cohesive unit. This result motivates the inclusion of numerical in the LBIM model, even though they are computationally expensive. 
+The numerical bonds in the LBIM enable the tabular iceberg to retain its shape. This is demonstrated by comparing the Control simulation to an identical simulation where all numerical bonds have been removed (Figure \ref{fig:Drift_berg}). In the bond-free simulation, the ice elements disperse and the calved iceberg quickly loses its original structure. This bond-free simulation does not adequately represent tabular iceberg, which can move long distances through the ocean as a cohesive unit. This result motivates the inclusion of bonds in the LBIM model, even though they are more computationally expensive than traditional point-iceberg models. 
 %The model behavior in the bond-free simulations is similar to an ice-shelf disintegration event.%, suggesting that 
 %Breaking multiple bonds simultaneously could be used to simulate ice shelf disintegration events. \textcolor{red}{??? either add something more or remove this sentence ???}
 
-By breaking some (but not all) numerical bonds, we can simulate breaking of tabular icebergs into smaller pieces. Figure \ref{fig:Splitting_berg} shows the results of an experiment which is identical to the control experiment, except that all numerical bonds that intersect the line $x=\frac{L_{x}}{2}$ have been severed. This effectively cuts the large tabular iceberg into two halves. As the icebergs drift northwards, the two halves of the tabular iceberg each move as a cohesive unit, but they are able to move independently of one other  (Figure \ref{fig:Splitting_berg}). The two large fragments initially move together, but begin to separate after a few days.
+By breaking some (but not all) numerical bonds, we can simulate breaking of tabular icebergs into smaller pieces. Figure \ref{fig:Splitting_berg} shows the results of an experiment which is identical to the Control experiment, except that all numerical bonds that intersect the line $x=\frac{L_{x}}{2}$ have also been severed. This effectively cuts the large tabular iceberg into two halves. As the icebergs drift northwards, the two halves of the tabular iceberg each move as a cohesive unit, but they are able to move independently of one other  (Figure \ref{fig:Splitting_berg}). The two large fragments initially move together, but begin to separate after a few days.
 %The iceberg fragments move more rapidly the larger iceberg in the control simulation, and are more strongly influenced by the wind. 
 The breaking of a tabular iceberg has the additional effect of increasing the total surface area of ice exposed to the ocean, thus increasing the total decay rate of the icebergs. 
 
 
 \subsection{Ocean response}
-Since the tabular iceberg is submerged in the ocean, the iceberg calving and drift affects the surrounding ocean. In the control simulation, as the tabular iceberg drifts northward
+Since the tabular iceberg is submerged in the ocean, the iceberg calving and drift affects the surrounding ocean. In the Control simulation, as the tabular iceberg drifts northward
 a warming of the surface waters is observed around the tabular iceberg, with the largest warming occurring at the ice-shelf front and along the tabular iceberg's rounded edge (Figure \ref{fig:SST_Collapse}). This surface warming is caused by upwelling of the warmer waters from beneath the ice shelf and iceberg. As the icebergs drifts away from the ice shelf, these warmer waters remain at the surface, mapping out the iceberg wake (Figure \ref{fig:SST_Collapse}). The motion of the tabular iceberg disturbs the ocean surface, which affects ocean velocities through out the water column (Figure \ref{fig:Velocity_section_Collapse}). The elevated shears around the tabular iceberg lead to increased vertical mixing in the vicinity of the iceberg, which alters the stratification of the water column (Figure \ref{fig:Temperature_section_Collapse}), warming the upper ocean. 
 %
 The signature of upwelling water in the wake of a drifting tabular iceberg bears some similarity to satellite observations of streaks of increased ocean color in the wake of tabular iceberg in the Southern Ocean \citep{Duprat2016}, suggesting that the increased productivity around icebergs may be driven by upwelling water delivering nutrients to the surface.
 
 
 \subsection{Iceberg melt rates}
-The increased subsurface velocities and temperatures cause elevated melt rates at the base of the ice shelf and iceberg (Figure \ref{fig:Collapse_solo_melt}). The largest melt rates are observed at the newly calved ice-shelf front and on the rounded side of the tabular iceberg (Figure \ref{fig:Collapse_solo_melt}a), where the iceberg calving has created steep ice cliffs. These sharp ice fronts allow for large ocean currents (Figure \ref{fig:Collapse_solo_melt}c), which drive the elevated melt rates. The elevated melt rates act to smooth out the ice front over time, making the ice cliff less steep. While this is likely a real phenomena that could be observed in nature, we should be wary of the modeled velocities at the ice cliffs, since large changes in ice thicknesses are often associated with numerical pressure gradient errors which can drive spurious motion.
+The increased subsurface velocities and temperatures cause elevated melt rates at the base of the ice shelf and iceberg (Figure \ref{fig:Collapse_solo_melt}). The largest melt rates are observed at the newly calved ice-shelf front and on the rounded side of the tabular iceberg (Figure \ref{fig:Collapse_solo_melt}a), where the iceberg calving has created steep ice cliffs. These sharp ice fronts allow for large ocean currents (Figure \ref{fig:Collapse_solo_melt}c), which drive the elevated melt rates. The elevated melt rates act to smooth out the ice front over time, making the ice cliff less steep. While this is likely a real phenomena that could be observed in nature, we should be wary of the modeled velocities at the ice cliffs, since large changes in ice thicknesses are associated with numerical pressure gradient errors which can drive spurious motion.
 
 The large melt rates along the ice edges are also partly driven by the fact that different melt parametrization are used in the interior and edges of large ice structures (see Section 2.5). Figure \ref{fig:threemelt} shows the melt rates computed with (a) the 3-equation-model parametrization \citep{Holland1999}, (b) point-particle-iceberg-melt parametrization \citep{Gladstone2001}, and (c) the mixed-melt-rate parametrization (introduced in Section 2.5). The 3-equation-model melt rates (Figure \ref{fig:threemelt}a) are less than a third of the size of those calculated using the point-particle-iceberg-melt parametrization (Figure \ref{fig:threemelt}b). When the mixed-melt-rate parametrization is used (Figure \ref{fig:threemelt}c), the very high melt rates are only observed at the edges of ice structures. %Somewhat elevated melt rates at the steep ice cliffs are observed in the 3-equation-model parametrization simulation (Figure \ref{fig:threemelt}a), indicating these are not solely caused by our choice of parameterizations, but rather there is an underlying dynamical mechanism causing elevated melt rates close to the steep ice fronts.
 
 \section{Summary}
-In this study we present a novel framework for simulating tabular icebergs in ocean models. In this framework, large tabular icebergs are represented by collections of Lagrangian elements that are held together by numerical bonds. Such a representation allows the icebergs to interact with the ocean across a wide area (larger than a grid cell), and behave as if they had a finite extent and structure. This is in contrast to previous representations of icebergs in numerical models \citep{Jongma2009, Martin2010, Marsh2015} that treat icebergs as point particles. Explicitly resolving tabular icebergs in the ocean allows the icebergs to interact with the ocean in a more realistic way, and allows us to study the effects that tabular icebergs have on ocean circulation. Including numerical bonds between elements allows for simulations which emulate iceberg calving and fracture by severing the bonds. 
+In this study we present a novel framework for simulating tabular icebergs in ocean models, and representing icebergs with finite extent and structure. In this framework, large tabular icebergs are represented by collections of Lagrangian elements that are held together by numerical bonds. Each ice element is assigned a surface area and shape, and can interact with the ocean and other elements in a way which is consistent with the shape of the element. Such a representation allows tabular icebergs to interact with the ocean across a wide area (larger than a grid cell), and individual ice elements to behave as if they had a finite extent. This is in contrast to previous representations of icebergs in numerical models \citep{Jongma2009, Martin2010, Marsh2015} that treat icebergs as point particles. Explicitly resolving tabular icebergs in the ocean allows the icebergs to interact with the ocean in a more realistic way, and allows us to study the effects that tabular icebergs have on ocean circulation. Including numerical bonds between elements allows for simulations which emulate iceberg calving and fracture by severing the bonds. 
 
-The capabilities of the tabular iceberg model are demonstrated by modeling a tabular iceberg drifting away from an idealized ice shelf (also constructed using Lagrangian elements). The results show that explicitly resolving tabular icebergs in the ocean allows for a complex interaction between the iceberg and the surrounding ocean. In our control setup, a tabular iceberg is driven away from the ice shelf by ocean currents, wind stress, and the Coriolis force. As the iceberg moves through the water, it disturbs the ocean surface, driving ocean currents. The motion of the iceberg and melt beneath the iceberg drive upwelling along the sides of the iceberg, which entrains ambient water and causes a warming of the surface ocean in the wake of the iceberg. The changing ocean conditions feed back onto the iceberg, affecting its motion and melt rates. The highest melt rates are observed at edge of the iceberg which has the steepest ice cliff. These have the effect of smoothing out the ice edge over time.
+The capabilities of the tabular iceberg model are demonstrated by modeling a tabular iceberg drifting away from an idealized ice shelf (also constructed using Lagrangian elements). The results show that explicitly resolving tabular icebergs in the ocean allows for a complex interaction between the iceberg and the surrounding ocean. In our Control setup, a tabular iceberg is driven away from the ice shelf by ocean currents, wind stress, and the Coriolis force. As the iceberg moves through the water, it disturbs the ocean surface, driving ocean currents. The motion of the iceberg and melt beneath the iceberg drive upwelling along the sides of the iceberg, which entrains ambient water and causes a warming of the surface ocean in the wake of the iceberg. The changing ocean conditions feed back onto the iceberg, affecting its motion and melt rates. The highest melt rates are observed at edge of the iceberg which has the steepest ice cliff. These have the effect of smoothing out the ice edge over time.
 Simulations without using numerical bonds showed that the bonds are essential for allowing the iceberg to move as a unit. We also demonstrate that by breaking these numerical bonds we can simulate iceberg fracture, which is important process that increases the rate of iceberg decay.
 
 To our knowledge, the model presented in this study is the first model to explicitly resolve drifting tabular icebergs in an ocean model that can be used for climate studies. A natural extension of this work is a representation of tabular icebergs in a general circulation model (GCM). 
 However, before this can be done, there are a number of issues that need to be resolved:
 firstly, the question of how and when to introduce tabular icebergs into the ocean needs to be addressed. For GCM's with active ice shelves, a calving law is needed to release the tabular iceberg into the ocean. The question of what calving law to use is a topic of ongoing research \citep{Benn2007, Alley2008, Levermann2012, Bassis2013} and is still unresolved. One potential way to temporarily bypass this problem would be to run hindcast simulations using historically observed calving events. 
-A related issue is the question of how and when to break the bonds within the freely floating icebergs to simulation iceberg breakup. Without a rule for iceberg breakup, the tabular icebergs would likely drift to unrealistically low latitudes. 
-Another challenge will be to develop methods to initialize the size and positions of elements on a spherical grid. 
-This study used a cartesian coordinate system, which allowed us to initialize the ice elements in a regular staggered lattice. A different initialization method will be needed to generalize this initialization procedure to curved coordinates which are needed for large-scale global simulations.
-Further work is also needed to understand (and model) the interactions between tabular icebergs and sea ice, and to parametrize the effects of iceberg grounding, as these interactions play a large role in dictating the trajectories of tabular icebergs. However, despite these remaining challenges, the technical framework described in this article is potentially a useful step towards including tabular icebergs in global GCM's, and hence a step towards making more accurate projections of future sea level. 
+A related issue is the question of how and when to break the bonds within the freely floating icebergs to simulate iceberg breakup. Without a rule for iceberg breakup, the tabular icebergs would likely drift to unrealistically low latitudes. 
+%Another challenge will be to develop methods to initialize the size and positions of elements for observed distributions. This study used a cartesian coordinate system, which allowed us to initialize the ice elements in a regular staggered lattice. A different initialization method will be needed to generalize this initialization procedure to curved coordinates which are needed for large-scale global simulations.
+Further work is also needed to understand (and model) the interactions between tabular icebergs and sea ice, and to parametrize the effects of iceberg grounding, as these interactions play a large role in dictating the trajectories of tabular icebergs. However, despite these remaining challenges, the technical framework described in this article is potentially a useful step towards including tabular icebergs in global GCM's.
+%, and hence a step towards making more accurate projections of future sea level. 
 
 
 
@@ -779,14 +788,13 @@ The reconnected bond A-B (stored in element A) is said to be working properly wh
 \item A pointer to element A exists in this bond B-A.
 \item The element A which is being pointed to is the same element A where you started.
 \end{enumerate}
-A useful tool disconnecting and reconnecting bonds is that each element is assigned a unique number so that elements are easily identified.
+A useful tool for debugging the disconnecting and reconnecting bonds routines is that each element is assigned a unique number so that elements are easily identified.
 
 \clearpage
 
 
 \acknowledgments
- = enter acknowledgments here =
-
+This study is supported by awards NA08OAR4320752 and NA13OAR439 from the National Oceanic and Atmospheric Administration, U.S. Department of Commerce. The statements, findings, conclusions, and recommendations are those of the author and do not necessarily reflect the views of the National Oceanic and Atmospheric Administration, or the U.S. Department of Commerce. The simulations in this paper can be reproduced using the MOM6 model code and experimental setups found at $\textrm{https://github.com/sternalon/Iceberg\_repository}$.
 \newpage
 \begin{thebibliography}{9}
 \expandafter\ifx\csname natexlab\endcsname\relax
@@ -794,218 +802,222 @@ A useful tool disconnecting and reconnecting bonds is that each element is assig
 \expandafter\ifx\csname selectlanguage\endcsname\relax
   \def\selectlanguage#1{\relax}\fi
 %
-\bibitem[Asay-Davis et al (2016)]{Asay-Davis2016}
+\bibitem[Asay-Davis et al(2016)]{Asay-Davis2016}
 Asay-Davis, X. S., S. L. Cornford, B. K. Galton-Fenzi, R. M. Gladstone, G. H. Gudmundsson, D. M. Holland, P. R. Holland, and D. F. Martin (2016), Experimental design for three interrelated marine ice sheet and ocean model intercomparison projects: MISMIP v. 3 (MISMIP+), ISOMIP v. 2 (ISOMIP+) and MISOMIP v. 1 (MISOMIP1). {\it Geoscientific Model Development} 9, no. 7: 2471.
 %
-\bibitem[Arrigo et al (2002)]{Arrigo2002}
+\bibitem[Arrigo et al(2002)]{Arrigo2002}
 Arrigo, K. R., G. L. van Dijken,  D. G. Ainley, M. A. Fahnestock, and T. Markus (2002). Ecological impact of a large Antarctic iceberg. {\it Geophys. Res. Let.}, 29(7).
 
-\bibitem[Alley et al (2008)]{Alley2008}
+\bibitem[Alley et al(2008)]{Alley2008}
 Alley, R. B., H. J. Horgan, I. Joughin, K. M. Cuffey, T. K. Dupont, B. R. Parizek, S. Anandakrishnan, and J. Bassis (2008), A simple law for ice-shelf calving. {\it Science} 322, no. 5906, 1344-1344.
 
-\bibitem[Bassis and Jacobs (2013)]{Bassis2013}
+\bibitem[Bassis and Jacobs(2013)]{Bassis2013}
 Bassis, J. N., and S. Jacobs (2013), Diverse calving patterns linked to glacier geometry. {\it Nature Geoscience}, 6(10), 833-836.
 
-\bibitem[Benn et all (2007)]{Benn2007}
+\bibitem[Benn et all(2007)]{Benn2007}
 Benn, D. I., C. R. Warren, and R. H. Mottram (2007). Calving processes and the dynamics of calving glaciers. {\it Earth-Science Reviews}, 82(3), 143-179.
 
-\bibitem[Bigg et al (1997)]{Bigg1997}
+\bibitem[Bigg et al(1997)]{Bigg1997}
 Bigg, G. R., Wadley, M. R., Stevens, D. P., and Johnson, J. A. (1997), Modeling the dynamics and thermodynamics of icebergs. {\it Cold Regions Science and Technology}, 26(2), 113-135.
 
-\bibitem[Borstad et al (2012)]{Borstad2012}
+\bibitem[Borstad et al(2012)]{Borstad2012}
 Borstad, C. P., A. Khazendar, E. Larour, M. Morlighem, E. Rignot, M. P. Schodlok, and H. Seroussi (2012), A damage mechanics assessment of the Larsen B ice shelf prior to collapse: Toward a physically-based calving law, {\it Geophys. Res. Lett.}, 39, L18502
 
-\bibitem[Biddle et al (2015)]{Biddle2015}
+\bibitem[Biddle et al(2015)]{Biddle2015}
 Biddle, L. C., J. Kaiser, K. J. Heywood, A. F. Thompson and A. Jenkins (2015), Ocean glider observations of iceberg-enhanced biological productivity in the northwestern Weddell Sea, {\it Geophys. Res. Lett.}, 42, 459Ð465.
 
-\bibitem[De Rydt and Gudmundsson (2016)]{De_Rydt2006}
+\bibitem[De Rydt and Gudmundsson(2016)]{De_Rydt2006}
 De Rydt, J., and G. H. Gudmundsson (2016), Coupled ice shelf ocean modeling and complex grounding line retreat from a seabed ridge. {\it J. of Geophys. Res.: Earth Surface}, 121(5), 865-880.
 %
-\bibitem[Dunne et al (2012)]{Dunne2012}
+\bibitem[Dunne et al(2012)]{Dunne2012}
 Dunne, J.P., J.G. John,, A.J. Adcroft, S.M. Griffies, R.W. Hallberg, E. Shevliakova, R.J. Stouffer, W. Cooke, K.A. Dunne, M.J Harrison, and J.P. Krasting (2012), GFDL's ESM2 global coupled climate-carbon Earth System Models. Part I: Physical formulation and baseline simulation characteristics. {\it J. of Climate}, 25(19), 6646-6665.
 %
-\bibitem[Depoorter et al (2013)]{Depoorter2013}
+\bibitem[Depoorter et al(2013)]{Depoorter2013}
 Depoorter, M. A., J. L. Bamber, J. A. Griggs, J. T. M. Lenaerts, Stefan RM Ligtenberg, M. R. van den Broke, and G. Moholdt (2013), Calving fluxes and basal melt rates of Antarctic ice shelves. {\it Nature}, 502(7469), 89-92.
 
-\bibitem[Determan and Gerdes (1994)]{Determan1994}
+\bibitem[Determan and Gerdes(1994)]{Determan1994}
 Determan J.,  Gerdes R. (1994), Melting and freezing beneath ice shelves: implications from a three-dimensional ocean-circulation model. {\it  Ann. Glaciol.}, 20, 413-419.
 
-\bibitem[Dowdeswell and Bamber (2007)]{Dowdeswell2007}
+\bibitem[Dowdeswell and Bamber(2007)]{Dowdeswell2007}
 Dowdeswell, J. A., and J. L. Bamber (2007), Keel depths of modern Antarctic icebergs and implications for sea-floor scouring in the geological record. {\it Marine Geology}, 243(1), 120-131.
 
-\bibitem[Duprat et al (2016)]{Duprat2016}
+\bibitem[Duprat et al(2016)]{Duprat2016}
 Duprat, L. P., G. R. Bigg, and D. J. Wilton (2016), Enhanced Southern Ocean marine productivity due to fertilization by giant icebergs. {\it Nature Geoscience.}
 
-\bibitem[Eckert (1950)]{Eckert1950}
+\bibitem[Eckert(1950)]{Eckert1950}
 Eckert, E. R. G. (1950). Introduction to the Transfer of Heat and Mass. McGraw-Hill.
 
-\bibitem[Fogwill et al (2016)]{Fogwill2016}
+\bibitem[Fogwill et al(2016)]{Fogwill2016}
 Fogwill, C.J., E. van Sebille, E.A. Cougnon, C.S. Turney, S.R. Rintoul, B.K. Galton-Fenzi, G.F. Clark, E.M. Marzinelli, E.B. Rainsley, and L. Carter (2016), Brief communication: Impacts of a developing polynya off Commonwealth Bay, East Antarctica, triggered by grounding of iceberg B09B. {\it The Cryosphere}, 10(6), p.2603.
 
-\bibitem[Gladstone et al (2001)]{Gladstone2001}
+\bibitem[Gladstone et al(2001)]{Gladstone2001}
 Gladstone, R. M., G. R. Bigg, and K. W. Nicholls. (2001), Iceberg trajectory modeling and meltwater injection in the Southern Ocean (1978Ð2012). {\it J. of Geophys. Res.: Oceans}, 106(C9), 19903-19915.
 
-\bibitem[Goldberg et al (2012)]{Goldberg2012}
+\bibitem[Goldberg et al(2012)]{Goldberg2012}
 Goldberg, D. N., C. M. Little, O. V. Sergienko, A. Gnanadesikan, R. Hallberg, and M. Oppenheimer (2012), Investigation of land ice?ocean interaction with a fully coupled ice-ocean model: 1. Model description and behavior. {\it J. of Geophys. Res.: Earth Surface}, 117(F2).
 %
-\bibitem[Gladish et al (2012)]{Gladish2012}
+\bibitem[Gladish et al(2012)]{Gladish2012}
 Gladish, C. V., D. M. Holland, P. R. Holland, and S. F. Price (2012), Ice-shelf basal channels in a coupled ice/ocean model. {\it J. of Glaciol.}, 58(212), 1227-1244.
 
-\bibitem[Grosfeld et al (1997)]{Grosfeld1997}
+\bibitem[Grosfeld et al(1997)]{Grosfeld1997}
 Grosfeld K., R. Gerdes, J. Determan (1997), Thermohaline circulation and interaction between ice shelf cavities and the adjacent open ocean. {\it J. Phys. Oceanogr.,  \textbf{102}, C7, 15959-15610}.
 
-\bibitem[Grosfeld and SandhŠger (2004)]{Grosfeld2004}
+\bibitem[Grosfeld and SandhŠger(2004)]{Grosfeld2004}
 Grosfeld, K., and H. SandhŠger, (2004). The evolution of a coupled ice shelfÐocean system under different climate states. {\it Global and Planetary Change}, 42(1), 107-132.
 
-\bibitem[Hallberg et al (2013)]{Hallberg2013}
+\bibitem[Hallberg et al(2013)]{Hallberg2013}
 Hallberg, R., A. Adcroft, J. P.  Dunne, J. P., Krasting, R. J., and Stouffer (2013), Sensitivity of twenty-first-century global-mean steric sea level rise to ocean model formulation. {J. of Climate}, 26(9), 2947-2956.
 
-\bibitem[Holland and Jenkins (2001)]{Holland2001}
+\bibitem[Holland and Jenkins(2001)]{Holland2001}
 Holland D. M.,  Jenkins A. (2001), Adaptation of an isopycnic coordinate ocean model for the study of circulation beneath ice shelves. {\it Mon. Wea. Rev}., 129, 1905-1927.
 
-\bibitem[Holland and Feltham (2006)]{Holland2006}
+\bibitem[Holland and Feltham(2006)]{Holland2006}
 Holland P. R. and  D. L. Feltham (2006), The effects of rotation and ice shelf topography on frazil-laden Ice Shelf Water plumes. {\it  J. Phys. Oceanogr.,}  36, 2312-2327.
 
-\bibitem[Holland and Jenkins (1999)]{Holland1999}
+\bibitem[Holland and Jenkins(1999)]{Holland1999}
 Holland, D. M., and A. Jenkins (1999), Modeling thermodynamic ice-ocean interactions at the base of an ice shelf. {J. of Phys. Oceanogr.} 29.8, 1787-1800.
 
-\bibitem[Hellmer and Olbers (1989)]{Hellmer1989}
+\bibitem[Hellmer and Olbers(1989)]{Hellmer1989}
 Hellmer H.H.,  Olbers D. J. (1989), A two-dimensional model for the thermohaline circulation under an ice shelf. {\it  Antarctic Science},  1, 325- 336.
 
-\bibitem[Henderson and Loe (2016)]{Henderson2016}
+\bibitem[Henderson and Loe(2016)]{Henderson2016}
 Henderson J., J. S. P. Loe (2016), The Prospects andChallenges for Arctic Oil Development. {\it Oil, Gas and Energy Law Journal (OGEL)}, 14 (2)
 
-\bibitem[Hopkins (1996)]{Hopkins1996}
+\bibitem[Hopkins(1996)]{Hopkins1996}
 Hopkins, M. A. (1996). On the mesoscale interaction of lead ice and floes. {\it J. of Geophys. Res.: Oceans}, 101(C8), 18315-18326.
 
-\bibitem[Hopkins (2004)]{Hopkins2004}
+\bibitem[Hopkins(2004)]{Hopkins2004}
 Hopkins, M. A. (2004). A discrete element Lagrangian sea ice model. {\it Engineering Computations}, 21(2/3/4), 409-421.
 
-\bibitem[Gaskill and Rochester (1984)]{Gaskill1984}
+\bibitem[Gaskill and Rochester(1984)]{Gaskill1984}
 Gaskill, H. S., and J. Rochester (1984). A new technique for iceberg drift prediction. {\it Cold Reg. Sci. Technol.}, 8(3), 223-234.
 
-\bibitem[Jacobs et al (1992)]{Jacobs1992}
+\bibitem[Jacobs et al(1992)]{Jacobs1992}
 Jacobs, S. S., H. H. Helmer, C. S. M. Doake, A. Jenkins, R. M. Frolich (1992), Melting of ice shelves and the mass balance of Antarctica. {\it J. of Glaciol.}, 38(130), 375-387.
 
-\bibitem[Jakobsen (2001)]{Jakobsen2001}
+\bibitem[Jakobsen(2001)]{Jakobsen2001}
 Jakobsen, T. (2001). Advanced character physics. {\it In Game Developers Conference}, Vol. 3.
 
-\bibitem[Jenkins et al (2010)]{Jenkins2010}
+\bibitem[Jenkins et al(2010)]{Jenkins2010}
 Jenkins, A., P. Dutrieux, S. S. Jacobs, S. D. McPhail, J. R. Perrett, A. T. Webb, and D. White (2010), Observations beneath Pine Island Glacier in West Antarctica and implications for its retreat. {it Nature Geo.}, 3(7), 468-472.
 
-\bibitem[Jacobs et al (2011)]{Jacobs2011}
+\bibitem[Jacobs et al(2011)]{Jacobs2011}
 Jacobs, S. S., A. Jenkins, C. F. Giulivi, and P. Dutrieux (2011). Stronger ocean circulation and increased melting under Pine Island Glacier ice shelf. {Nature Geo.}, 4(8), 519-523.
 
-\bibitem[Jongma et al (2009)]{Jongma2009}
+\bibitem[Jongma et al(2009)]{Jongma2009}
 Jongma, J. I., E. Driesschaert, T. Fichefet, H. Goosse, and H. Renssen (2009), The effect of dynamic-thermodynamic icebergs on the Southern Ocean climate in a three-dimensional model, {\it Ocean Modell.}, 26, 104Ð113.
 
-\bibitem[Kubat et al (2005)]{Kubat2005}
+\bibitem[Kubat et al(2005)]{Kubat2005}
 Kubat I., M. Sayed, S. Savage, T. Carrieres (2005), An operational model of iceberg drift {\it Int. J. Off. Polar Eng.}, 15 (2), 125Ð131
 
-\bibitem[Lewis and Perkin (1986)]{Lewis1986}
+\bibitem[Lewis and Perkin(1986)]{Lewis1986}
 Lewis E.L. and R.G. Perkin (1986), Ice pumps and their rates. {\it J. of Geophys. Res.}, 91, 11756-11762.
 
-\bibitem[Losch (2008)]{Losch2008}
+\bibitem[Losch(2008)]{Losch2008}
 Losch, M. (2008). Modeling ice shelf cavities in a z coordinate ocean general circulation model. {\it J. of Geophys. Res.: Oceans}, 113(C8).
 
-\bibitem[Li et al (2014)]{Li2014}
+\bibitem[Li et al(2014)]{Li2014}
 Li, B., H. Li, Y. Liu, A. Wang and S. Ji (2014), A modified discrete element model for sea ice dynamics. {\it Acta Oceanologica Sinica}, 33(1), 56-63.
 
-\bibitem[Liu and Liu (2010)]{Liu2010}
+\bibitem[Liu and Liu(2010)]{Liu2010}
 Liu, M. B. and G. R. Liu (2010), Smoothed particle hydrodynamics (SPH): an overview and recent developments. {\it Archives of computational methods in engineering}, 17(1), 25-76.
 
-\bibitem[Lichey and Hellmer (2001)]{Lichey2001}
+\bibitem[Lichey and Hellmer(2001)]{Lichey2001}
 Lichey, C., and H. H. Hellmer (2001). Modeling giant-iceberg drift under the influence of sea ice in the Weddell Sea, Antarctica. {\it J. of Glaciol.}, 47(158), 452-460.
 
-\bibitem[Levermann et al (2012)]{Levermann2012}
+\bibitem[Levermann et al(2012)]{Levermann2012}
 Levermann, A., T. Albrecht, R. Winkelmann, M. A. Martin, M. Haseloff, and I. Joughin. (2012), Kinematic first-order calving law implies potential for abrupt ice-shelf retreat. {\it The Cryosphere}, 6(2), 273-286.
 
-\bibitem[Mountain (1980)]{Mountain1980}
+\bibitem[Mountain(1980)]{Mountain1980}
 Mountain, D. G. (1980). On predicting iceberg drift. {\it Cold Reg. Sci. Technol.}, 1(3-4), 273-282.
 
-\bibitem[Martin and Adcroft (2010)]{Martin2010}
+\bibitem[Martin and Adcroft(2010)]{Martin2010}
 Martin, T., and Adcroft, A. (2010), Parameterizing the fresh-water flux from land ice to ocean with interactive icebergs in a coupled climate model. {\it Ocean Modelling}, 34(3), 111-124.
 %
-\bibitem[Marsh et al (2015)]{Marsh2015}
+\bibitem[Marsh et al(2015)]{Marsh2015}
 Marsh, R., V. O. Ivchenko, N. Skliris, S. Alderson, G. R. Bigg, G. Madec, A. T. Blaker  Y. Aksenov, B. Sinha, A.C. Coward, and J.L. Sommer (2015), NEMOÐICB (v1. 0): interactive icebergs in the NEMO ocean model globally configured at eddy-permitting resolution. {\it Geoscientific Model Development} 8, no. 5 (2015): 1547-1562.
 
-\bibitem[MacAyeal (1984)]{MacAyeal1984}
+\bibitem[MacAyeal(1984)]{MacAyeal1984}
 MacAyeal D.R. (1984), Thermohaline Circulation Below the Ross Ice Shelf: A Consequence of Tidally Induced Vertical Mixing and Basal Melting. {\it J. Geophys. Res.}, 89, 597-606 
 %
-\bibitem[Merino et al (2016)]{Merino2016}
+\bibitem[Merino et al(2016)]{Merino2016}
 Merino, N., Le Sommer, J., Durand, G., Jourdain, N. C., Madec, G., Mathiot, P., and Tournadre, J. (2016), Antarctic icebergs melt over the Southern Ocean: climatology and impact on sea ice. {\it Ocean Modelling}, 104, 99-110.
 
-\bibitem[Nicholls (1996)]{Nicholls1996}
+\bibitem[Nicholls(1996)]{Nicholls1996}
 Nicholls K.W. (1996), Temperature variability beneath Ronne Ice Shelf, Antarctica, from thermistor cables. {\it J. Phys. Oceanogr.},  11, 1199-1210.
 %
-\bibitem[Nicholls et al (2009)]{Nicholls2009}
+\bibitem[Nicholls et al(2009)]{Nicholls2009}
 Nicholls KW, {\O}sterhus S, Makinson K (2009), Ice-Ocean processes over the continental shelf of the southern Weddell Sea, Antarctica: a review. {\it Rev. Geophys.} 47(3).
 
-\bibitem[Omelyan et al (2002)]{Omelyan2002}
+\bibitem[Omelyan et al(2002)]{Omelyan2002}
 Omelyan, I. P., M. I. Mryglod, and R. Folk (2002), Optimized Verlet-like algorithms for molecular dynamics simulations. {\it Physical Review E}, 65(5), 056706.
 
-\bibitem[Rabatel et al (2013)]{Rabatel2015}
-Rabatel, M., S. LabbŽ and J. Weiss (2015). Dynamics of an assembly of rigid ice floes. {J. of Geophys. Res.: Oceans}, 120(9), 5887-5909.
+\bibitem[Pizzolato et al(2012)]{Pizzolato2014}
+Pizzolato,  L., S. E. Howell, C. Derksen, J. Dawson, L. Copland (2014), Changing sea ice conditions and marine transportation activity in Canadian Arctic waters between 1990 and  2012, {\it Climatic  Change}  123  (2),  161173.
 
-\bibitem[Rignot et al (2013)]{Rignot2013}
+\bibitem[Pan et al(2013)]{Pan2013}
+Pan, W.,  A. M. Tartakovsky, and J. J. Monaghan (2013). Smoothed particle hydrodynamics non-Newtonian model for ice-sheet and ice-shelf dynamics. {\it J. of Comp. Phys.}, 242, 828-842.
+
+\bibitem[Pralong and Funk(2005)]{Pralong2005}
+Pralong, A., and M. Funk (2005), Dynamic damage model of crevasse opening and application to glacier calving, {\it J. Geophys. Res.}, 110, B01309. 
+
+\bibitem[Rabatel et al(2015)]{Rabatel2015}
+Rabatel, M., S. LabbŽ and J. Weiss (2015), Dynamics of an assembly of rigid ice floes. {J. of Geophys. Res.: Oceans}, 120(9), 5887-5909.
+
+\bibitem[Rackow et al(2017)]{Rackow2017}
+Rackow, T.,  C. Wesche, R. Timmermann, H. H. Hellmer, S. Juricke and T. Jung (2017), A simulation of small to giant Antarctic iceberg evolution: differential impact on climatology estimates. {J. of Geophys. Res.: Oceans}, doi: 10.1002/2016JC012513
+
+\bibitem[Rignot et al(2013)]{Rignot2013}
 Rignot, E., S. Jacobs, J. Mouginot, and B. Scheuchl (2013), Ice-shelf melting around Antarctica. {\it Science}, 341, no. 6143 (2013): 266-270.
 
-\bibitem[Robinson et al (2012)]{Robinson2012}
+\bibitem[Robinson et al(2012)]{Robinson2012}
 Robinson, N. J., M. J. M. Williams, P. J. Barrett, and A. R. Pyne (2010), Observations of flow and ice-ocean interaction beneath the McMurdo
 Ice Shelf, Antarctica, {\it J. Geophys. Res.}, 115, C03025
 
-\bibitem[Pizzolato et al (2012)]{Pizzolato2014}
-Pizzolato,  L., S. E. Howell, C. Derksen, J. Dawson, L. Copland (2014), Changing sea ice conditions and marine transportation activity in Canadian Arctic waters between 1990 and  2012, {\it Climatic  Change}  123  (2),  161173.
 
-\bibitem[Pan et al (2013)]{Pan2013}
-Pan, W.,  A. M. Tartakovsky, and J. J. Monaghan (2013). Smoothed particle hydrodynamics non-Newtonian model for ice-sheet and ice-shelf dynamics. {\it J. of Comp. Phys.}, 242, 828-842.
-
-\bibitem[Pralong and Funk (2005)]{Pralong2005}
-Pralong, A., and M. Funk (2005), Dynamic damage model of crevasse opening and application to glacier calving, {\it J. Geophys. Res.}, 110, B01309. 
-
-\bibitem[Sergienko (2013)]{Sergienko2013}
+\bibitem[Sergienko(2013)]{Sergienko2013}
 Sergienko, O. V. (2013). Basal channels on ice shelves. {\it J. of Geophys. Res.: Earth Surface}, 118(3), 1342-1355.
 
-\bibitem[Silva et al (2006)]{Silva2006}
+\bibitem[Silva et al(2006)]{Silva2006}
 Silva, T. A. M., Bigg, G. R., and Nicholls, K. W. (2006), Contribution of giant icebergs to the Southern Ocean freshwater flux. {J. of Geophys. Res.: Oceans}, 111(C3).
 
-\bibitem[Smith et al (2007)]{Smith2007}
+\bibitem[Smith et al(2007)]{Smith2007}
 Smith, K., B. Robison, J. Helly, R. Kaufmann, H. Ruhl, H., T. Shaw, and M. Vernet (2007), Free-drifting icebergs: Hotspots of chemical and biological enrichment in the Weddell Sea, {\it Science}, 317, 478Ð482.
 
-\bibitem[Shepherd and Wingham (2007)]{Shepherd2007}
+\bibitem[Shepherd and Wingham(2007)]{Shepherd2007}
 Shepherd, A., and D. Wingham (2007). Recent sea-level contributions of the Antarctic and Greenland ice sheets. {\it Science}, 315(5818), 1529-1532.
 
-\bibitem[Stern et al (2014)]{Stern2014}
-Stern, A. A., D. M. Holland,  P. R. Holland, A. Jenkins and J. Sommeria (2014), The effect of geometry on ice shelf ocean cavity ventilation: a laboratory experiment. {\it Experiments in Fluids}, 55(5), 1-19.
+\bibitem[Stern et al(2014)]{Stern2014}
+Stern, A., D. M. Holland,  P. R. Holland, A. Jenkins and J. Sommeria (2014), The effect of geometry on ice shelf ocean cavity ventilation: a laboratory experiment. {\it Experiments in Fluids}, 55(5), 1-19.
 
-\bibitem[Stern et al (2015)]{Stern2015}
-Stern, A.A., Johnson, E., Holland, D.M., Wagner, T.J., Wadhams, P., Bates, R., Abrahamsen, E.P., Nicholls, K.W., Crawford, A., Gagnon, J. and Tremblay, J.E. (2015), Wind-driven upwelling around grounded tabular icebergs. {\it J. of Geophys. Res.: Oceans}, 120(8), 5820-5835.
+\bibitem[Stern et al(2015)]{Stern2015}
+Stern, A., Johnson, E., Holland, D.M., Wagner, T.J., Wadhams, P., Bates, R., Abrahamsen, E.P., Nicholls, K.W., Crawford, A., Gagnon, J. and Tremblay, J.E. (2015), Wind-driven upwelling around grounded tabular icebergs. {\it J. of Geophys. Res.: Oceans}, 120(8), 5820-5835.
 
-\bibitem[Stern et al (2016)]{Stern2016}
-Stern, A. A., A. Adcroft, and O. Sergienko (2016), The effects of Antarctic iceberg calving size distribution in a global climate model. {\it J. of Geophys. Res.: Oceans}, 121(8), 5773-5788.
+\bibitem[Stern et al(2016)]{Stern2016}
+Stern, A., A. Adcroft, and O. Sergienko (2016), The effects of Antarctic iceberg calving size distribution in a global climate model. {\it J. of Geophys. Res.: Oceans}, 121(8), 5773-5788.
 
-\bibitem[Swope et al (1982)]{Swope1982}
+\bibitem[Swope et al(1982)]{Swope1982}
 Swope, W. C., H. C. Andersen, P. H. Berens, and K. R. Wilson (1982), A computer simulation method for the calculation of equilibrium constants for the formation of physical clusters of molecules: Application to small water clusters. {\it The Journal of Chemical Physics} 76, no. 1, 637-649.
 
-\bibitem[Tournadre et al (2016)]{Tournadre2016}
+\bibitem[Tournadre et al(2016)]{Tournadre2016}
 Tournadre, J., N. Bouhier, F. Girard-Ardhuin, and F. RŽmy (2016), Antarctic icebergs distributions 1992-2014. {\it J. Geophys Res: Oceans}.
 
-\bibitem[Turnbull et al (2015)]{Turnbull2015}
+\bibitem[Turnbull et al(2015)]{Turnbull2015}
 Turnbull I.D., N. Fournier, M. Stolwijk, T. Fosnaes, D. McGonigal (2015), Operational iceberg drift forecasting in Northwest Greenland, {\it Cold Reg. Sci. Technol.} 110, 1-18
 
-\bibitem[Unger (2014)]{Unger2014}
+\bibitem[Unger(2014)]{Unger2014}
 Unger, J. D., 2014. Regulating the Arctic Gold Rush:  Recommended Regulatory Reforms to Protect Alaska's Arctic Environment from Offshore Oil Drilling Pollution . {\it Alaska L. Rev}, 31
 
-\bibitem[Vernet et al (2012)]{Vernet2012}
+\bibitem[Vernet et al(2012)]{Vernet2012}
 Vernet, M., et al. (2012), Islands of ice: Influence of free-drifting Antarctic icebergs on pelagic marine ecosystems, {Oceanography}, 25(3), 38Ð39
 
-\bibitem[Wagner et al (2014)]{Wagner2014}
+\bibitem[Wagner et al(2014)]{Wagner2014}
 Wagner, T. J., Wadhams, P., Bates, R., Elosegui, P., Stern, A., Vella, D., E. P. Abrahamsen, A. Crawford, and Nicholls, K. W. (2014), The ÒfootlooseÓ mechanism: Iceberg decay from hydrostatic stresses. {\it Geophys. Res. Let.}, 41(15), 5522-5529.
 
-\bibitem[Weeks and Campbell  (1973)]{Weeks1973}
+\bibitem[Weeks and Campbell(1973)]{Weeks1973}
 Weeks, W. F., and  W. J. Campbell (1973). Icebergs as a fresh-water source: an appraisal. {\it J. of Glaciol.}, 12(65), 207-233.
 
-\bibitem[White et al  (2009)]{White2009}
+\bibitem[White et al(2009)]{White2009}
 White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding-remapping schemes for continuous isopycnal and generalized coordinates in ocean models. {\it J. of Comp. Phys.}, 228(23), 8665-8692.
 
 \end{thebibliography}
@@ -1065,8 +1077,8 @@ Elastic interactive force spring constant & $ \kappa_{e} $ &  $10^{-5}$  & kg $\
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Two_panel_schematic_berg.png}
 %\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/PIIB_with_hexagons.png}
 \caption{Schematic showing how tabular icebergs are constructed using Lagrangian elements. 
-(a) Hierarchy of ice elements' physical structure: (i) Previous icebergs models represent icebergs using non-interacting point-particle elements. (ii) In the LBIM ice elements are given finite extent so that they are able to interact with the ocean across multiple grid cells, and can interact with other elements. (iii) These finite extent elements can be join together by numerical bonds (magenta lines) to form larger structures such as tabular icebergs.
- (b) Areal photograph of a tabular iceberg with elements superimposed over it to illustrate how the Lagrangian elements can be used to model tabular icebergs. In this schematic the ice elements (purple dots) are initialized in a staggered lattice covering the surface area of the iceberg. For purposed of mass aggregation, the ice elements are assumed to have hexagonal shape (red hexagons). For purposed of element interactions, the ice elements are assumed to be circular (black circles). Elements are initially bonded to adjacent elements using numerical bonds (magenta lines). These numerical bonds form equilateral triangles which give the shape rigidity. Ocean grid lives have been included (dashed cyan lines).%The background photo in the larger schematic is an areal photograph of iceberg PIIB (Area= 42 $\textrm{km}^{2}$) taken in Baffin Bay in 2012. The red ship can be identified on the bottom of the photo for scale. 
+(a) Hierarchy of ice elements' physical structure: (i) Previous icebergs models represent icebergs using non-interacting point-particle elements; (ii) In the LBIM ice elements are given finite extent so that they are able to interact with the ocean across multiple grid cells, and can interact with other elements; (iii) These finite extent elements can be join together by numerical bonds (magenta lines) to form larger structures such as tabular icebergs.
+ (b) Areal photograph of a tabular iceberg with elements superimposed over it to illustrate how the Lagrangian elements can be used to model tabular icebergs. In this schematic the ice elements (purple dots) are initialized in a staggered lattice covering the surface area of the iceberg. For purposed of mass aggregation, the ice elements are assumed to have hexagonal shape (red hexagons). For purposed of element interactions, the ice elements are assumed to be circular (black circles). Elements are initially bonded to adjacent elements using numerical bonds (magenta lines). These numerical bonds form equilateral triangles which give the shape rigidity. An ocean grid has been included (dashed cyan lines).%The background photo in the larger schematic is an areal photograph of iceberg PIIB (Area= 42 $\textrm{km}^{2}$) taken in Baffin Bay in 2012. The red ship can be identified on the bottom of the photo for scale. 
 %Schematic showing how Lagrangian elements are used when modeling tabular icebergs. Lagrangian elements (blue dots) are initialized in a staggered lattice covering the surface area of the iceberg. For purposed of mass aggregation, the ice elements are assumed to have hexagonal shape (grey hexagons). For purposed of element interactions, the ice elements are assumed to be circular (black circles). Elements are initially bonded to adjacent elements using numerical bonds (dashed white lines). These numerical bonds form equilateral triangles which give the shape rigidity. 
 %The inset panel shows a schematic of the intersection of a hexagonal element and the ocean grid. The colors indicate the fraction of the hexagon that lies in each grid cell. These fractions are used as weights to spread LBIM properties to the ocean grid (see text for more details).
 The background photo is an areal photograph of iceberg PIIB (Area= 42 $\textrm{km}^{2}$) taken in Baffin Bay in 2012. A red ship can be identified on the bottom of the photo for scale. \label{fig:Hex_schematic}}
@@ -1113,7 +1125,7 @@ The background photo is an areal photograph of iceberg PIIB (Area= 42 $\textrm{k
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Regular_towards_coast_tails}
-\caption{ {Results of an ice-only LBIM simulation with no bonds between ice elements. Ice elements are initialized throughout the domain, as shown in panel (a). The elements are forced by an imposed westward ocean current of u=0.1m/s (no ocean model is used). Forces due to sea surface slope, atmospheric drag, Coriolis and sea ice drag are set to zero. The figure shows snapshots of ice element positions at time (a) t=0, (b) 200, (c) 400, (d) 600 days. The size of the dots shows the surface area (and interaction radius) of each ice element. The white tails behind the elements show the elements' positions over the preceding two days. Land points are shown by black circles.}\label{fig:Regular_Uncoupled_sim}}
+\caption{ {Results of an ice-only LBIM simulation with no bonds between ice elements. Ice elements are initialized throughout the domain, as shown in top left panel. The elements are forced by an imposed westward ocean current of u=0.1m/s (no ocean model is used). Forces due to sea surface slope, atmospheric drag, Coriolis and sea ice drag are set to zero. The figure shows snapshots of ice element positions at time t=0, 200, 400 and 600 days. The size of the dots shows the surface area (and interaction radius) of each ice element. The white tails behind the elements show the elements' positions over the preceding two days. Land points are shown by black circles.}\label{fig:Regular_Uncoupled_sim}}
 \end{center}
 \end{figure}
  \clearpage
@@ -1122,7 +1134,7 @@ The background photo is an areal photograph of iceberg PIIB (Area= 42 $\textrm{k
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Tabular_and_regular_towards_coast_manual_tails}
-\caption{ {Results of an ice-only LBIM simulation using bonds between elements. Ice elements are initialized throughout the domain, as shown in panel (a). Three tabular icebergs are included, with 25, 16 and 4 elements respectively. The elements are forced by an imposed westward ocean current of u=0.1m/s (no ocean model is used). Forces due to sea surface slope, atmospheric drag, Coriolis and sea ice drag are set to zero. The figure shows snapshots of ice element positions at time (a) t=0, (b) 300, (c) 600, (d) 900 days. The size of the dots shows the surface area (and interaction radius) of each ice element. The white tails behind the elements show the elements' positions over the preceding two days. Bonds between ice elements are plotted in magenta. Land points are shown by black circles.} \label{fig:Uncoupled_sim}}
+\caption{ {Results of an ice-only LBIM simulation using bonds between elements. Ice elements are initialized throughout the domain, as shown in top left panel. Three tabular icebergs are included, with 25, 16 and 4 elements respectively. The elements are forced by an imposed westward ocean current of u=0.1m/s (no ocean model is used). Forces due to sea surface slope, atmospheric drag, Coriolis and sea ice drag are set to zero. The figure shows snapshots of ice element positions at time t=0, 300, 600, and 900 days. The size of the dots shows the surface area (and interaction radius) of each ice element. The white tails behind the elements show the elements' positions over the preceding two days. Bonds between ice elements are plotted in magenta. Land points are shown by black circles.} \label{fig:Uncoupled_sim}}
 \end{center}
 \end{figure}
  \clearpage
@@ -1157,7 +1169,7 @@ The background photo is an areal photograph of iceberg PIIB (Area= 42 $\textrm{k
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_D_mass_spread_mass.png}
-\caption{ {(a) Ocean bottom topography and (c) ice-shelf draft used to initialized the tabular iceberg calving simulation. The ice draft is calculated from the total mass in an ocean grid cell after the mass-spreading interpolation has been applied (as explained in Section 2.3). Panel (b) shows the initial ice draft that would be calculated if the mass-spreading interpolation were not used (i.e.: elements treated as point masses).} \label{fig:ISOMIP_mass_and_topog}}
+\caption{ {(a) Ocean bottom topography and (c) ice-shelf draft used to initialized the tabular iceberg calving simulation. The ice draft is calculated from the total mass in an ocean grid cell after the mass-spreading interpolation has been applied (as explained in Section 2.3). Panel (b) shows the initial ice draft that would be calculated if the mass-spreading interpolation were not used (i.e. elements treated as point masses).} \label{fig:ISOMIP_mass_and_topog}}
 \end{center}
 \end{figure}
  \clearpage
@@ -1169,7 +1181,7 @@ The background photo is an areal photograph of iceberg PIIB (Area= 42 $\textrm{k
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Mixed_Melt_Collapse_temp_layers_x12.png}
-\caption{ {Snapshots of vertical sections of ocean temperature at $x$=54~km in the tabular-iceberg-calving control experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the vertical transects is shown by the dashed lines in Figure \ref{fig:SST_Collapse}c.}
+\caption{ {Snapshots of vertical sections of ocean temperature at $x$=54~km in the tabular-iceberg-calving Control experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the vertical transects is shown by the dashed lines in Figure \ref{fig:SST_Collapse}c.}
 \label{fig:Temperature_section_Collapse}}
 \end{center}
 \end{figure}
@@ -1206,7 +1218,7 @@ The background photo is an areal photograph of iceberg PIIB (Area= 42 $\textrm{k
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Mixed_Melt_Collapse_v_layers_x12.png}
-\caption{ {Snapshots of vertical sections of meridional velocity at $x$=54~km in the tabular-iceberg-calving control experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the transects is shown by the dashed line in Figure \ref{fig:SST_Collapse}c.}
+\caption{ {Snapshots of vertical sections of meridional velocity at $x$=54~km in the tabular-iceberg-calving Control experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the transects is shown by the dashed line in Figure \ref{fig:SST_Collapse}c.}
 \label{fig:Velocity_section_Collapse}}
 \end{center}
 \end{figure}
@@ -1218,7 +1230,7 @@ The background photo is an areal photograph of iceberg PIIB (Area= 42 $\textrm{k
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_melt_m_per_year_sst_ustar_iceberg_calved.png}
-\caption{ {Results of the tabular-iceberg-calving experiment 30 days after the iceberg calves. The three panels show snapshots of the (a) melt rate, (b) top-of-ocean temperature and (c) $u^{*}$ at the base of the ice shelf. Ocean grid cells without ice cover are masked out in grey.}
+\caption{ {Results of the tabular-iceberg-calving experiment 30 days after the iceberg calves. The three panels show snapshots of the (a) melt rate, (b) top-of-ocean temperature and (c) $u^{*}$ at the base of the ice shelf. Ocean grid cells without ice are masked out in grey.}
 \label{fig:Collapse_solo_melt}}
 \end{center}
 \end{figure}
@@ -1249,7 +1261,7 @@ The background photo is an areal photograph of iceberg PIIB (Area= 42 $\textrm{k
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/three_melt_melt_m_per_year.png}
-\caption{ {Results of the tabular-iceberg-calving experiment using three different melt-rate parametrization. Panels show snapshots of the melt rate 30 days after calving for simulations using the (a) three-equation melt-rate  parametrization, (b) icebergs-drift melt-rate parametrization, (c) mixed-melt-rate parametrization (as described in Section 2.5.). Ocean grid cells without ice cover are masked out in grey.}
+\caption{ {Results of the tabular-iceberg-calving experiment using three different melt-rate parametrization. Panels show snapshots of the melt rate 30 days after calving for simulations using the (a) three-equation melt-rate  parametrization, (b) icebergs-drift melt-rate parametrization, (c) mixed-melt-rate parametrization (as described in Section 2.5.). Ocean grid cells without ice are masked out in grey.}
 \label{fig:threemelt}}
 \end{center}
 \end{figure}
