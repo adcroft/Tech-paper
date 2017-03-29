@@ -116,6 +116,7 @@ figure;
 colormap(blue_white)
 
 letter_list=['(a)';'(b)';'(c)';'(d)'];
+letter_list=[' ';' ';' ';' '];
 hold on
 count=0;
 plot_count=0;

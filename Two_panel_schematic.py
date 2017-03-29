@@ -26,11 +26,11 @@ if __name__ == '__main__':
 	#ax=plt.subplot(1,2,1)
 	ax = plt.gcf().add_axes([0.02,0.1,.6,.6]);
 	ax.imshow(im_schematic); plt.axis('off')
-	ax.text(1,1,'(a)', ha='right', va='bottom',transform=ax.transAxes,fontsize=15)
+	ax.text(.12,0.97,'(a)', ha='right', va='bottom',transform=ax.transAxes,fontsize=15)
 	#ax=plt.subplot(1,2,2)
 	ax = plt.gcf().add_axes([0.5,0.15,.5,.5]);
 	ax.imshow(im_hexaberg); plt.axis('off')
-	ax.text(1,1,'(b)', ha='right', va='bottom',transform=ax.transAxes,fontsize=15)
+	ax.text(.12,0.97,'(b)', ha='right', va='bottom',transform=ax.transAxes,fontsize=15)
 		
 	#plt.gca().annotate('Ocean mesh', xy=(x+.05,y-0.05), xytext=(x+0.1,y-0.5),
 	#			   arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=.2'))
