@@ -73,7 +73,8 @@ Ny=(Ly/dy)+1; %number of positions in the y grid
 x=([1:Nx]-1).*dx;
 y=([1:Ny]-1).*dy;
 fontsize=14;
-letter_list=['(a)';'(b)';'(c)';'(d)'];
+%letter_list=['(a)';'(b)';'(c)';'(d)'];
+letter_list=[' ';' ';' ';' '];
 
 
 

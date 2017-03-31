@@ -114,7 +114,7 @@ def mask_grounded_ice(data,depth,base):
 
    return data
 
-def mask_ice(data,ice_base):
+def mask_ice_old(data,ice_base):
    """
    Mask regions where the ice shelf is above ocean Works with 2D or 3D arrays.
    This is not coded so well, a bit of a hack.
@@ -129,18 +129,18 @@ def mask_ice(data,ice_base):
    
    return data
 
-def mask_ocean(data,area):
+def mask_ocean(data,area,tol=0.0):
    """
    Mask open ocean. Works with 2D or 3D arrays.
    """
    if len(data.shape) == 2: # 2D array
-     data = np.ma.masked_where(area==0.0,data)
+     data = np.ma.masked_where(area<=tol,data)
      #data[np.where(area<0.5)]=np.nan
 
    else: # 3D array
      NZ,NY,NX = data.shape
      area=np.resize(area,(NZ,NY,NX))
-     data = np.ma.masked_where(area==0,data)
+     data = np.ma.masked_where(area<=tol,data)
 
    return  data
 
