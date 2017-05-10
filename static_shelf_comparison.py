@@ -57,6 +57,14 @@ def parseCommandLine():
 	parser.add_argument('-only_shelf_ALE', type='bool', default=False,
 		                        help=''' When true, Figures compares Shelf ALE and Layer (must be used with use_ALE=True ''')
 
+
+	parser.add_argument('-ylim_min', type=float, default=0.0,
+		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
+
+	parser.add_argument('-ylim_max', type=float, default=480.0,
+		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
+
+
 	optCmdLineArgs = parser.parse_args()
 	return optCmdLineArgs
 
@@ -579,6 +587,10 @@ def main(args):
 	#fig = plt.figure(facecolor='black')
 	ax = fig.add_subplot(111,axisbg='gray')
 
+	#Scale
+	ylim_min=args.ylim_min
+	ylim_max=args.ylim_max
+
 	######################################################################################################################
 	################################  Plotting melt comparison  ##########################################################
 	######################################################################################################################
@@ -586,22 +598,48 @@ def main(args):
 	if fields_to_compare=='plot_melt_comparison':
 		vmin=0.0  ; vmax=3.0  ; vdiff=3.0
 		if use_ALE is True:
-			vmin=0.0  ; vmax=8.0  ; vdiff=8.0
+			vmin=0.0  ; vmax=7.0  ; vdiff=8.0
 		flipped=False
 		field='melt'
 
 		data1=load_and_compress_data(Shelf_ocean_file,field='melt',time_slice='mean',time_slice_num=-1,rotated=rotated)
 		data2=load_and_compress_data(Berg_iceberg_file,field='melt_m_per_year',time_slice='mean',time_slice_num=-1,rotated=rotated) #field name is difference since it comes from a diff file.
 
+		#Masking out ocean and grounded ice
+		mask_open_ocean=True
+		if mask_open_ocean == True:
+			mask_ocean_using_bergs=True
+			if mask_ocean_using_bergs is True:
+				ice_data=load_and_compress_data(Berg_iceberg_file,field='spread_area',time_slice='',time_slice_num=1,\
+							rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=1)
+				data1=mask_ocean(data1,ice_data)
+				data2=mask_ocean(data2,ice_data)
+			else:
+				data1=mask_ocean(data1,ice_base)
+				data2=mask_ocean(data2,ice_base)
+		mask_grounded=True
+		if mask_grounded == True:
+			data1=mask_grounded_ice(data1,depth,ice_base)
+			data2=mask_grounded_ice(data2,depth,ice_base)
+
 		data1=mask_ocean(data1,shelf_area)
 		data2=mask_ocean(data2,shelf_area)
 		#data3=mask_ocean(data1-data2,shelf_area)
-		plt.subplot(1,3,1)
-		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Eularian',xlabel='x (km)',ylabel='y (km)')	
-		plt.subplot(1,3,2)
-		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Lagrangian',xlabel='x (km)',ylabel='')	
-		plt.subplot(1,3,3)
-		plot_data_field(data1-data2,x,y,vmin=-vdiff,vmax=vdiff,flipped=flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='')	
+		ax=plt.subplot(1,3,1)
+		plot_data_field((ice_base*0),x,y,-5.0, 10.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min, \
+				ylim_max=ylim_max,return_handle=False)
+		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Eularian',xlabel='x (km)',ylabel='y (km)', ylim_min=ylim_min, ylim_max=ylim_max)	
+		text(0.1,1,letter_labels[0], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
+		ax=plt.subplot(1,3,2)
+		plot_data_field((ice_base*0),x,y,-5.0, 10.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min, \
+				ylim_max=ylim_max,return_handle=False)
+		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap='jet',title='Lagrangian',xlabel='x (km)',ylabel='', ylim_min=ylim_min, ylim_max=ylim_max)
+		text(0.1,1,letter_labels[1], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
+		ax=plt.subplot(1,3,3)
+		plot_data_field((ice_base*0),x,y,-5.0, 10.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min, \
+				ylim_max=ylim_max,return_handle=False)
+		plot_data_field(data1-data2,x,y,vmin=-vdiff,vmax=vdiff,flipped=flipped,colorbar=True,cmap='bwr',title='Difference',xlabel='x (km)',ylabel='', ylim_min=ylim_min, ylim_max=ylim_max)
+		text(0.1,1,letter_labels[2], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 
 	######################data###############################################################################################
 	################################  Plotting Bt stream function ########################################################
@@ -617,23 +655,37 @@ def main(args):
 
 		data1=calculate_barotropic_streamfunction(Shelf_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
 		data2=calculate_barotropic_streamfunction(Berg_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
+
+		#Masking out grounded ice
+		mask_grounded=True
+		if mask_grounded == True:
+			data1=mask_grounded_ice(data1,depth,ice_base)
+			data2=mask_grounded_ice(data2,depth,ice_base)
+
+		#Plotting everyone
 		ax=plt.subplot(1,3,1)
+		plot_data_field((ice_base*0),x,y,-5.0, 10.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min, \
+				ylim_max=ylim_max,return_handle=False)
 		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Lagrangian',\
-				xlabel='x (km)',ylabel='y (km)',colorbar_shrink=0.5,colorbar_units='(Sv)')	
+				xlabel='x (km)',ylabel='y (km)',colorbar_shrink=0.5,colorbar_units='(Sv)', ylim_min=ylim_min, ylim_max=ylim_max)	
                 plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
                 plt.plot(xvec,ice_front, linewidth=3.0,color='black')
 		text(0.1,1,letter_labels[0], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 		
 		ax=plt.subplot(1,3,2)
+		plot_data_field((ice_base*0),x,y,-5.0, 10.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min, \
+				ylim_max=ylim_max,return_handle=False)
 		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Eularian',\
-				xlabel='x (km)',ylabel='',colorbar_shrink=0.5,colorbar_units='(Sv)')	
+				xlabel='x (km)',ylabel='',colorbar_shrink=0.5,colorbar_units='(Sv)', ylim_min=ylim_min, ylim_max=ylim_max)	
                 plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
                 plt.plot(xvec,ice_front, linewidth=3.0,color='black')
 		text(0.1,1,letter_labels[1], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 		
 		ax=plt.subplot(1,3,3)
+		plot_data_field((ice_base*0),x,y,-5.0, 10.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min, \
+				ylim_max=ylim_max,return_handle=False)
 		plot_data_field(data1-data2,x,y,-vmax, vmax, flipped,colorbar=True,cmap='bwr',title='Difference',\
-				xlabel='x (km)',ylabel='',colorbar_shrink=0.5,colorbar_units='(Sv)')	
+				xlabel='x (km)',ylabel='',colorbar_shrink=0.5,colorbar_units='(Sv)', ylim_min=ylim_min, ylim_max=ylim_max)	
                 plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
                 plt.plot(xvec,ice_front, linewidth=3.0,color='black')
 		text(0.1,1,letter_labels[2], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
