@@ -565,7 +565,8 @@ def main(args):
 	Berg_ocean_file=Berg_path+'00010101.ocean_month.nc'
 	Berg_iceberg_file=Berg_path+'00010101.icebergs_month.nc'
 
-
+	#Other
+	letter_labels=np.array(['(a)','(b)','(c)','(d)','(e)'])
 
 	#Load static fields
 	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated)	
@@ -616,21 +617,26 @@ def main(args):
 
 		data1=calculate_barotropic_streamfunction(Shelf_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
 		data2=calculate_barotropic_streamfunction(Berg_ocean_file,depth,ice_base,time_slice='mean',time_slice_num=-1,rotated=rotated)
-		plt.subplot(1,3,1)
+		ax=plt.subplot(1,3,1)
 		plot_data_field(data2,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Lagrangian',\
 				xlabel='x (km)',ylabel='y (km)',colorbar_shrink=0.5,colorbar_units='(Sv)')	
                 plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
                 plt.plot(xvec,ice_front, linewidth=3.0,color='black')
-		plt.subplot(1,3,2)
+		text(0.1,1,letter_labels[0], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
+		
+		ax=plt.subplot(1,3,2)
 		plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=True,cmap=cmap,title='Eularian',\
 				xlabel='x (km)',ylabel='',colorbar_shrink=0.5,colorbar_units='(Sv)')	
                 plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
                 plt.plot(xvec,ice_front, linewidth=3.0,color='black')
-		plt.subplot(1,3,3)
+		text(0.1,1,letter_labels[1], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
+		
+		ax=plt.subplot(1,3,3)
 		plot_data_field(data1-data2,x,y,-vmax, vmax, flipped,colorbar=True,cmap='bwr',title='Difference',\
 				xlabel='x (km)',ylabel='',colorbar_shrink=0.5,colorbar_units='(Sv)')	
                 plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
                 plt.plot(xvec,ice_front, linewidth=3.0,color='black')
+		text(0.1,1,letter_labels[2], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 
 	if fields_to_compare=='plot_cross_section':
 		plot_anomaly=True

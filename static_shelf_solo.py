@@ -117,6 +117,9 @@ def parseCommandLine():
 		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
 
 
+	parser.add_argument('-melt_vmax', type=float, default=10.0,
+		                        help='''Maximum melt rate used for plotting colorbar (only applies to melt, temp, ustar figure)''')
+
 
         optCmdLineArgs = parser.parse_args()
         return optCmdLineArgs
@@ -246,7 +249,7 @@ def main(args):
 			vmax_list=np.array([3.0, -0.5, 0.001])
 			if use_ALE is True:
 				vmin_list=np.array([0.0, -1.9, 0.0])
-				vmax_list=np.array([10.0, -0.5, 0.005])
+				vmax_list=np.array([args.melt_vmax, -0.5, 0.005])
 			cmap_list=np.array(['jet', 'jet', 'jet'])
 			mask_grounded=np.array([True,True, True])
 			#mask_open_ocean=np.array([True,False, True])
