@@ -142,7 +142,7 @@ for time_count=time_ind_list;
     %axis([10 550 200 400]);drawnow
     box on
     grid off
-    title(['Day ' num2str(time_count_temp)],'fontsize',fontsize);
+    title(['Day ' num2str(round(time/60/60/24))],'fontsize',fontsize);
     xlabel('x (km)','fontsize',fontsize)
     ylabel('y (km)','fontsize',fontsize)
     set(gca,'fontsize',fontsize)

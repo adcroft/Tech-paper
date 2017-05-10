@@ -116,7 +116,8 @@ cd ../
 cd ../
 
 
-figure;
+%figure;
+FigHandle = figure('Position', [100, 100, 1049, 895]);
 colormap(blue_white)
 
 
@@ -129,7 +130,7 @@ for time_count=time_ind_list;
         time_count_temp=0;
     end
     plot_count=plot_count+1;
-    time=berg_pos_time(time_count);
+    time=berg_pos_time(time_count)
     
     subplot(2,2,plot_count)
     hold on
@@ -147,7 +148,7 @@ for time_count=time_ind_list;
     %axis([10 550 200 400]);drawnow
     box on
     grid off
-    title(['Day ' num2str(time_count_temp)],'fontsize',fontsize);
+    title(['Day ' num2str(round(time/60/60/24))],'fontsize',fontsize);
     xlabel('x (km)','fontsize',fontsize)
     ylabel('y (km)','fontsize',fontsize)
     set(gca,'fontsize',fontsize)
@@ -241,8 +242,9 @@ for time_count=time_ind_list;
     
 end
 
-%'About to save figure', 
-%saveas(gcf,'/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Tabular_and_regular_towards_coast.png')
+'About to save figure', 
+%saveas(gcf,'/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Tabular_and_regular_towards_coast_tails.png')
+saveas(gcf,'/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Tabular_and_regular_towards_coast_tails_test.png')
 
 
 
