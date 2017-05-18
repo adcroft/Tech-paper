@@ -105,6 +105,8 @@ def transpose_matrix(data):
 			for j in range(M[3]):
 				data_new[:,:,j,i]=data[:,:,i,j]
 		#print 'After rotation' ,data.shape
+	
+	data_new=np.ma.masked_invalid(data_new)
 	return data_new
 
 
@@ -134,7 +136,7 @@ def mask_ice_old(data,ice_base):
    if len(data.shape) == 3: # 3D array
 	   for k in range(data.shape[0]):
 		   data[k,:,:]=data[k,:,:]*mask[:,:]
-   
+		 
    return data
 
 def mask_ocean(data,area,tol=0.0):
@@ -408,6 +410,7 @@ def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cma
 		vmax=float(vmax)
 
 	cNorm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+	print 'CNorm', vmin, vmax, cNorm
 	datamap=plt.pcolormesh(x,y,data,norm=cNorm,cmap=cmap)
 	if colorbar is True:
 		cbar=plt.colorbar(datamap, cmap=cmap, norm=cNorm, shrink=colorbar_shrink)
@@ -696,7 +699,7 @@ def main(args):
 		#vertical_coordinate='z'
 		vertical_coordinate='layers'  #'z'
 		#field='temp'  ; vmin=-2.0  ; vmax=1.0  ;vdiff=0.1   ; vanom=0.3
-		field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.02  ; vanom=0.02
+		field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.03  ; vanom=0.03
 		#field='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
 		#field='v'  ; vmin=-0.01  ; vmax=0.01  ;vdiff=0.01  ; vanom=0.01
 		filename1=Shelf_ocean_file
@@ -731,20 +734,23 @@ def main(args):
 			vmin=-vanom  ; vmax=vanom
 
 
-		plt.subplot(3,1,1)
+		ax=plt.subplot(3,1,1)
 		plot_data_field(data1, y1, z1, vmin, vmax, flipped=False, colorbar=True, cmap='jet')
 		surface=np.squeeze(elevation1[0,:])   ;  plot(dist, surface,'black')
 		bottom=np.squeeze(depth[:,20])   ;  plot(dist, -bottom,'black')
+		text(0.1,1,letter_labels[0], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 
-		plt.subplot(3,1,2)
+		ax=plt.subplot(3,1,2)
 		plot_data_field(data2, y2, z2, vmin, vmax, flipped=False, colorbar=True, cmap='jet')
 		surface=np.squeeze(elevation2[0,:])   ;  plot(dist, surface,'black')
 		bottom=np.squeeze(depth[:,20])   ;  plot(dist, -bottom,'black')
+		text(0.1,1,letter_labels[1], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 
-		plt.subplot(3,1,3)
+		ax=plt.subplot(3,1,3)
 		surface=np.squeeze(elevation1[0,:])   ;  plot(dist, surface,'black')
 		plot_data_field(data1-data2, y1, z1, vmin=-vdiff, vmax=vdiff, flipped=False, colorbar=True, cmap='bwr')
 		bottom=np.squeeze(depth[:,20])   ;  plot(dist, -bottom,'black')
+		text(0.1,1,letter_labels[2], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 		
 		#For plotting purposes
 		field=field+'_'+ vertical_coordinate

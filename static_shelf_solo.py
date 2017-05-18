@@ -379,6 +379,17 @@ def main(args):
 			plot_anomaly_list=np.array([False, True, False])
 			filename_list=np.array([Berg_ocean_file_init, Berg_ocean_file,Berg_ocean_file])
 			time_slice_list=np.array(['','mean','mean'])
+		if args.three_fields_flag=='plot_temp_v_v':
+			field_list=np.array(['temp','v','v'])
+			vmin_list=np.array([-2.0, -0.01 , -0.01])
+			vmax_list=np.array([1.0, 0.01, 0.01])
+			vanom_list=np.array([0.6, 0.01, 0.01])
+			cmap_list=np.array(['jet', 'jet', 'jet'])
+			colorbar_unit_list=np.array(['(deg C)','(deg C)','(m/s)'])
+			time_slice_num_list=np.array([-1,-1,-1])
+			plot_anomaly_list=np.array([True, False, False])
+			filename_list=np.array([Berg_ocean_file_init, Berg_ocean_file,Berg_ocean_file])
+			time_slice_list=np.array(['mean','mean','mean'])
 
 		
 		if vertical_coordinate=='z':
