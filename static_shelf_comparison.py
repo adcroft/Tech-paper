@@ -49,6 +49,12 @@ def parseCommandLine():
 	parser.add_argument('-fields_to_compare', type=str, default='plot_bt_stream_comparison',
 		                        help=''' This flag determine whether to plot horizontal, vertical, or special case for barotropic stream function
 					(should remove this later). Options are plot_bt_stream_comparison, plot_melt_comparison, plot_cross_section   ''')
+	
+	parser.add_argument('-field', type=str, default='melt',
+		                        help=''' Which field is plotted when horizontal comparison is used   ''')
+	
+	parser.add_argument('-file_type', type=str, default='ice',
+		                        help=''' Which file the data is loaded from when horizontal comparison is used   ''')
 
 	#Which file type to use
 	parser.add_argument('-use_title_on_figure', type='bool', default=False,
@@ -64,7 +70,31 @@ def parseCommandLine():
 	parser.add_argument('-ylim_max', type=float, default=480.0,
 		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
 
+	parser.add_argument('-vmin', type=float, default=0.0,
+		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
 
+	parser.add_argument('-vmax', type=float, default=7.0,
+		                        help='''Max value used in colorbar for plotting (only applies to horizontal sections)''')
+	
+	parser.add_argument('-vdiff', type=float, default=8.0,
+		                        help='''Anomaly value used in colorbar for plotting (only applies to horizontal sections)''')
+	
+	parser.add_argument('-time_slice', type=str, default=' ',
+		                        help='''Decides which time slice to use (mean, all...  ''')
+	
+	parser.add_argument('-time_slice_num', type=int, default=-1,
+		                        help='''Decides which time slice to use (mean, all...  ''')
+	
+	parser.add_argument('-direction', type=str, default='xy',
+		                        help='''Decides which direction to  use  ''')
+	
+	parser.add_argument('-dir_slice', type=str, default=' ',
+		                        help='''Decides which direction slice to  use  ''')
+	
+	parser.add_argument('-dir_slice_num', type=int, default=0,
+		                        help='''Decides which direction slice number to  use  ''')
+	
+	
 	optCmdLineArgs = parser.parse_args()
 	return optCmdLineArgs
 
@@ -279,6 +309,41 @@ def load_and_compress_data(filename, field, time_slice, time_slice_num, directio
 	else:
 		return data
 
+def load_and_compress_time_series(filename, field, time_slice, time_slice_num, direction=None ,dir_slice=None, dir_slice_num=None,\
+		rotated=False,return_time=False,depth=None, ice_base=None):
+
+	#Loading data
+	if field=='barotropic_sf':  #special case for barotropic stream function.
+		if (depth is None) or (ice_base is None):
+			print 'Depth and ice base needed to calculate stream function'
+		data=calculate_barotropic_streamfunction(filename,depth,ice_base,time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated)
+	else:
+		data=load_data_from_file(filename, field, rotated)
+	
+	#Give an error message if direction is not given for 4D matrix	
+	if (len(data.shape)>3 and direction is None):
+		print 'Direction must be provided for 4-dim matrix'
+		return
+	
+	data=squeeze_matrix_to_time_series(data,time_slice,time_slice_num,direction,dir_slice, dir_slice_num)
+
+	return data
+
+def squeeze_matrix_to_time_series(data,time_slice,time_slice_num,direction=None,dir_slice=None, dir_slice_num=None):
+	#This routine reduces the data to a time series. It assumes that the first dimension is time. 
+	#The time_slice / time_slice_num must be provided to tell where the averages should be applied.
+	#If there are three spatial dimensions, then the dirction, and dir_slice, dir_slice_num must be added
+
+	if len(data.shape)==4:
+		data=np.mean(data,axis=3)
+	if len(data.shape)==3:
+		data=np.mean(data,axis=2)
+	if len(data.shape)==2:
+		data=np.mean(data,axis=1)
+
+
+
+	return data
 
 def calculate_barotropic_streamfunction(filename,depth,ice_base,time_slice=None,time_slice_num=-1,rotated=False):
 	uhbt=load_data_from_file(filename, 'uhbt', rotated)
@@ -530,7 +595,6 @@ def switch_axis_if_rotated(rotated,yvec,xvec):
 def main(args):
 
 	#Plotting flats
-	print 'sfdsdsdsf', args.save_figure
 	save_figure=args.save_figure
 	
 	#General flags
@@ -571,9 +635,13 @@ def main(args):
 	
 	#Shelf files
 	Shelf_ocean_file=Shelf_path+'00010101.ocean_month.nc'
+	Shelf_ice_file=Shelf_path+'00010101.ice_month.nc'
+	Shelf_prog_file=Shelf_path+'00010101.prog.nc'
 
 	#Berg files
 	Berg_ocean_file=Berg_path+'00010101.ocean_month.nc'
+	Berg_ice_file=Berg_path+'00010101.ice_month.nc'
+	Berg_prog_file=Berg_path+'00010101.prog.nc'
 	Berg_iceberg_file=Berg_path+'00010101.icebergs_month.nc'
 
 	#Other
@@ -598,15 +666,37 @@ def main(args):
 	################################  Plotting melt comparison  ##########################################################
 	######################################################################################################################
 	
-	if fields_to_compare=='plot_melt_comparison':
-		vmin=0.0  ; vmax=3.0  ; vdiff=3.0
-		if use_ALE is True:
-			vmin=0.0  ; vmax=7.0  ; vdiff=8.0
+	if fields_to_compare=='horizontal_comparison':
+		#vmin=0.0  ; vmax=3.0  ; vdiff=3.0
+		#if use_ALE is True:
+		vmin=args.vmin  ; vmax=args.vmax  ; vdiff=args.vdiff
 		flipped=False
-		field='melt'
+		field=args.field
+		time_slice=args.time_slice
+		time_slice_num=args.time_slice_num
+		file_type=args.file_type
+		direction=args.direction
+		dir_slice=args.dir_slice
+		dir_slice_num=args.dir_slice_num
 
-		data1=load_and_compress_data(Shelf_ocean_file,field='melt',time_slice='mean',time_slice_num=-1,rotated=rotated)
-		data2=load_and_compress_data(Berg_iceberg_file,field='melt_m_per_year',time_slice='mean',time_slice_num=-1,rotated=rotated) #field name is difference since it comes from a diff file.
+
+		if file_type=='ice':
+			Shelf_file=Shelf_ice_file
+			Berg_file=Berg_ice_file
+		if file_type=='prog':
+			Shelf_file=Shelf_prog_file
+			Berg_file=Berg_prog_file
+		if field=='melt':
+			field2='melt_m_per_year'
+			Shelf_file=Shelf_ocean_file
+			Berg_file=Berg_iceberg_file
+		else:
+			field2=field
+
+		data1=load_and_compress_data(Shelf_file,field=field, time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated,\
+				direction=direction ,dir_slice=dir_slice, dir_slice_num=dir_slice_num )
+		data2=load_and_compress_data(Berg_file, field=field2, time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated,\
+				direction=direction ,dir_slice=dir_slice, dir_slice_num=dir_slice_num )
 
 		#Masking out ocean and grounded ice
 		mask_open_ocean=True
