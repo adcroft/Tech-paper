@@ -68,7 +68,7 @@ def Schematic():
 if __name__ == '__main__':
 	Schematic()
 	plt.show()
-	print 'Script complete'
+	print('Script complete')
 	#sys.exit(main())
 
 

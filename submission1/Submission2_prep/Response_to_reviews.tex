@@ -44,90 +44,102 @@ Accurate Key Points (Required): Yes\\
 \\
 Reviewer 1 (Formal Review for Authors (shown to authors)):\\
 \\
-The article presents a novel and very exciting new methodology to include tabular icebergs into general circulation models. The new approach uses numerical bonds to group single icebergs/ice elements with finite extent together to form tabular icebergs with complex shapes, where previously levitating point-particle icebergs with typically zero area coverage have been used. The article is an original and exciting contribution in the ongoing discussion about the inclusion of giant tabular icebergs into ocean and climate models, and therefore -in my opinion- very suitable for publication inÊJAMES.Ê\\
+The article presents a novel and very exciting new methodology to include tabular icebergs into general circulation models. The new approach uses numerical bonds to group single icebergs/ice elements with finite extent together to form tabular icebergs with complex shapes, where previously levitating point-particle icebergs with typically zero area coverage have been used. The article is an original and exciting contribution in the ongoing discussion about the inclusion of giant tabular icebergs into ocean and climate models, and therefore -in my opinion- very suitable for publication in JAMES.Ê\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{We would like to thank the reviewer for taking the time to carefully review our manuscript and for the favorable review. The reviewer's comments are addressed on a point by point basis below.}\\
 \\
-The authors describe the model and the technical details very well, and there are only some points that should be worked out in more detail (see specific comments below). This concerns (a) details about the surface areas where the melt rates and various forces are acting on when proceeding from rectangular point-particle icebergs to (bonded) hexagonal ice elements. In contrast to the thermodynamics/melting parameterization, it is also less clear how (b) the dynamics of inner ice elements is handled, and whether these could be subject to erroneous form drags despite being actually "shielded" by means of the outer elements. Finally, (c) when exactly do the interactive forces enter the computation? Are the ice elements first allowed to drift independently, and then the velocity/position is corrected for via $F_{ia}$ (or $a_{ia}$) afterwards? This could all be suitably added to the appendix; it is important information for other model centers that apply point-particle iceberg models and which could desire to also extend their existing models with interactive bonding forces.\\
+The authors describe the model and the technical details very well, and there are only some points that should be worked out in more detail (see specific comments below). This concerns (a) details about the surface areas where the melt rates and various forces are acting on when proceeding from rectangular point-particle icebergs to (bonded) hexagonal ice elements.\\ 
 \\
-\textcolor{red}{}\\
+\textcolor{red}{For the purposes of non-interactive forces and applying melt rates, the elements are treated as cuboids, as in Martin and Adcroft (2010) and most other point-particle iceberg models. We chose to treat the icebergs as cuboids so that when no bonds were used, the forces and melt rates were completely unchanged from the Martin and Adcroft (2010). While assuming a different shape iceberg for the purposes of applying mass to the ocean and applying forces and melt rates introduces an a small error, this error is small compared to the uncertainty in the drag coefficients, melt rate parametrizations and other uncertainties built into a iceberg model. A few lines have been added to the start of Section 6.1 and of Section 6.2 to make it clear exactly which surfaces the forces and melt rates are applied to.}\\
+\\
+In contrast to the thermodynamics/melting parameterization, it is also less clear how (b) the dynamics of inner ice elements is handled, and whether these could be subject to erroneous form drags despite being actually "shielded" by means of the outer elements.\\
+\\
+\textcolor{red}{We agree with the reviewer that the side drag acting on the interior elements should be treated in a similar way to how the interior melting is handled. This was not done correctly in the original version of the manuscript, and has now been corrected. We have added a description of this to Appendix A and have added a few further sentences to the end of Section 2.5 to direct the reader to Appendix A. A  variable $\epsilon = 1- \frac{N_{b}}{N_{max}}$ representing the fraction of an elements perimeter surrounded by ocean has been introduced to ease the notation. Equation 9 and 10 have be rewritten in terms of this new variable. The modification to the drag law does not make a qualitative difference to the results or figures.}\\
+\\
+Finally, (c) when exactly do the interactive forces enter the computation? Are the ice elements first allowed to drift independently, and then the velocity/position is corrected for via $F_{ia}$ (or $a_{ia}$) afterwards? This could all be suitably added to the appendix; it is important information for other model centers that apply point-particle iceberg models and which could desire to also extend their existing models with interactive bonding forces.\\
+\\
+\textcolor{red}{The interactive forces are included in the momentum equation for each particle, as shown in equation (1). The interactive forces are added to the total force balance which is used to update the iceberg velocity. This velocity is in turn used to update the iceberg position. The numerical scheme used to update the iceberg position and velocity is outlined in in Appendix B.}\\
+%\textcolor{blue}{[I am not sure why this was unclear. Should I add more text to clarify further?]}\\
 \\
 As a comment, despite some obvious issues when using point-particle methods for the modeling of large tabular icebergs, there have been previous successful attempts to model tabular icebergs with the existing technology (after some modifications), and this could be mentioned in your review-like introduction as well (see specific comment below). Those studies are, i.a., Lichey and Hellmer (2001), Hunke and Comeau (2011), and Rackow et al. (2017), which are already cited in the manuscript except for Hunke and Comeau (2011).Ê
-The point-particle method has been modified in the above studies in order to improve the drift representation of tabular icebergs, e.g., by (i) including sea ice-iceberg interaction, leading to increased drift speeds when icebergs are "captured" in sea ice, and (ii) by modifications to the sea surface slope force $F_{ss}$ in order to account for the vast horizontal extent of tabular icebergs, and (iii) by manually embedding icebergs into the ocean vertically, as was also done in Merino et al. (2016) (cited in l. 255).
+The point-particle method has been modified in the above studies in order to improve the drift representation of tabular icebergs, e.g., by (i) including sea ice-iceberg interaction, leading to increased drift speeds when icebergs are "captured" in sea ice, and (ii) by modifications to the sea surface slope force $F_{ss}$ in order to account for the vast horizontal extent of tabular icebergs, and (iii) by manually embedding icebergs into the ocean vertically, as was also done in Merino et al. (2016) (cited in l. 255).\\
 \\
-\textcolor{red}{A paragraph has been added to the introduction at line 81 which reviews some of the attempts to move beyond levitating point particle icebergs using the existing technology.} \textcolor{blue}{[Lichey and Hellmer (2001) is not discussed in details since the suggested parametrization is not related directly to the size and structure of tabular icebergs. It is cited as a paper that has modeled tabular icebergs using existing technology.]}\\
+\textcolor{red}{There have been a number of studies which have modified the point-particle iceberg model in order to better represent tabular icebergs. A paragraph has been added to the introduction which reviews some of the attempts to move beyond levitating point particle icebergs using the existing technology.} \\
+%\textcolor{blue}{[Lichey and Hellmer (2001) is not discussed in details since the suggested parametrization is not related directly to the size and structure of tabular icebergs. It is cited as a paper that has modeled tabular icebergs using existing technology.]}\\
 \\
 Your proposed model framework is a very original idea and is able to produce impressive iceberg-iceberg and iceberg-coastline interactions, but the added value of resolving realistic collisions and ocean-embedded icebergs in a climate context is not immediately clear, and so it is a little too early to entirely deny the applicability of the simpler point-particle model to the tabular iceberg case. At some point, it would be great to see a comparison of the new methodology with the "old" one and to show the possible superiority of the new approach in a systematic manner.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{We agree with the reviewer that it is too early to conclude that (appropriately modified) point-particle iceberg models can not be used to represent tabular icebergs in GCM's. However, more work is needed to improve the current point-particle iceberg models so that they can be used to represent tabular icebergs. A brief discussion on this point has been added to the new introduction described above. A comparison between the resolved icebergs in our study and a modified point particle iceberg model would certainly be useful to help constrain both models.}\\
 \\
 Overall, the study presents fabulous work and, I think, the fact that icebergs are finally non-levitating should be strongly emphasized, also in the abstract, because it is a real milestone as you rightly mention in lines 467-469. I recommend the paper for publication in JAMES subject to minor revisions.\\
 \\
-\textcolor{red}{We would like to thank the reviewer for the very favorable review of our work. We agree that the fact that icebergs are non-levitating in our new iceberg framework is an important feature which was underemphasized. We have added the word `submerged' to the paper title, and edited the abstract, introduction and conclusion to further emphasize this point.\\
-\\
-Line 18 in abstract has been edited and now reads: ``In this framework, tabular icebergs are represented by non-levitating Lagrangian elements that drift are submerged in the ocean.'' \\\\
-A brief discussion of levitating and non-levitating icebergs models has been added to the new paragraph in the introduction at line 81. The development of a iceberg model where icebergs are submerged in the flow (and not levitating) has been added as one of the goals of the study at line 103.\\
-\\
-A few words have been added to the first paragraph of the conclusion to emphasize that the iceberg models allows icebergs to be non-levitating.}\\
+\textcolor{red}{We agree that the fact that icebergs are non-levitating in our new iceberg framework is an important feature which was underemphasized. We have added the word `submerged' to the paper title, and edited the abstract, introduction and conclusion to further emphasize this point.}\\
+%\\
+%\textcolor{red}{Line 18 in abstract has been edited and now reads: ``In this framework, tabular icebergs are represented by non-levitating Lagrangian elements that drift are submerged in the ocean.'' \\
+%\\
+%A brief discussion of levitating and non-levitating icebergs models has been added to the new paragraph in the introduction at line 81. The development of a iceberg model where icebergs are submerged in the flow (and not levitating) has been added as one of the goals of the study at line 103.\\
+%\\
+%A few words have been added to the first paragraph of the conclusion to emphasize that the iceberg models allows icebergs to be non-levitating.}\\
 \\
 ----
 Some general clarifications would further improve the paper:\\
 \\
-\textcolor{red}{}\\
-\\
 - When initializing your idealized ice shelf, the ice elements will have decreasing thickness towards the ice shelf front, correct? If the ice elements behave like icebergs in point-particle models, that would also imply different freeboards. Do you somehow enforce a level ice shelf surface? Do you generally enforce a level surface for bonded ice elements, i.e. tabular icebergs?\\
 \\
-\textcolor{red}{All of the ice elements are assumed to be floating in the ocean (in isostatic equilibrium), so that the mass of a column of ice is equal to the mass of water it displaces.  This means that ``the element thickness is related to the draft and freeboard by $T=F+D$ and $D=\frac{\rho}{\rho_{o}} T$'' (see line 610). Since the ice shelf is thickest at the grounding line, and gets much thinner toward the ice front, this implies that the the elevation of the ice surface decrease towards the ice front (as the reviewer correctly points out).\\
-\\
-The following lines have been added at line 410 to clarify: ``The initial ice thicknesses of the elements are calculated from the ice mass by assuming that the ice has a constant density, $\rho$. The draft and freeboard are related to the ice thickness by $T=F+D$ and $D=\frac{\rho}{\rho_{o}} T$, where $\rho$ and $\rho_{o}$ are the density of ice and seawater respectively."} \textcolor{blue}{[Perhaps we should not add these lines to the text since they already appear in the text in the appendix? ]}\\
+\textcolor{red}{All of the ice elements are assumed to be floating in the ocean (in isostatic equilibrium), so that the mass of a column of ice is equal to the mass of water it displaces.  This means that ``the element thickness is related to the draft and freeboard by $T=F+D$ and $D=\frac{\rho}{\rho_{o}} T$'' (see Appendix A). Since the ice shelf is thickest at the grounding line, and gets much thinner toward the ice front, this implies that the the elevation of the ice surface decrease towards the ice front (as the reviewer correctly points out). We do not enforce a level surface for bonded ice elements.}\\
+%\\
+%\textcolor{red}{The following lines have been added at line 410 to clarify: ``The initial ice thicknesses of the elements are calculated from the ice mass by assuming that the ice has a constant density, $\rho$. The draft and freeboard are related to the ice thickness by $T=F+D$ and $D=\frac{\rho}{\rho_{o}} T$, where $\rho$ and $\rho_{o}$ are the density of ice and seawater respectively."} \textcolor{blue}{[Perhaps we should not add these lines to the text since they already appear in the text in the appendix? ]}\\
 \\
 - In the case of tabular icebergs, your bonded ice elements are ice columns that are potentially close to the limit for iceberg capsizing. Do you turn off the capsizing parameterization for bonded ice elements? Would the ice elements capsize immediately after bond breakup?\\
 \\
-\textcolor{red}{1) Iceberg rolling is turned off bonded icebergs. 2) All icebergs are initialized with D>??? and W=?. This means that W/D > 0.92 stability requirement. (hopefully).}\\
+\textcolor{red}{In the simulations in the first submission of the manuscript, iceberg capsizing was turned off. All of the ice elements in the calving iceberg were initialized to be stable and not close to the capsizing limit. Since the simulations are only run for a short period of time (60 days), iceberg melting does not does not bring the ice elements close to the capsizing limit.}
+%\\
+\textcolor{red}{However, we like with the reviewers suggestion of turning capsizing off for bonded elements only, and have implemented this change. The change does not make any qualitative difference to the simulation or figures but could improve for longer simulations.}
+\textcolor{red}{Details of the iceberg rolling scheme have been added to the end of Appendix A.}\\
 \\
 - Have you already followed a tabular iceberg until it was completely melted? What about capsizing of a laterally strongly eroded former tabular iceberg that still consists of several bonded ice elements, is this even possible?Ê\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{We have not yet followed a tabular iceberg until it melted completely. This will be done in a future study. As mentioned above in our setup bonded elements are prohibited from capsizing.}\\
 \\
 - From your experience, will the timestep limitation due to the interactive forces be too prohibitive for long climate model runs? What is the computational overhead when using the new framework compared to the original point-particle model code?\\
 \\
-
+\textcolor{red}{The interactive forces were designed to run sufficiently quickly that they can be used in a climate model at a later stage. In the simulations presented in this study, the extra time needed to calculate bonded interactions is small compared to other parts of the iceberg code and very small compared to the time taken to run the ocean model. This is illustrated by the fact that the simulation where all bonds were removed took slightly longer than the bonded simulation.}\\
+\\
+\textcolor{red}{Embedding the elements in the ocean means that the coupling time step between the iceberg model and the ocean model has to be reduced to prevent the movement of the iceberg exciting artificial gravity waves in the ocean. This is true for simulations with and without iceberg bonds. An effort is currently underway to improve the coupling between the iceberg model and the ocean model to allow for a larger coupling time step (i.e.: splitting the iceberg dynamics into a fast part and a slow part with different coupling time steps).  At this stage it is still too early to say whether our model will be able to be used for global simulations, however, it is being build with this intension.}\\
+\\
 ----
 Specific comments:\\
 \\
 l. 14: comma after "sea ice formation"\\
 \\
-\textcolor{red}{Comma has been added}\\
+\textcolor{red}{A comma has been added}\\
 \\
-l. 16: "the current generation of ocean circulation models do not represent" -> "the current generation of ocean circulation models usually does not represent"\\
+l. 16: "the current generation of ocean circulation models do not represent" $- >$ "the current generation of ocean circulation models usually does not represent"\\
 \\
 \textcolor{red}{The word `usually' has been added.}\\
 \\
 l. 22: I think the comma after "its breakup" should be dropped\\
 \\
-\textcolor{red}{Comma has been removed}\\
+\textcolor{red}{The comma has been removed}\\
 \\
 l. 60-64: It is fair to say that these models have been mostly used for icebergs smaller than 3.5 km on a global scale, but there are also studies applying the point-particle models to tabular Antarctic icebergs (see above comment). I suggest to extend your short overview by also discussing those simpler models in order to put the new framework into a broader context.\\
 \\
-\textcolor{red}{A paragraph has been added to the introduction at line 81 which reviews some of the attempts to move model tabular icebergs using the existing technology.} \\
+\textcolor{red}{A paragraph has been added to the introduction which reviews some of the attempts to model tabular icebergs using the existing technology.} \\
 \\
 l. 72-74: As far as I understand, iceberg breakup and calving is still an unresolved issue even when using bonded ice elements? The technical capability to cut an iceberg into pieces is certainly there, but the "when" and "how" is still unresolved (which bonds should be removed and why/when?). One could argue that dynamic iceberg lists in simple point-particle models already provide a similar technical capability, because an iceberg that is destined to break into pieces could simply be removed from that list and be replaced by a set of smaller child icebergs. I have the impression that not much is gained using the new methodology with regard to the exact timing/modeling of iceberg calving and break up. Maybe you can clarify the sentence and what you mean by "representation of iceberg breakup and calving".\\
 \\
-\textcolor{red}{We agree with the reviewer that the issue of iceberg breakup and calving is still unresolved and there is still much to be understood about the physic that govern these processes.  We do however believe the the present work provides a framework which allows iceberg calving (away from a submerged ice shelf) to be modeled more easily. Firstly, is not clear how the calving of icebergs away from a submerged ice shelf could be represented using levitating icebergs (since removing mass from the ice shelf would trigger artificial tsunamis). If icebergs are non-levitating then it becomes important that the size of the iceberg matches the size of the piece of ice calving away from the ice shelf. 
-Calving icebergs can have many different structures and shapes. It is not clear how this could be represented using rectangular, circular icebergs or point particle icebergs.
-Representing icebergs and ice shelves using ice elements submerged in the ocean means therefore puts fewer restrictions on possible calving laws. Similarly with icebergs breakup, it is unclear how one would represent an iceberg breaking up into two pieces with distinct shapes by introducing child icebergs to replace the parent. This could be achieve by keeping track of icebergs shape, but this is a non-trivial exercise.\\
-
-Lines 72-74 have been removed, and have been replaced with a very brief discussing of how levitating point particle icebergs are largely incompatible
-with submerged ice shelf models.}\\
+\textcolor{red}{We agree with the reviewer that the issue of iceberg breakup and calving is still unresolved and there is still much to be understood about the physic that govern these processes. While do believe that the framework developed in this study could useful for testing out developed calving laws, it does not address the physics of ice fracture directly. Line 72-74 have been removed to avoid any confusion. A few sentences have been added to the start of Section 3.5 to clarify that we are not addressing the physics of calving in this study, but rather focusing on building a framework to represent tabular icebergs.}\\
+%
+%\textcolor{red}{Lines 72-74 have been removed, and have been replaced with a very brief discussing of how levitating point particle icebergs are largely incompatible with submerged ice shelf models.}\\
 \\
 l. 84: "should run sufficiently quickly" $->$ "should run sufficiently quick" (or fast)ÊÊ\\
 \\
-\textcolor{red}{Changed to "should run sufficiently fast"}\\
+\textcolor{red}{Changed to ``should run sufficiently fast"}\\
 \\
 l. 139-143: What happens to bonded ice elements? The body forces $F_{ss}$ and $F_{c}$ acting on an ice element are clearly not affected by the number of neighboring ice elements, but I suspect you would treat the other forces acting on the inner ice elements differently, probably similar to the modifications for the melting paramerizations in Section 2.5 (eq. 9 and 10)?\\
 This is because inner ice elements should be subject to atmospheric and oceanic skin (surface and bottom) drags only, and the form drags would only act on outer ice elements; ice elements with less than 6 neighbors could partially feel form and skin drags. Similarly, wave radiation and sea ice drag should only act on the outer elements, correct? It wasn't clear to me how this is handled, also after reading appendix A. Moreover, which areas are the forces acting on in extension to the Martin and Adcroft (2010) case? Are they formulated based on the apothem $A_{p}$?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{We agree with the reviewer that the side drag (and wave radiation force) acting on the interior elements should be treated in a similar way to how the interior melting is handled. We have added a description of this to Appendix A and have added a few lines to the end of Section 2.5. A  variable $\epsilon = 1- \frac{N_{b}}{N_{max}}$ representing the fraction of an elements perimeter surrounded by ocean has been introduced to ease the notation. Equation 9 and 10 have be rewritten in terms of this new variable. The modification to the drag law does not make a qualitative difference to the results presented in the figures. To find the length and width of the elements in the drag forces we assume that the elements have cuboid shape as in Martin and Adcroft (2010), as discussed above. }\\
 \\
 l. 174: Later, you are mostly using "$d_{i,j}$" with comma instead of "$d_{ij}$". Similarly, $L_{ij}$ in l. 178 should be changed consistently.\\
 \\
@@ -135,141 +147,152 @@ l. 174: Later, you are mostly using "$d_{i,j}$" with comma instead of "$d_{ij}$"
 \\
 l. 186: The force formulation in the first two rows of equation 6 is identical, so what about combining it into a single case using if (...) OR if (... and ...) ?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The equation has been rearranged as suggested.}\\
 \\
 l. 191-194: I was worried that bonds between ice elements of very different size and mass could result in strange behaviour, if you choose your timestep too large, and strong oscillations around the center of mass. After some thought, I think this is a very clever way to deal with the fact that tabular icebergs (bonded ice elements) will not melt homogeneously, but instead will erode very quickly along the outer sides, leading to high accelerations of the (smaller and lighter) ice elements along the iceberg boundary compared to the slower melting inner ice elements. If noteworthy, maybe you can elaborate a bit more about your experiences leading to that adjustment.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{Different melt rates at the sides and center of the iceberg were used to allow for the sides of the iceberg to erode faster than the center of the berg. A consequence of using this method is that large ice elements in the interior are often bonded to much smaller elements at the sides.
+As the reviewer correctly points out, using the minimum mass $M_{ij}$ in the calculation of the interactive forces avoids strong oscillations for large elements bonded to very small elements. We decided on using this method after attempting to use the average mass. In a two element test case, using the average mass led to very high accelerations when the mass of the smaller iceberg decreased to zero.
+We do not believe that details of this testing are particularly noteworthy or would be of interest to a general reader.}\\
+\\
+\textcolor{red}{While performing these tests, we also noted that the damping of the elastic interactive force perpendicular to the relative motion of the elements should be set to zero. This perpendicular damping has been removed (see equation 8).}\\
+%\\
+%, as done in Li et al [2014] (reference below)\textcolor{red}{Li, B., H. Li, Y. Liu, A. Wang and S. Ji (2014), A modified discrete element model for sea ice dynamics. Acta Oceanologica Sinica, 33(1), 56-63.}\\
 \\
 l. 200: add vector arrow to $r_{ij}$\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The vector arrow has been added.}\\
 \\
 l. 202: "is used reduce", change to "is used to reduce"\\
 \\
+\textcolor{red}{The word `to' has been added}\\
+\\
 l. 213: Is it possible to briefly derive the stability condition?Ê\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The stability condition for a one dimensional linearly damped oscillator is derived by writing the second order system out as a matrix equation and analyzing under what conditions the modulus of the eigenvalues of the matrix are bounded by 1 (i.e.: the system is stable). For the newly-developed implicit velocity Verlet method time-stepping scheme, this last step was done numerically (while it can be solved analytically for the original Velocity Verlet method). The stability of the non-linearly damped oscillator follows from the stability of the linearly damped oscillator since the CFL criteria is independent of the magnitude of the drag coefficient.
+The methods involved in the stability analysis are quite standard, so we do not believe it merits being included in the manuscript.}\\
 \\
 l. 221-225: Very impressive! Why does it rotate exactly? Is it because the first element hitting the coast is stopped (how is this handled?), and due to the bonds the other elements are forced onto a circular path? By the way, are the coastal points also some kind of "stationary ice elements" in your simulation, or how would this be handled in global simulations? Would you need to prescribe repulsive forces along the coasts?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The iceberg rotates due to the effect of the Coriolis force, and also due to the iceberg interacting with the side wall. The interactions of elements with the boundary are handled by manually moving the element back to the closest ocean point. The code handling interactions with the boundary was inherited from the underlying point-particle iceberg model codebase and has not been changed. It has therefore already been used in global simulations.}\\
 \\
 l. 236: "is the length the apothems" -> "is the length of the apothems"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The word `of' has been added.}\\
 \\
 l. 246, 248, 387, 407, 439, ... : Please change "Eularian" to "Eulerian" throughout the text, there are many occasions where it is misspelled.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The spelling has been corrected.}\\
 \\
 l. 250: delete ":"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{Colon has been removed}\\
 \\
 l. 254/255: Similarly to the vertical embedding, there is no need to manually embed tabular icebergs -horizontally- into the ocean by averaging $F_{ss}$ over a larger area, as suggested in above comment (ii), because in your framework the sea surface slope force $F_{ss}$ is conveniently evaluated in different locations (for every ice element separately).\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{Good point. This explanation and the reference to Rackow et al (2017) has been added to the end of the sentence.}\\
 \\
 l. 260: "(iii) imposing heat, salt, and mass fluxes on the ocean, associated with ice melting" Which salinity do you assume for the iceberg meltwater?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{Iceberg meltwater is assumed to have zero salinity and is injected into the ocean boundary layer.}\\
 \\
 l. 277: "[...] This method allows for the intersection to be found even when the hexagon is not aligned with the grid." Is your implementation particularly efficient so that it could be worth sharing it here?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{Finding the intersection between the triangle and the grid is a somewhat messy calculation involving a few special cases. We do not believe that it is worth sharing the details.}\\
 \\
 l. 282: comma after "i.e." instead of ":"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{Comma has been added.}\\
 \\
 l. 287: "described" -> "describe"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected}\\
 \\
 l. 295: "The details of $M_{b}$, $M_{v}$, and $M_{e}$ are given in Appendix A." What is "W" for an ice element? Do you assume hexagons or circles? Is it 2*$A_{p}$?
 Moreover, what is the area that, for example, the wave erosion $M_{e}$ is acting on (for rectangular point-particle icebergs this is usually assumed to be 2 side walls, I think; what is it for hexagons, 3 side walls?) It might prove to be very useful to list the surface areas the different forces and melt rates are acting on in the new framework, where you proceeded from point-particle icebergs to (hexagonal) ice elements.\\
 You could list it either here or in the appendix.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{When applying the melt rates (and applying the drag forces) we assume that the elements are shaped as cuboids, as in Martin and Adcroft (2010) and most other point-particle iceberg models. We chose to treat the icebergs as cuboids so that when no bonds were used, the forces and melt rates were unchanged for the Martin and Adcroft (2010) version. While assuming a different shape iceberg for the purposes of applying mass to the ocean and applying forces and melt rates introduces an a small error, this error is small compared to the uncertainty in the drag coefficients and melt rate parametrization. A few lines have been added to the start of Section 6.1 and of Section 6.2 to make it clear exactly which surfaces the forces and melt rates are applied to, and to discuss the potential error introduced.}\\
 \\
 l. 302 and 306: delete the comma before "$M_{b}$" and "$M_{s}$"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{Commas have been added}\\
 \\
 l. 308: "... which is a typical melting parameterization used beneath ice shelves [Holland and Jenkins, 1999]." One could mention that the 3-equation model for ice shelf melting has been previously applied for the estimation of tabular iceberg melting, e.g. in Silva et al. [2006] and Rackow et al. [2017]. When proceeding to larger iceberg structures this is a natural extension of the model's original range of application.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{A reference to Silva et al. [2006] and Rackow et al. [2017] has been added to the description of the melt rate parametrization in Section 2.5.}\\
 \\
 l. 309-318: This is a clever way to account for the different melting along the boundary elements and inner elements (eq. 9 and 10). Since you do the weighting for the melt rates, the bottom and side areas where the bottom and side melt rates are acting on is unchanged compared to MA2010, correct?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{That is correct.}\\
 \\
 l. 347: "in a following way" -> "in the following way"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 348/349: "up to six bonds per element" Do you support more bonds, for example along the ice shelf front where you added smaller elements to fill the gaps (l.403/404)?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The maximum number of bonds is an input parameter of the model. In our simulations a maximum of six bonds are used (when using hexagonal elements). More bonds can easily be added, but this increases the amount of memory stored with easy element (and passed between processors), and slows the model down the model. Smaller ice elements are only used to fill in gaps along the perimeter of the domain, and not at the ice front. These elements are held stationary, and are not bonded. A sentence has been added to Section 3.2 to clarify.}\\
 \\
 l. 360/361: "from one processor the next ..." -> "from one processor to the next, added to and removed from the appropriate lists, and the"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 363: "a one" -> either "a" or "one"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 389: "in an idealized setting"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 400, l. 434, l. 441: delete ":" in section heading\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The colons have been removed.}\\
 \\
 l. 405: "preprocessing inversion" What is that supposed to mean?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The initial masses of the ice elements are calculated from the gridded ice thickness using bilinear interpolation. This has been corrected in the text.}\\
 \\
 l. 418: "using the ALE regridding-remapping scheme"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The word `the' has been added.}\\
 \\
 l. 468: "modeling" -> "model"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 495: "tabular icebergs"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This sentence has been edited so that it is grammatically correct.}\\
 \\
 l. 515: "As the iceberg drifts"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 532: "phenomenon"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 540/541: Surprisingly, this is in contrast to the findings in Silva et al. [2006], where the authors show that the point-particle iceberg-melt parameterization leads to "on average, half the amount of melting compared to the Holland and Jenkins [1999] model." What could be the reason for this?\\
 \\
+\textcolor{red}{Figure 13 compares the Holland and Jenkins [1999] 3-equation-model melt rate with the Bigg et al [1997] melt rate. Here the Bigg et al [1997] includes contributions from the side erosion, basal melt rate and buoyant convection. In contrast, the Silva et al [2006] paper compare the 3 equation model melt rate to only the basal melt rate from Biggs et al [1997]. Since the side erosion term dominates the melt rate contribution, our results do not contradict Silva et al [2006]. A sentence has been added to Section 4.4 which clarifies this point}\\
+\\
 l. 570: "at the edge"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 572: "showed" -> "show"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 574: "which is an important process"\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{This has been corrected.}\\
 \\
 l. 580: "the question of how and when to introduce tabular icebergs into the ocean needs to be addressed." You could nicely refer to your earlier Stern et al. [2016] paper, where this question is explicitly raised. The question was also echoed and discussed in the Rackow et al. study.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{A reference to Stern et al [2016] has been added.}\\
 \\
 ----
 Comments on the appendix:\\
@@ -303,9 +326,9 @@ l. 671: "for all forces not proportional to the element velocity"\\
 \textcolor{red}{Corrected}\\
 \\
 l. 682, eq. 27: "Solving for $u(t_{n+1})$ in terms of quantities which only depend on the previous time step gives"Ê\\
-One could remind the reader here that -although the notation includes "n+1"- $F^exp_{(n+1)}$ is an explicit function of $x_{(n+1)}$ and other quantities evaluated at $t_{n}$, so those are all known properties at this point.\\
+One could remind the reader here that -although the notation includes "n+1"- $F^{exp}_{(n+1)}$ is an explicit function of $x_{(n+1)}$ and other quantities evaluated at $t_{n}$, so those are all known properties at this point.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{A sentence has been added to the text reminding the reader that $F^{exp}_{(n+1)}$ is already known.}\\
 \\
 l. 691: "This updated drag can now"\\
 \\
@@ -321,7 +344,8 @@ l. 725: "when the following four tests pass"\\
 \\
 l. 724-731: I suspect this only needs to be done once for debugging purposes until everything works, correct? Why do you provide this debugging information here?Ê\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{These lines have been removed.}\\
+%\textcolor{blue}{[Should I remove these lines? They could be helpful for someone trying to reproduce our results.]}\\
 \\
 l. 918: There is an error in the citation for the 'footloose' mechanism.\\
 \\
@@ -348,7 +372,7 @@ l. 934: "For purposes of mass", l. 935 "For purposes of element"\\
 \\
 Maybe it is possible to include an arrow pointing to the red ship?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{We prefer not to add an arrow pointing to the ship, as the ship is not an important feature of the Figure.}\\
 \\
 Figure 4 and 5: ", as shown in the top left panel"\\
 \\
@@ -360,14 +384,14 @@ Figure 6: "For purposes of mass aggregation", "For purposes of element interacti
 \\
 Figure 13: Please base the caption on the better explanation and wording in the main text, lines 537-540.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The caption of Figure 13 has been reworded.}\\
 \\
 ----\\
 AGU Data Policy:\\
 \\
 I was not able to access the model code using the link provided in the Acknowledgements, so please link to the model code explicitly. I was able to access the setup scripts for the experiments through the provided link, however.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{The model source code is open source and can be found at $\textrm{https://github.com/NOAA-GFDL}$. This has been added to the acknowledgements.}\\
 \\
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -416,12 +440,14 @@ below}\\
 Comments\\
 - Section 2.4 Ocean-ice coupling: It's clear the icebergs are embedded in the ocean model, but does this extend to the sea ice model? Since the ice elements can take up a considerable portion of a grid cell, what happens when iceberg area plus sea ice area exceeds the grid cell area?\\
 \\
-\textcolor{red}{The interactions between icebergs and sea ice is an important topic that has not yet included in the tabular iceberg model.  For this reason, the simulations presented in this study did not contain sea ice. We are currently working on improving the tabular iceberg model so that it interacts with sea ice in a more realistic way, and so that the surface area of icebergs and sea ice in a grid cell is always smaller than the grid cell area.
-The final paragraph of the conclusion reminds readers that more work is needed to model iceberg sea ice interactions. This line reads: "Further work is also needed to understand (and model) the interactions between tabular icebergs and sea ice..."}\\
+\textcolor{red}{The interactions between icebergs and sea ice is an important topic that has not yet included in the tabular iceberg model.  For this reason, the simulations presented in this study did not contain sea ice. We are currently working on improving the tabular iceberg model so that it interacts with sea ice in a more realistic way. As the reviewer points out, an important constraint is that the combined surface area of icebergs and sea ice in a grid cell is always smaller than the grid cell area.}\\
+%The final paragraph of the conclusion reminds readers that more work is needed to model iceberg sea ice interactions. This line reads: "Further work is also needed to understand (and model) the interactions between tabular icebergs and sea ice..."}\\
 \\
 - Section 4.3 Ocean response: There seems to be competing effects at play that I believe deserves more discussion here: i) enhanced freshwater/cooling due to iceberg melt in the upper ocean that increases stratification, reduces vertical mixing, thus preventing warmer waters from reaching the surface (as described by the authors in JGR:Oceans 2016). ii) The observed/described effect here of elevated shears around the iceberg that lead to increased vertical mixing and upwelling of warmer waters to the surface. Is the observed ocean warming/upwelling response due to the icebergs being embedded in the ocean model, causing enhanced shearing? Are the fluxes from the iceberg model sent to the ocean at the surface, not at depth? Is effect i) simply not applicable in this modeling setup?\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{In our iceberg model, the iceberg is fully submerged in the water column so that the freshwater fluxes below the iceberg are injected more than 200 meters below sea level. The presence of the iceberg in the water column allows for upwelling to occur around the iceberg leading to a warming of the ocean surface. As the reviewer correctly points out, this result is in contrast to results observed using levitating point-particle icebergs models where freshwater fluxes applied to the ocean surface cause a cooling of the ocean surface. This is an important consideration since the warming/cooling around melting icebergs can drive changes in sea ice concentrations (as reported in Stern et al 2016). In the real-world ocean the sign of the ocean surface temperature response will likely depend on the ambient stratification around the iceberg and the amount of entrainment in the iceberg plume. More work is required to determine whether the presence of tabular icebergs in an ocean model will lead to a net warming or cooling of the Southern Ocean, and this is certainly an interesting topic for a future study.}\\
+\\
+\textcolor{red}{A paragraph has been added to the text to Section 4.3 discussing these competing effects/mechanisms, and the possible implications of using submerged icebergs on Southern Ocean sea ice concentrations.}\\
 \\
 Minor Edits:\\
 - Section 2.2: subscript notation convention is not consistent ($L_{ij}$ vs. $L_{i,j}$, $d_{ij}$ vs. $d_{i,j}$).\\
@@ -434,14 +460,18 @@ Minor Edits:\\
 \\
 - Section 6.1: The forcing terms for the momentum equation are calculated using ice element length and width - are these also calculated assuming circular elements or tabular with some fixed aspect ratio?\\
 \\
-\textcolor{red}{The forcing terms in the momentum equation are taken directly from Martin and Adcroft 2010. In these forcing terms, the element is assumed to be a cuboid. A line has been added to Section 6.1 which reads: "For these non-interactive forces, the elements are assumed to be cuboids with time-evolving lengths, widths and thicknesses."}\\
+\textcolor{red}{
+%The forcing terms in the momentum equation are taken directly from Martin and Adcroft 2010. In these forcing terms, the element is assumed to be a cuboid. A line has been added to Section 6.1 which reads: "For these non-interactive forces, the elements are assumed to be cuboids with time-evolving lengths, widths and thicknesses."
+For the purposes of non-interactive forces and applying melt rates, the elements are treated as cuboids, as in Martin and Adcroft (2010) and most other point-particle iceberg models. We chose to treat the icebergs as cuboids so that when no bonds were used, the forces and melt rates were unchanged from the Martin and Adcroft (2010) model. While assuming a different shape iceberg for the purposes of applying mass to the ocean and applying forces / melt rates introduces an a small error, this error is small compared to the uncertainties in the drag coefficients and melt rate parametrizations. A few lines have been added to the start of Section 6.1 and of Section 6.2 to make it clear exactly which surfaces the forces and melt rates are applied to, and to discuss potential  errors introduced.}\\
 \\
 - Section 6.2: Please provide an expression for the basal melt term $M_{s}$.\\
 \\
-\textcolor{red}{}\\
+\textcolor{red}{A description of $M_{s}$ has been added to the end of Appendix A.}\\
 \\
 - Figure 8c: it would be nice to be able to see more clearly the upwelling around the iceberg as you can see in Figure 2c surface plot, with perhaps a a zoom/inset around the iceberg with a different colorscale.\\
-
+\\
+\textcolor{red}{The main goal of this study is to present the modeling framework for modeling tabular icebergs. As such, we have chosen not to discuss the oceanography around the tabular in too much detail. We are planning a follow up paper which focusses specifically on the oceanography around calving tabular icebergs, We believe that your suggested figures fit better into the follow up study..}\\
+\\
 
 
 \end{document}
