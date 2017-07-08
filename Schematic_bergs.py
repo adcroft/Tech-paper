@@ -37,7 +37,7 @@ def Schematic():
 		    draw_polygon(x+dr*numpy.random.rand(),y+dr*numpy.random.rand(),
 				 0.05+0.1*numpy.random.rand(),nsegs=20,ls='r')
 		plt.gca().annotate('(ii) Finite extent bergs', xy=(x+1.5,y+1.5), xytext=(x+.5,y+2.1))
-		plt.gca().annotate('Interactiing bergs', xy=(x+1.3,y+.8), xytext=(x+.5,y+.3),
+		plt.gca().annotate('Interacting bergs', xy=(x+1.3,y+.8), xytext=(x+.5,y+.3),
 				   arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=.2'))
 		# A tabular berg
 		hx,hy=[1.5,0,1,2,0.5,1.5,2.5,-1,0,1,2,-.5,.5,1.5,0],[-1,0,0,0,1,1,1,2,2,2,2,3,3,3,4]
@@ -68,7 +68,7 @@ def Schematic():
 if __name__ == '__main__':
 	Schematic()
 	plt.show()
-	print 'Script complete'
+	print('Script complete')
 	#sys.exit(main())
 
 

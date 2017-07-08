@@ -187,15 +187,14 @@
 \begin{abstract}
 %ceberg calving is an important feature of the Antarctic environment. In where giant pieces of the ice shelf break away from the shelf to form giant tabular icebergs and drift into the open ocean. 
 
-Iceberg calving is an important feature of the Antarctic environment, and accounts for approximately half of Antarctic ice-shelf decay. 
-However, despite its importance, the current generation of ocean models are unable to represent iceberg calving in a physically realistic way.
-This is because current models of ice-shelf cavities represent the ice shelf on an static Eularian grid, which does not lend itself to modeling drifting icebergs. 
-In this study we develop a new ice-shelf cavity model where the ice shelf is represented on a `Lagrangian grid'. In this model, the ice shelf is constructed out of Lagrangian elements which are bonded together by numerical bonds. This Lagrangian framework allows for large pieces of the ice shelf to break away and become tabular icebergs. 
-We test the model by simulating the circulation within a (static) idealized ice-shelf cavity, which was developed as part of the Marine Ice Ocean Modeling Inter-comparison Project (MISOMIP). 
-We then compare the results to a second simulation that uses an Eularian ice shelf with an otherwise identical configuration.
+The current generation of ice-ocean models is unable to represent ice-shelf calving in a physically realistic way despite its controlling role of the mass balance and extent of Antarctic ice shelves.
+This is primarily due to static Eulerian approach of the current ice-shelf/sub-ice-shelf cavity models that does not allow separation and modification of computational domains that would represent breaking of pieces of an ice shelf that would become freely floating icebergs.
+In this study we develop a new ice-shelf cavity model where the ice shelf is constructed out of Lagrangian elements that are bonded together by numerical bonds. This Lagrangian framework allows for large pieces of the ice shelf to break away and become tabular icebergs. 
+We test this Lagrangian ice -shelf model by simulating the circulation within a (static) idealized ice-shelf cavity, which was developed as part of the Marine Ice Ocean Modeling Inter-comparison Project (MISOMIP). 
+The Lagrangian model results are compared to results of an Eularian model simulations with identical configuration.
 Results show that the Lagrangian and Eularian models are almost indistinguishable.
 % For example, differences in the models are two orders of magnitude smaller than the differences observed when changing the ocean model coordinate system. 
-The similarly between the Eularian and Lagrangian models provides a proof of concept for the Lagrangian model, and means that we can confidently use this model to extend the capabilities of the Eularian model.% The Lagrangian model is then used to simulate a tabular iceberg calving away from the ice shelf and drifting into the open ocean.
+The similarly between the Eularian and Lagrangian models in a static ice-shelf configuration provides a proof of concept for the Lagrangian model, and means that we can confidently use Lagrangian ice-shelf models to extend the capabilities of ice-shelf-cavity models.% The Lagrangian model is then used to simulate a tabular iceberg calving away from the ice shelf and drifting into the open ocean.
 
 
 
@@ -212,8 +211,14 @@ The similarly between the Eularian and Lagrangian models provides a proof of con
 \clearpage
 \vspace{10mm}
 \textbf{Key Points:}\\
+\begin{itemize}
+\item A novel modeling framework is developed to model breakable ice shelves and ice-shelf cavities using Lagrangian elements, held together by numerical bonds.
+\item The ocean circulation beneath a (static) Lagrangian ice shelf is almost indistinguishable from the circulation beneath an Eularian ice-shelf model run in an identical configuration. 
+\item The similarity between the models provides a proof of concept for the Lagrangian model, allowing the Lagrangian model to be used simulations involving tabular iceberg calving. 
+\end{itemize}
 
-% \end{article} must follow the references section, before the figures
+
+
 %  and tables.
 \begin{article}
 %% ------------------------------------------------------------------------ %%
@@ -222,74 +227,81 @@ The similarly between the Eularian and Lagrangian models provides a proof of con
 %
 %% ------------------------------------------------------------------------ %%
 \section{Introduction}
-Floating ice shelves cover vast regions of the Antarctic polar oceans. These massive platforms of ice extend deep into the water column, applying large pressures to surface of the ocean, which is often hundreds of meters below global sea level. Beneath the ice shelves, both the bottom topography and the ice-shelf geometry play a role in steering ocean currents \citep{Nicholls1996, Jenkins2010,  Stern2014}. The topographic constraint imposed by the ice shelf at the ocean's upper boundary significantly affects the circulation within the ice-shelf cavities, and gives the ocean in this region a unique character.
+%\sout{Floating ice shelves cover vast regions of the Antarctic polar oceans. These massive platforms of ice extend deep into the water column, depressing the surface of the liquid ocean, often to hundreds of meters below global-mean sea level. Beneath the ice shelves, both the bottom topography and the ice-shelf geometry play a role in steering ocean currents [Nicholls1996, Jenkins2010,  Stern2014]. The topographic constraint imposed by the ice shelves at the ocean's upper boundary significantly affects the circulation within the ice-shelf cavities.}
+%
+Satellite observations show that ice-shelf decay occurs via two main processes: melting and breaking \citep{Depoorter2013, Rignot2013}. Each of these is responsible for approximately half of the ice-shelf decay, and each influences the surrounding ocean (and ice-shelf geometry) in a distinct way.
+Melting at the base of ice shelves causes fluxes freshwater into the ice-shelf cavity. The input of buoyant meltwater creates rising density plumes, which are guided along the ice-shelf base, and help drive ocean circulation beneath the ice shelves \citep{MacAyeal1984,  Holland2006}. Over time, melting at the ice-shelf base can erode the ice shelf, gradually altering the ice-shelf geometry.
+In contrast, iceberg calving causes sudden changes to the ice-shelf geometry, and releases giant icebergs into the ocean. After calving, these tabular icebergs can travel large distances and impact ocean hydrography \citep{Martin2010, Stern2015}, sea-ice formation \citep{Robinson2012, Stern2016} and ocean biology \citep{Smith2007, Vernet2012, Biddle2015} many miles away.
 
-Satellite observations suggest that ice-shelf decay occurs via two main processes: melting and breaking \citep{Depoorter2013, Rignot2013}. Each of these is responsible for approximately half of the ice-shelf decay, and each influences the surrounding ocean (and ice-shelf geometry) in a distinct way.
-Melting at the base of ice shelves causes freshwater fluxes into the ice-shelf cavity. The input of buoyant meltwater creates rising density plumes, which are guided along the ice-shelf base, and help drive ocean circulation beneath the ice shelves \citep{MacAyeal1984,  Holland2006}. Over time, melting at the ice-shelf base can erode the ice shelf, gradually altering the ice-shelf geometry.
-%The strength of the circulation within the cavity feeds back onto the ice-shelf melt rates, by removing cold water from the cavity, and drawing in warmer waters from the open ocean, thus providing the constant supply of thermal energy needed for continuous ice-shelf melt \citep{Lewis1986, Jacobs2011}. 
-In contrast, ice-shelf breaking causes sudden changes to the ice-shelf geometry, and releases giant icebergs into the ocean. After calving, these tabular icebergs can travel large distances and impact ocean hydrography \citep{Martin2010, Stern2015}, sea-ice formation \citep{Robinson2012, Stern2016} and ocean biology \citep{Smith2007, Vernet2012, Biddle2015} many miles away.
+%\sout{In recent years society's need for improved projections of future sea level has lead to an increased focus on the Antarctic mass balance, and hence, on modeling Antarctic sub-ice-shelf cavities [Asay-Davis2016]}
+Modeling the ocean beneath the ice shelves presents a unique set of challenges, since (i) the presence of ice shelves provides a quasi-rigid upper boundary for the ocean model which is not encountered elsewhere in the ocean, and (ii) melting and breaking ice shelves imply changing ocean boundary conditions which present numerous numerical difficulties. 
 
-In recent years society's need for improved projections of future sea level has lead to an increased focus on the Antarctic mass balance, and hence, on modeling Antarctic sub-ice-shelf cavities \citep{Asay-Davis2016}.
-% This increased interest has led to accelerated efforts to accurately model Antarctic ice-shelf cavities \citep{Asay-Davis2016}.
-Modeling the ocean beneath the ice shelves presents a unique set of challenges, since (i) the presence of ice shelves provides a rigid upper boundary for the ocean model which is not encountered elsewhere in the ocean, and (ii) melting and breaking ice shelves imply a changing ocean boundary conditions which present numerous numerical difficulties. 
+The earliest models of ocean ice-shelf cavities were developed using static ice shelves with a fixed shape \citep{Hellmer1989, Determan1994, Grosfeld1997, Holland2001, Losch2008}. In these models, ice-shelf melting was represented through salinity and temperature fluxes, while the ice-shelf geometry remained unchanged. Later models of ice-shelf cavities allowed the ice-shelf geometry to evolve as the ice shelf melted, permitting the study of coupled ocean-ice phenomena \citep{Gladish2012, Sergienko2013}. More recently, dynamic ice-shelf models have been coupled to the ocean cavity, allowing the study of grounding line migration which is of key importance for sea level rise projections \citep{Grosfeld2004, Goldberg2012, De_Rydt2006, Seroussi2017}. 
 
-The earliest models of ocean ice-shelf cavities were developed using static ice shelves with a fixed shape \citep{Hellmer1989, Determan1994, Grosfeld1997, Holland2001, Losch2008}. In these models, ice-shelf melting was represented through salinity and temperature fluxes, while the ice-shelf geometry remained unchanged. Later models of ice-shelf cavities allowed the ice-shelf geometry to evolve as the ice shelf melted, permitting the study of coupled ocean-ice phenomena \citep{Gladish2012, Sergienko2013}. More recently, dynamic ice-shelf models have been coupled the ocean cavity, allowing the study of grounding line migration, which is of key importance for sea level rise projections \citep{Grosfeld2004, Goldberg2012, De_Rydt2006}. 
+All models of ice-shelf cavities to date have omitted ice-shelf breaking and iceberg detachment. This is because (i) there is much uncertainty about the physics that govern ice-shelf breaking \citep{Benn2007, Alley2008, Levermann2012, Bassis2013}, and (ii) current models of ice-shelf cavities represent the ice shelves on static Eularian grids, which do not lend themselves to modeling iceberg detachment and drift. In contrast, existing {\it iceberg} models represent icebergs as Lagrangian particles, since this is a convenient way to model discrete objects traveling over large distances \citep{Bigg1997, Gladstone2001, Martin2010, Marsh2015}. To date there has been no real effort to synthesize these two approaches (i.e.: to combine ice shelf and iceberg models).
 
-As far as we know, all models of ice-shelf cavities to date have omitted ice-shelf breaking and iceberg detachment. This is because (i) there is much uncertainty of the physics that govern ice-shelf breaking \citep{Benn2007, Alley2008, Levermann2012, Bassis2013}, and (ii) current models of ice-shelf cavities represent the ice shelves on a static Eularian grids, which do not lend themselves to modeling drifting icebergs. In contrast, existing {\it iceberg} models represent icebergs as Lagrangian particles, since this is a convenient way to model discrete objects traveling over large distances \citep{Bigg1997, Gladstone2001, Martin2010, Marsh2015}. To date there has been no real effort to synthesize these two approaches (i.e.: to combine ice shelf and iceberg models).
-
-In this study we develop a new ice-shelf cavity model where the ice shelf is represented on a `Lagrangian grid'. In this model, the ice shelf is constructed out of Lagrangian elements which are bonded together by numerical bonds. This Lagrangian framework allows for large pieces of the ice shelf to break away and become tabular icebergs. 
-Figures \ref{fig:Spread_area} and \ref{fig:Temperature_section_Collapse}, which show a tabular iceberg drifting away an idealized ice shelf, demonstrate the enhanced capabilities of this Lagrangian model (see \citet{Stern2017} for more details).
+In this study we develop a new ice-shelf cavity model where the ice shelf is simulated with Lagrangian elements \citep{Stern2017}. In this model, the ice shelf is constructed out of Lagrangian elements which are bonded together by numerical bonds (see schematic Figures \ref{fig:Schematic}). This Lagrangian framework allows for large pieces of the ice shelf to break away and become tabular icebergs. An example of this enhanced capability of the Lagrangian model is demonstrated in Figures \ref{fig:Iceberg_calving}, which shows a tabular iceberg drifting away from an idealized ice shelf (see \citet{Stern2017} for more details).
 
 %This iceberg drifting simulation is described in a separate study \citep{Stern2017}.
 %Here, we instead focus comparing the Lagrangian model to existing Eularian model in a static ice shelf configuration. 
-However, before analyzing the improved capabilities of the Lagrangian ice-shelf model, it is necessary to thoroughly test and benchmark the Lagrangian model in a more familiar configuration. 
+However, before analyzing the improved capabilities of the Lagrangian ice-shelf model, it is necessary to thoroughly test and benchmark the Lagrangian ice-shelf model in a more familiar configuration. 
 To do this we compare the Lagrangian ice-shelf-cavity model to existing Eularian model in a static ice-shelf configuration. 
 For this comparison, we use the model configuration developed as part of the Marine Ice Ocean Modeling Inter-comparison Project (MISOMIP). 
-The goals of this study are (i) to introduce and describe the Lagrangian ice-shelf model, and (ii) to prove that the Lagrangian model can replicate the behavior of an Eularian ice-shelf model when modeling static ice shelves. 
-%In particular, we aim to show that for a static ice shelf, Lagrangian ice shelf model gives the same results as an Eularian model in the same configuration (using the same ocean model). 
-Demonstrating this is a prerequisite for moving beyond the capabilities of the Eularian model, and increases our confidence in more complex simulations involving calving icebergs. 
-%An analysis of an ice shelf cavity with a tabular iceberg drifting away from the from the ice shelf is provided in a separate study \citep{Stern2017}.
+The goals of this study are (i) to introduce and describe the Lagrangian ice-shelf model, and (ii) to prove that the Lagrangian model can replicate the behavior of an Eularian ice-shelf model when modeling ocean cavities beneath static ice shelves. 
+%In particular, we aim to show that for a static ice shelf, Lagrangian ice-shelf model gives the same results as an Eularian model in the same configuration (using the same ocean model). 
+Demonstrating that the Lagrangian model compares well to more traditional Eularian models is a prerequisite for using the Lagrangian model to move beyond the capabilities of the Eularian model, and increases our confidence in more complex Lagrangian simulations involving calving icebergs. 
+%An analysis of an ice-shelf cavity with a tabular iceberg drifting away from the from the ice shelf is provided in a separate study \citep{Stern2017}.
 
 %Results from this static ice shelf experiment are compared to results using an existing Eularian ice shelf coupled to the same ocean model.  The strong agreement between these two models implies that the Lagrangian ice shelf has been implemented correctly. This is a good starting point for moving beyond the capabilities of the Eularian model. The Lagrangian model is then used to simulate a tabular iceberg calving away from the ice shelf and drifting into the open ocean.
 
 
 
 \section{Lagrangian model description}
-This section provides a brief description of the Lagrangian Bonded Ice shelf Model (LBIM), which is used to construct the Lagrangian ice shelf used in this study. A detailed description of the LBIM, including many of the technical details involved in constructing the model, can be found in \citet{Stern2017}.
+The Kinematic Iceberg Dynamics (KID) model is a Lagrangian model that has been developed in order to simulate ice-shelf cavities with breakable ice shelves. The model represents ice shelves using Lagrangian elements joined together by numerical bonds. By breaking these bonds, the model is able to simulate ice-shelf calving and iceberg breakup. 
 
-\subsection{Lagrangian grid}
-The LBIM is a discrete element model (DEM) in that the objects of the model are Lagrangian elements. Each Lagrangian element represents a mass of ice which is floating in the ocean. The elements each have their own position, velocity, mass, and a set of dimensions, which can evolve in time.
-Each element moves according to its own momentum equation which is solved in the (Lagrangian) reference frame of the element.  The elements are forced by oceanic, sea ice and atmospheric drag forces, as well as a force due to sea surface height gradients and the Coriolis force. As the elements drift, they decay according to melt parametrization. The elements can also be `bonded' together by numerical bonds, which hold the elements together and allow many elements to move together as a unit. By bonding many ice elements together, the LBIM model is able to form larger structures, such as tabular icebergs or (non-dynamic) ice shelves.
+%\sout{The goal of this study is to show that this Lagrangian ice-shelf model can replicate the results of an Eularian ice-shelf model when used in a static ice-shelf configuration (with all the elements being held stationary). }
+Although the ice elements do not move in the static ice-shelf experiment presented in this paper, this configuration is a relevant test for the Lagrangian model, as it tests the interpolation and aggregation between Eularian and Lagrangian grids, and also tests the coupling between the ocean and ice-shelf models.
 
-When constructing ice shelves using the LBIM model, the collection of elements can be thought of as being a `Lagrangian grid' for the ice shelf. In this Lagrangian grid, the nodes (elements) can move at every time step, altering the shape of the ice shelf. This is in contrast to the more traditional approach of modeling ice shelves on an Eularian grid, where the grid is fixed in time. The major advantage of modeling ice shelves using a Lagrangian grid is that the grid is not static, which means that we can simulate pieces of ice breaking away from the ice shelf to form icebergs that drift in the open ocean (Figures \ref{fig:Spread_area}, \ref{fig:Temperature_section_Collapse}). One consequence of using Lagrangian elements for the ice-shelf grid is all variables need to be interpolated from the `Lagrangian grid' onto the Eularian ocean grid in order to be passed to the ocean model. The details of this interpolation are discussed below.
+In this section we describe the fully dynamic Lagrangian ice-shelf model. We then focus on element packing and interpolation between the Eularian and Lagrangian grids, which are the parts of the model which are relevant to static ice simulations. A complete description of the KID model, including details of the momentum budget and element interactions can be found in \citet{Stern2017}. 
 
-\subsection{Interaction with the ocean}
-Since the LBIM model uses a Lagrangian grid, all of the ice shelf information is stored with the elements. At every time step, this information has to be interpolated from the Lagrangian grid to (Eularian) ocean grid, so that it can be passed to the ocean model. The interpolation from the Lagrangian grid to the Eularian ocean grid is done by assuming that the elements have surface areas that are shaped as regular hexagons. Element's properties are `spread' from the Lagrangian grid to the Eularian grid by exactly calculating fraction of an elements surface area that is contained in each ocean grid cell, and dividing the element's properties between the ocean grid cell in proportion to that fraction.
+\subsection{Kinematic Iceberg Dynamics model}
+The KID model is a Lagrangian particle-based model, in that the objects of the model are Lagrangian elements. Each Lagrangian element represents a column of ice that is floating in the ocean. The elements have their own position, velocity, mass, and a set of dimensions, which can evolve in time.
+Each element moves according to its own momentum balance which is computed in the (Lagrangian) reference frame of the element.  The elements experience oceanic, sea ice and atmospheric drag forces, as well as a forces due to sea surface height gradients, and the Coriolis force \citep{Bigg1997, Gladstone2001, Martin2010, Stern2017}.  The elements also interact with other elements and can be `bonded' together by numerical bonds, which allow many elements to move together as a unit. By bonding many ice elements together, the model is able to form larger structures, such as tabular icebergs or ice shelves (Figures \ref{fig:Schematic}).
+% The interactive forces between elements aggregate to give the larger structures an effective rheology.
 
-Five fields are `spread' from the Lagrangian to Eularian grids at each time step: mass, surface area, temperature flux, salinity flux and mass flux.
-Once these five fields are in hand, the LBIM mode interacts with the ocean model in exactly the same way the Eularian model does. As in Eularian ice-shelf models, these fields are passed to the ocean model and are used to:
-(i) apply a pressure to the ocean surface, 
-(ii) alter the upper-ocean boundary condition to reflect that the ocean is covered by ice,
-and (iii) apply salt, temperature and mass fluxes associated with ice-shelf melting and freezing. 
+The thickness and extent of the Lagrangian elements change due to melting when they are exposed to above-freezing ocean mixed-layer temperatures. The melt rates of the elements are prescribed using parametrizations developed for iceberg and ice-shelf decay \citep{Bigg1997, Holland1999, Gladstone2001, Martin2010}. The corresponding heat, salt and mass fluxes are passed to the ocean to simulate freshwater injection to the ocean surface.
+% In this study we focus on comparing the model to a Eularian model, so the melt rate of elements is determined using the three equation model for basal melt, which is a typical melting parametrization used beneath ice shelves \citep{Holland1999}.
 
-The ocean is sensitive to small changes to the ocean surface pressure, which can trigger barotropic ocean waves. This means that accurately interpolating fields from the Lagrangian to Eularian grids is the key to making the Lagrangian ice-shelf model behave like the Eularian ice-shelf model for using static ice-shelf simulations. Ocean mixed layer properties are passed from ocean model to the LBIM model, and are interpolated onto the elements using a bilinear interpolation. The model is less sensitive to the details of this interpolation.
-%In the next section we use an idealized setup to demonstrate that this is done correctly in the LBIM model.
+\subsection{Initializing element geometry and packing}
+The elements in the Lagrangian model are shaped as equally-sized regular hexagons. We initialize the Lagrangian model by positioning the elements in a staggered lattice of equally-size hexagons, so that the elements fit together and perfectly tile the ice-shelf surface (Figures \ref{fig:Schematic}b). Hexagonal elements are used so that when adjacent pairs of elements are bonded together, the network of bonds form equilateral triangles, which gives rigidity to the larger structure \citep{Stern2017}. \textcolor{red}{??? Maybe add some comments about accuracy of continuity of fields like pressure etc on the discrete elements???}
 
 
+\subsection{Interpolation and aggregation onto the Lagrangian grid}
+When constructing ice shelves using the Lagrangian model, the collection of elements can be thought of as being a `Lagrangian grid' for the ice shelf. In this framework the nodes of the Lagrangian grid (elements) can move at every time step, altering the shape of the ice shelf. This is in contrast to the more traditional approach of modeling ice shelves on an Eularian grid, where the grid is fixed in time. Using a Lagrangian grid is a convenient framework for modeling breakable ice shelves since it allows pieces of the ice-shelf grid to break away from the ice shelf and become part of the iceberg grid \citep{Stern2017}. 
 
-%Elements are initially arranged in regular staggered lattice so that the they are perfectly packed together
-%For example, consider a hexagonal element which is positioned such that it intersects four ocean grid cells (Figure \ref{fig:Hex_intersections}b). In this situation,r. 
+In the experiments presented in this study, the ice-shelf model is coupled to an ocean model, which is runs on a static Eularian grid. At every time step, ice-shelf fields are passed from the ice-shelf model to the ocean model and from the ocean model to the ice-shelf model. Four ocean (mixed layer) fields are passed from the ocean model to the ice-shelf model: temperature, salinity and zonal and meridional velocities. These fields are interpolated onto the Lagrangian elements using a bilinear interpolation scheme. 
+
+At the end of a ice-shelf model time step, ice-shelf fields are aggregated from the elements back onto the Eularian ocean grid, and are then passed from the ice-shelf model to the ocean model. The aggregation from the Lagrangian grid to the Eularian ocean grid is done in a way which is consistent with the shape of the elements. For the purposes of aggregation, we assume that the elements have surface areas that are shaped as regular hexagons. Element's properties are aggregated from the Lagrangian grid to the Eularian grid by exactly calculating the fraction of an element that is intersects each ocean grid cell, and dividing the element's properties between the ocean grid cell in proportion to that fraction. \textcolor{red}{??? This part is a bit hard to follow, it needs more explanation. Don't know whether a schematic could help. ???}
+
+
+
+\subsection{Lagrangian vs Eularian ice-shelf model}
+In the next section, simulations using the Lagrangian ice-shelf model are compared to simulations using an Eularian ice-shelf model with an an identical configuration. While the internal framework and grids of the Eularian and Lagrangian ice-shelf models are quite different, both models are coupled to the ocean model using the same coupling structure.
+Five fields are passed from the ice-shelf models to ocean model: mass, surface area, temperature flux, salinity flux and mass flux. The Eularian model uses the same grid as the ocean model, while in the Lagrangian model these fields are aggregated onto the ocean model grid before being passed through the coupler. Once in the ocean model, these fields and are used to: (i) apply a pressure to the ocean surface, \textcolor{red}{??? This condition is specific to MOM6. Some explanations are required either about MOM6 specifics or how this could be handled in general. What if an ocean would be z-coordinate, what would be an equivalent of this condition???}(ii) alter the upper-ocean boundary condition to reflect that the ocean is covered by ice, \textcolor{red}{another ambiguous statement} and (iii) apply salt, temperature and mass fluxes associated with ice-shelf melting and freezing. 
+
+Since the coupling with the ocean model is handled in the same way for both the Eularian and Lagrangian models and both models are coupled to the same ocean model, any differences between the two models in the static ice-shelf configuration (using the same melt rate parametrization) are likely due to the interpolation/aggregation between the ice and ocean grids. By accurately aggregating fields from the Lagrangian grid to Eularian ocean grids, we aim to make the Lagrangian ice-shelf model behave like the Eularian ice-shelf model in static ice-shelf simulations. 
+%Apart from the step of aggregating between the Lagrangian and Eularian grids, the interaction between the Lagrangian ice-shelf model and ocean model is exactly the same as the interaction between an Eularian ice-shelf model and an ocean model. 
 
 
 
 
  \section{Experiment Setup}
 % the proof of concept for
-The LBIM model is used to simulate the flow within an idealized ice-shelf cavity. The simulations are repeated using an Eularian ice shelf with an identical configuration. The details of the experimental setup for both the Lagrangian and Eularian models are presented here.
-
+%\sout{The KID model is used to represent the ice shelf in an idealized ice-shelf cavity MOM6 ocean flow. The simulations are repeated using an Eularian ice shelf with an identical configuration. The details of the experimental setup for both the Lagrangian and Eularian models are presented here.}
+%
 \subsection{Domain configuration}
 In order for our simulations to be easily comparable to previous models of ice-shelf cavities, we use an experimental setup based on the configuration created for the Marine Ice Ocean Modeling Inter-comparison Project (MISOMIP) \citep{Asay-Davis2016}.
-The MISOMIP configuration was developed as a standardized configuration to allow for a comparison between various ocean-ice coupled models. The configuration consists of an idealized ice shelf in a rectangular domain $L_{x}=80$km long and $L_{y}=480$km wide. The ice shelf is grounded on the southern side of the domain with the ice-shelf front at y=650km. The ice thickness and bottom topography of this setup are shown in Figure \ref{fig:ISOMIP_mass_and_topog}a and \ref{fig:ISOMIP_mass_and_topog}b respectively, with the grounding line position drawn in for reference. The configuration is the same as that of the Ocean0 setup in the MISOMIP, with three changes made:
+The configuration consists of an idealized ice shelf in a rectangular domain $L_{x}=80$km long and $L_{y}=480$km wide. The ice shelf is grounded on the southern side of the domain with the ice-shelf front at y=650km. The ice thickness and bottom topography of this setup are shown in Figure \ref{fig:ISOMIP_mass_and_topog}. The configuration is the same as that of the Ocean0 setup in the MISOMIP, with three changes made:
 \begin{enumerate}
 \item The `calving criteria' used in the MISOMIP study (which states that all points in the ice shelf with thickness less than 100m are set to zero thickness) has not been used.
 \item The ice shelf has been thickened on the flanks of the domain, so that the latitude of the grounding line increases away from the center of the ice shelf.
@@ -299,64 +311,73 @@ These three changes were made in order to make the circulation beneath the ice s
 
 \subsection{Ocean Model}
 The Lagrangian and Eularian ice shelves are coupled to the MOM6 ocean model \citep{Hallberg2013}. 
-The ocean model is run in using vertical coordinate system which is a hybrid between a sigma-level and a z-level coordinate, achieved using ALE regridding-remapping scheme \citep{White2009}. In this vertical coordinate, model layers bend underneath surface topography (i.e.: the ice shelf), as they would in a sigma coordinate model, and intersect the bottom topography, as they would in a z-coordinate model. The model has 72 vertical layers and has a horizontal resolution of $\Delta x= 2$ km. The numerical simulations were all repeated using an isopycnal coordinate (without ALE regrinding-remapping). The results were qualitatively similar to the ALE results. All results presented below are from the ALE simulations, unless specified otherwise.
+The ocean model is run using a hybrid vertical coordinate system which blends a sigma-level and a z-level coordinate \citep{Stern2017}, implemented using the ALE method \citep{White2009}. In this vertical coordinate, model layers bend underneath surface topography (i.e.: the ice shelf), as they would in a sigma coordinate model, and intersect the bottom topography, as they would in a z-coordinate model. The model has 72 vertical layers and has a horizontal resolution of $\Delta x= 2$ km. The numerical simulations were all repeated using an isopycnal coordinate (without ALE regrinding-remapping). The results were qualitatively similar to the hybrid-coordinate results, and are therefore not presented here.
+% All results presented below are from the ALE simulations, unless specified otherwise.
 
-Ocean parameters are shown in Table 1 and are specified in the MISOMIP configuration \citep{Asay-Davis2016}. The simulation is initialized from rest, with horizontally uniform initial ocean temperature and salinity profiles which vary linearly between specified surface and bottom values: $T_{top}=-1.9^{\circ}$C, $T_{bottom}=1.0^{\circ}$C, $S_{top}=33.8$ psu, $S_{bottom}=34.7$. The maximum ocean depth is $H_{ocean}=720$ m.  A sponge layer is used on the northern boundary, which relaxes back to the initial temperature and salinity with a relaxation time scale of $T_{sponge}=0.1$ days. Melting is set to zero for ocean cells where the ocean column thickness is less than 10m.
+The ocean parameters used in the simulations are as specified in the MISOMIP configuration \citep{Asay-Davis2016}, and are shown in Table 1. The simulation is initialized from rest, with horizontally uniform initial ocean temperature and salinity profiles which vary linearly between specified open-ocean surface and bottom values: $T_{top}=-1.9^{\circ}$C, $T_{bottom}=1.0^{\circ}$C, $S_{top}=33.8$ psu, $S_{bottom}=34.7$. The maximum ocean depth is $H_{ocean}=720$ m.  A sponge layer is used on the northern boundary, which relaxes back to the initial temperature and salinity with a relaxation time scale of $T_{sponge}=0.1$ days over a distance of 10 km. Melting is set to zero for ocean cells where the ocean column thickness is less than 10m.
 
 
 \subsection{Lagrangian ice-shelf simulations:}
 %\subsection{Lagrangian and Eularian ice shelf simulations:}
-The Lagrangian ice shelf is created using 10882 Lagrangian hexagonal elements with sides of length $S=0.98$ km . The positions of the hexagonal elements are initialized by packing them together in a space-filling staggered lattice. Gaps along the boundaries are filled in using smaller elements so that the total ice-shelf area is preserved. The initial mass of the ice elements is determined by a preprocessing inversion step, which is the inverse of the 'mass-spreading' interpolation procedure discussed in Section 2.2. 
+The Lagrangian ice shelf is created using 10882 Lagrangian hexagonal elements with sides of length $S=0.98$ km . The positions of the hexagonal elements are initialized by packing them together in a space-filling staggered lattice. Gaps along the boundaries are filled in using smaller elements so that the total ice-shelf area is preserved. The initial mass of the ice elements is determined by a preprocessing inversion step, which is the inverse of the aggregation procedure discussed in Section 2.3. 
 
 %Figure \ref{fig:ISOMIP_mass_and_topog}c shows what the ice-shelf draft would be if the draft were calculated from the mass of elements in each ocean grid cell without spreading an element's mass across neighboring cells (i.e.: treating elements as point masses). Figure \ref{fig:ISOMIP_mass_and_topog}b shows the draft after spreading the mass across grid cells. When the mass spreading interpolation scheme is not used, grid artifacts seen in the ice-shelf draft (Figure \ref{fig:ISOMIP_mass_and_topog}c). The grid artifacts are much reduced when the mass spreading interpolation is used (Figure \ref{fig:ISOMIP_mass_and_topog}b). 
 %
 \subsection{Eularian ice-shelf simulations:}
-The Eularian ice-shelf simulation is performed using an existing Eulerian ice-shelf cavity model \citep{Goldberg2012}, which is an optional module of the the MOM6 ocean model. The ice shelf is initialized on the same grid as the ocean model with a horizontal resolution of $\Delta x = 2$ km. The ice-shelf thickness field is using the same ice-shelf draft used for the Lagrangian model (Figure \ref{fig:ISOMIP_mass_and_topog}b). 
+The Eularian ice-shelf simulation is performed using an existing Eulerian ice-shelf cavity model \citep{Goldberg2012}, which is an optional module of the the MOM6 ocean model. The ice shelf is initialized on the same grid as the ocean model with a horizontal resolution of $\Delta x = 2$ km. The ice-shelf thickness field is initialized using the same ice-shelf draft used for the Lagrangian model (Figure \ref{fig:ISOMIP_mass_and_topog}). 
 
 %\subsection{Eularian ice shelf simulation:}
-\subsection{ice-shelf motion and decay}
-The melt rates in both the Lagrangian and Eularian ice-shelf simulations are calculated using the 3 equation model for ice-shelf decay \citep{Holland1999}.  In both experiments the ice shelf is held stationary. In the Eularian code, this is achieved by setting the ice-shelf velocity to zero, while in Lagrangian ice shelf, the element velocities are set to zero. In both simulations, the ice shelf is thermodynamically active and is able to `melt' but has a constant thickness (as specified in the Ocean0 experiment in the MISOMIP \citep{Asay-Davis2016}). In this setup, ice-shelves melting generate temperature and salinity fluxes into the ocean, but do not change the thickness of the ice shelf / ice elements. This can be thought to represent an ice shelf in dynamic equilibrium where the melt is exactly balanced ice-shelf advection. 
-The models are spun up for 5 years, and results are considered after the spinup period.
+\subsection{Sub-ice-shelf melting}
+The melt rates in both the Lagrangian and Eularian ice-shelf simulations are calculated using the 3 equation model for ice-shelf decay \citep{Holland1999}.  In both experiments the ice shelf is held stationary. In the Eularian code, this is achieved by setting the ice-shelf velocity to zero, while in Lagrangian ice shelf, the element velocities are set to zero. In both simulations, the ice shelf is thermodynamically active and is able to `melt' but has a time-invariant thickness (as specified in the Ocean0 experiment in the MISOMIP \citep{Asay-Davis2016}). In this setup, ice-shelf melting generates temperature and salinity fluxes into the ocean, but does not change the thickness of the ice shelf / ice elements. This can be thought to represent an ice shelf in dynamic equilibrium where the melt is exactly balanced ice-shelf advection. 
+%The simulation is run for 5 years, and results are considered after the spinup period.
 
 
 
 \section{Results}
 \subsection{Results from the Lagrangian ice-shelf simulation}
 The results from the Lagrangian ice-shelf simulation fit within the current understanding of ice-shelf cavity circulations based on ice-shelf observations \citep{MacAyeal1984, Lewis1986, Jacobs2011} and previous modeling efforts \citep{Determan1994, Holland2006, Losch2008}.
-The initial water temperatures inside the domain are warmer than the in-situ freezing point, and cause melting at the ice-shelf base. The melt water entering the domain is more buoyant than the water around it, and rises  along the ice shelf as a cool fresh plume (Figure \ref{fig:static_solo_temp_temp_v}b, c). 
-As the plume rises, it entrains ambient water causing a warming of the upper ocean (Figure \ref{fig:static_solo_temp_temp_v}b).
+The ocean temperatures inside the domain are warmer than the in-situ freezing point (Figure \ref{fig:static_solo_temp_v_v}a), and cause melting at the ice-shelf base (Figure  \ref{fig:static_solo_melt}c). The meltwater entering the domain is more buoyant than the water around it, and rises along the ice shelf as a cool fresh plume (Figure \ref{fig:static_solo_temp_v_v}). 
+%As the plume rises, it entrains ambient water causing a warming of the upper ocean (Figure \ref{fig:static_solo_temp_v_v}a).
 This injection of positive buoyancy at depth drives a clockwise circulation outside of the ice-shelf cavity (Figure \ref{fig:Bt_comparison}a), providing the ice-shelf cavity with a continuous supply of warm water, which provides the thermal energy required for continuous ice-shelf melt.
 
-The highest melt rates are observed within 100km of the grounding line (Figure  \ref{fig:static_solo_melt}a). These elevated melt rates are caused by the presence of warm water (Figure  \ref{fig:static_solo_melt}d) and increased ocean velocities (Figure  \ref{fig:static_solo_melt}c) near the grounding line, as well as the fact that freezing point of ice decreases with increasing pressure. Elevated melt rates are also seen near the ice front, caused by strong currents running along the ice-shelf front.
+The highest melt rates are observed within 100km of the grounding line (Figure  \ref{fig:static_solo_melt}a). These elevated melt rates are caused by the presence of warm water (Figure  \ref{fig:static_solo_melt}d) and increased ocean velocities (Figure  \ref{fig:static_solo_melt}c) near the grounding line, as well as the fact that freezing point of ice decreases with increasing pressure. Elevated melt rates are also seen near the ice front, caused by strong currents running along the ice-shelf front (Figure  \ref{fig:static_solo_melt}c).
 
-%\subsubsection{Comparison with Eularian ice shelf model}
+%\subsubsection{Comparison with Eularian ice-shelf model}
 \subsection{Comparison of Lagrangian and Eularian ice-shelf models}
-The LBIM results from the static ice-shelf experiment are qualitatively similar to most of the simulations from the MISOMIP experiment \citep{Asay-Davis2016}, which use a similar configuration. To get a quantitative comparison, we compare the Lagrangian ice-shelf model results to a simulation using an Eulerian ice-shelf model with an identical configuration. 
-The results show that two simulations are almost indistinguishable. This is the case both for simulations using the ALE-hybrid vertical coordinate system and the isopycnal vertical coordinate. The Lagrangian and Eularian models are have very similar circulations (Figures \ref{fig:Bt_comparison}), melt rates (Figures \ref{fig:Melt_comparison}) temperature/salinity profiles (Figures \ref{fig:Salt_comparison}). The differences between the barotropic stream functions of the two simulations(for example), are two orders of magnitude smaller than the differences between two simulations using the same Eularian ice shelf with different vertical coordinate systems (Figures \ref{fig:Bt_comparison} and \ref{fig:layer_Bt_comparison}).
+The Lagrangian ice-shelf model results are qualitatively similar to most of the simulations from the MISOMIP experiment \citep{Asay-Davis2016}, which use a similar configuration (see Section 3.4). To get a quantitative comparison, we compare the Lagrangian ice-shelf model results to a simulation using an Eulerian ice-shelf model with an identical configuration. 
+The results show that two simulations are almost indistinguishable. This is demonstrated, for example, in Figures \ref{fig:Bt_comparison}, which shows the time-averaged barotropic stream function of the Lagrangian (Figures \ref{fig:Bt_comparison}a) and Eularian (Figures \ref{fig:Bt_comparison}b) simulations, and the difference between the two (Figures \ref{fig:Bt_comparison}c). 
+%For scale, we note that the differences between the barotropic stream functions in the two simulations, are two orders of magnitude smaller than the differences between two simulations using the same Eularian ice shelf with different vertical coordinate systems described in Section 3.2 (not shown).
+The difference between the Lagrangian and Eularian barotropic stream functions are two orders of magnitude smaller than typical differences observed between simulations using different models in the MISOMIP \citep{Asay-Davis2016}. 
+The similarity of the Lagrangian and Eularian simulations are also reflected in the fact that the simulations have very similar ice-shelf melt rates and ocean temperature/salinity profiles (shown in Figures \ref{fig:Melt_comparison} and Figures \ref{fig:Salt_comparison} in the supplementary materials). 
 
-The good agreement between the Eularian and Lagrangian simulations is not too surprising since the two models are coupled to the same ocean model in exactly the same configuration. Recall that the role of the ice-shelf model in these simulations is to (i) apply a pressure to the ocean surface, (ii) provide melt fluxes to the ocean, and (iii) alter the upper ocean boundary condition below the ice shelf. The agreement between the Eularian and Lagrangian simulations is a confirmation that these three tasks are being done correctly within the LBIM model, and that the LBIM is able to model sub-ice-shelf cavities as well as the Eularian model does. This is a good starting point for moving beyond the capabilities of the Eularian model.
+%This is the case both for simulations using the ALE-hybrid vertical coordinate system and the isopycnal vertical coordinate (not shown). 
+
+%The good agreement between the Eularian and Lagrangian simulations is not too surprising since the two models are coupled to the same ocean model in exactly the same configuration. Recall that the role of the ice-shelf model in these simulations is to (i) apply a pressure to the ocean surface, (ii) provide melt fluxes to the ocean, and (iii) alter the upper ocean boundary condition below the ice shelf. 
+The agreement between the Eularian and Lagrangian simulations is a confirmation that the Lagrangian model is able to simulate sub-ice-shelf cavities as well as the Eularian model does. This is a good starting point for moving beyond the capabilities of the Eularian model.
+
+\textcolor{red}{??? This section is a bit thin. Perhaps it'd be worth looking at more fields and also discuss to under which circumstances differences between the KID and Eularian models can be larger and start affecting simulations and the results ???}
 
 \section{Conclusion}
-%In order to accurately project future sea level, it is likely that we will need to develop fully-coupled global general climate models (GCM's) with dynamic ice-shelf cavities which are able to melt, break and interact with the ocean in physically realistic ways. This will require us to create models of ice shelf cavities with capabilities that can not currently be simulated by the current generation of ice shelf models.
+%In order to accurately project future sea level, it is likely that we will need to develop fully-coupled global general climate models (GCM's) with dynamic ice-shelf cavities which are able to melt, break and interact with the ocean in physically realistic ways. This will require us to create models of ice shelf cavities with capabilities that can not currently be simulated by the current generation of ice-shelf models.
 
-This study presents a new Lagrangian framework for modeling sub-ice-shelf cavities. In this framework, the ice shelf is constructed out of many Lagrangian elements, which are bonded together by numerical bonds. The collection of Lagrangian elements can be thought of as being a Lagrangian grid, which stores the ice-shelf properties. Unlike Eularian grids, the nodes (elements) can move at every time step, altering the shape of the ice shelf. This allows us to use the Lagrangian ice-shelf model to large pieces of the ice-shelf breaking away from the ice shelf to becoming tabular icebergs that are fully embedded in the ocean (Figures  \ref{fig:Spread_area} and \ref{fig:Temperature_section_Collapse}). This capability is currently not possible using more traditional Eularian models \citep{Stern2017}.
+This study presents a new Lagrangian framework for modeling sub-ice-shelf cavities. In this framework, the ice shelf is constructed out of many Lagrangian elements, which are bonded together by numerical bonds. The collection of Lagrangian elements store the ice-shelf properties. Unlike Eularian grids, the nodes (elements) can move at every time step, altering the shape of the ice shelf. This allows us to use the Lagrangian ice-shelf model to large pieces of the ice-shelf breaking away from the ice shelf to becoming tabular icebergs that are fully embedded in the ocean (Figures  \ref{fig:Iceberg_calving}). This capability is currently not possible using more traditional Eularian models \citep{Stern2017}.
 %
-%A consequence of using a Lagrangian ice shelf model is all variables need to be interpolated from the Lagrangian grid onto the Eularian ocean grid in order to be passed to the ocean model. This is done by exactly calculation the fraction of each ice element that lies in each ocean grid cell, and dividing the element's properties between the ocean grid cell in proportion to that fraction.
+%A consequence of using a Lagrangian ice-shelf model is all variables need to be interpolated from the Lagrangian grid onto the Eularian ocean grid in order to be passed to the ocean model. This is done by exactly calculation the fraction of each ice element that lies in each ocean grid cell, and dividing the element's properties between the ocean grid cell in proportion to that fraction.
 
-The present study focuses on using the Lagrangian ice shelf to model static ice shelves. The model is demonstrated by modeling the circulation beneath a (static) idealized ice shelf, which was developed as part of the MISOMIP inter-comparison project. The results from the Lagrangian ice-shelf model fit within our paradigm of understanding for circulation within ice-shelf cavities: buoyant meltwater that enters the ice-shelf cavity drives freshwater plumes at the ice-shelf base, which drives the circulation within the cavity.  The circulation, melt rates and ocean hydrography achieved using the Lagrangian ice shelf compare well with other simulations in the MISOMIP experiments. 
+The framework capabilities are demonstrated by modeling the circulation beneath a (static) idealized ice shelf, which was developed as part of the MISOMIP inter-comparison project. The results from the Lagrangian ice-shelf model fit within our paradigm of understanding for circulation within ice-shelf cavities: buoyant meltwater that enters the ice-shelf cavity drives freshwater plumes at the ice-shelf base, which drives the circulation within the cavity.  The circulation, melt rates and ocean hydrography achieved using the Lagrangian ice shelf compare well with other simulations in the MISOMIP experiments. 
 
-A direct comparison comparison between one Lagrangian and Eularian ice-shelf models showed that the results are extremely similar, and differences between the Lagrangian and Eularian ice shelves models (resulting from interpolation errors) are much smaller than the differences observed when changing the ocean vertical coordinate system (for example). Achieving similarity between when using a Lagrangian and Eularian ice-shelf model in the same static ice-shelf configuration is a prerequisite developing more advanced Lagrangian ice-shelf models and represents a good benchmark test for new Lagrangian ice-shelf models. 
+A direct comparison \sout{comparison} between the Lagrangian and a Eularian ice-shelf model coupled to the same ocean model shows that the results are extremely similar. Differences between the Lagrangian and Eularian ice shelves models (resulting from interpolation errors) are much smaller than the differences observed when changing the ocean vertical coordinate system (for example). Demonstrating that the Lagrangian ice-shelf model is able to reproduce the results of an Eularian ice-shelf model in the same static ice-shelf configuration is a prerequisite developing more advanced Lagrangian ice-shelf models and represents a good benchmark test for new Lagrangian ice-shelf models. 
 
 
 
 %\subsection{Future developments}
 %Having created a Lagrangian ice shelf which can be used to model ice shelf cavities, a natural next step to try to introduce this technology into a general circulation model (GCM). However, before this can be done, a number of challenges need to be overcome. 
 % 
-%One element which is missing from the LBIM ice shelf is that the ice shelf is not dynamic. Real-world ice shelves are non-Newtonian fluids which are able to flow, allowing the ice-shelf geometry to change over time. Much progress has been made in modeling ice-shelf flows in an Eularian framework \citep{Grosfeld2004, Goldberg2012, De_Rydt2006}. A challenge will be to develop models with similar ice dynamics in a Lagrangian framework. This can perhaps be achieved using smooth particle hydrodynamics (SPH) methods, which allow partial differential equations to be solved on a Lagrangian grid \citep{Liu2010, Pan2013}. However, it is presently unclear how one would evolve the numerical bonds over time, so the bonds could still be used to hold the ice shelf and tabular icebergs together. This may involve performing a regridding of the ice element or a regridding of the numerical bonds after severa time steps, or perhaps allowing the numerical bonds to break and form in a dynamic way.
+%One element which is missing from the KID ice shelf is that the ice shelf is not dynamic. Real-world ice shelves are non-Newtonian fluids which are able to flow, allowing the ice-shelf geometry to change over time. Much progress has been made in modeling ice-shelf flows in an Eularian framework \citep{Grosfeld2004, Goldberg2012, De_Rydt2006}. A challenge will be to develop models with similar ice dynamics in a Lagrangian framework. This can perhaps be achieved using smooth particle hydrodynamics (SPH) methods, which allow partial differential equations to be solved on a Lagrangian grid \citep{Liu2010, Pan2013}. However, it is presently unclear how one would evolve the numerical bonds over time, so the bonds could still be used to hold the ice shelf and tabular icebergs together. This may involve performing a regridding of the ice element or a regridding of the numerical bonds after severa time steps, or perhaps allowing the numerical bonds to break and form in a dynamic way.
 %
 %The other major innovation which will need to be introduced is a method for breaking numerical bonds. This is essentially equivalent to determining an ice-shelf calving law, and is a famously difficult problem. One possible way that this could be done is to break bonds when the elastic stress in the bond is larger than a given yield stress of that bond. The yield stress in the bond would likely be proportional to the ice thickness. The bond strength could also evolve dynamically as bonds get `damaged'. The evolution of bond damage could be tracked using damage mechanics, as has been done in some Eularian ice-shelf studies \citep{Pralong2005, Borstad2012}.
 %
-%In addition to these two problems, more work needs to be done to determine the interaction between tabular icebergs and sea ice, as the presence of sea ice can arrest the motion of tabular icebergs and the presence of icebergs likely affects sea ice formation and dynamics. A possible path towards this is to model sea ice using a Lagrangian grid \citep{Hopkins1996, Li2014}, and to treat sea ice - iceberg interactions in the same way that iceberg - iceberg interactions are treated in this study. A number of preliminary experiments have been run using the LBIM model with some ice element representing collections of sea ice flows, and have yielded interesting results (to be presented elsewhere).
+%In addition to these two problems, more work needs to be done to determine the interaction between tabular icebergs and sea ice, as the presence of sea ice can arrest the motion of tabular icebergs and the presence of icebergs likely affects sea ice formation and dynamics. A possible path towards this is to model sea ice using a Lagrangian grid \citep{Hopkins1996, Li2014}, and to treat sea ice - iceberg interactions in the same way that iceberg - iceberg interactions are treated in this study. A number of preliminary experiments have been run using the KID model with some ice element representing collections of sea ice flows, and have yielded interesting results (to be presented elsewhere).
 % Finally, there are a number of open questions about how to correctly link tabular icebergs to ocean biology by allowing for icebergs to have nutrient concentration (especially iron). These will need to be considered in order to model the primary productivity around tabular icebergs.
 %
 %Finally, there are a number of other open questions associated with introducing giant tabular icebergs into climate models: (i) how to correctly link tabular icebergs' melt water fluxes to ocean biology, (ii) how to deal with giant calving events in small ensemble simulations where one calving event can skew the ensemble statistics, (iii) how to introduce tabular icebergs into models which do not use a fully dynamic ice sheet, and (iv) how to model the breakup and fracture of freely-floating tabular icebergs. These and other questions will need to be answered in order to achieve physically realistic tabular icebergs and ice shelves in GCM's. The results presented in this study suggest that coupling DEM models to dynamic ocean models, presents a promising path towards a more realistic representation of breakable ice shelves and icebergs in climate models.
@@ -441,7 +462,7 @@ Holland D. M.,  Jenkins A. (2001), Adaptation of an isopycnic coordinate ocean m
 \bibitem[Holland and Feltham (2006)]{Holland2006}
 Holland P. R. and  D. L. Feltham (2006), The effects of rotation and ice shelf topography on frazil-laden Ice Shelf Water plumes. {\it  J. Phys. Oceanogr.,}  36, 2312-2327.
 
-\bibitem[Holland and Jenkins (1999)]{Holland1999}
+\bibitem[Holland and Jenkins(1999)]{Holland1999}
 Holland, D. M., and A. Jenkins (1999), Modeling thermodynamic ice-ocean interactions at the base of an ice shelf. {J. of Phys. Oceanogr.} 29.8, 1787-1800.
 
 \bibitem[Hellmer and Olbers (1989)]{Hellmer1989}
@@ -511,6 +532,9 @@ Pan, W.,  A. M. Tartakovsky, and J. J. Monaghan (2013). Smoothed particle hydrod
 \bibitem[Pralong and Funk (2005)]{Pralong2005}
 Pralong, A., and M. Funk (2005), Dynamic damage model of crevasse opening and application to glacier calving, {\it J. Geophys. Res.}, 110, B01309. 
 
+\bibitem[Seroussi et al (2017)]{Seroussi2017}
+Seroussi H., Y. Nakayama, E.Y. Larour, D. Menemenlis, M. Morlighem, E. Rignot, and A. Khazendar (2017), Continued retreat of Thwaites Glacier, West Antarctica, controlled by bed topography and ocean circulation, {\it Geophys. Res. Lett.}, 44
+
 \bibitem[Sergienko (2013)]{Sergienko2013}
 Sergienko, O. V. (2013). Basal channels on ice shelves. {\it J. of Geophys. Res.: Earth Surface}, 118(3), 1342-1355.
 
@@ -553,47 +577,36 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 
  \clearpage
  \end{article} 
-\section{New Figure ideas:}
-1) Combine Figure 1 and Figure 2 into a new figure (so that this paper uses different figures to the tabular iceberg paper)\\
-\\
-2) Figure showing the layout of hexagons, which is different to the tabular iceberg paper - perhaps have hexagons directly over ice shelf draft?\\
-\\
-3) Combine the barotropic stream function figure for layered into one figure.
-
-\section{Things to think about:}
-1) The dynamics of the ice elements are not related to ice shelf dynamics. This needs to be explained somehow/somewhere.\\
 
 
+ \begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Two_panel_schematic_shelf.png}
+\caption{ {Schematic showing how ice shelves and tabular icebergs are constructed using Lagrangian elements. 
+(a) Schematic of multiple ice elements that are joined together by numerical bonds (magenta lines) to form larger structures such as ice shelves and tabular icebergs. These numerical elements have finite extent and are able to interact with the ocean across multiple grid cells, and can interact with other elements. (b) Areal photograph of an ice shelf and tabular iceberg with elements superimposed over it to illustrate how the Lagrangian elements can be used to model ice shelves and tabular icebergs. In this schematic the ice elements (purple dots) are initialized in a staggered lattice covering the surface area of the iceberg. For purposed of mass aggregation, the ice elements are assumed to have hexagonal shape (red hexagons). For purposed of element interactions, the ice elements are assumed to be circular (black circles). Elements are initially bonded to adjacent elements using numerical bonds (magenta lines). These numerical bonds form equilateral triangles which give the shape rigidity. An ocean grid has been included (dashed cyan lines). %The background photo in the larger schematic is an areal photograph of iceberg PIIB (Area= 42 $\textrm{km}^{2}$) taken in Baffin Bay in 2012. The red ship can be identified on the bottom of the photo for scale. 
+%Schematic showing how Lagrangian elements are used when modeling tabular icebergs. Lagrangian elements (blue dots) are initialized in a staggered lattice covering the surface area of the iceberg. For purposed of mass aggregation, the ice elements are assumed to have hexagonal shape (grey hexagons). For purposed of element interactions, the ice elements are assumed to be circular (black circles). Elements are initially bonded to adjacent elements using numerical bonds (dashed white lines). These numerical bonds form equilateral triangles which give the shape rigidity. 
+%The inset panel shows a schematic of the intersection of a hexagonal element and the ocean grid. The colors indicate the fraction of the hexagon that lies in each grid cell. These fractions are used as weights to spread iceberg model properties to the ocean grid (see text for more details).
+}}
+\end{center}
+\label{fig:Schematic}
+\end{figure}
  \clearpage
-
+-
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_spread_area.png}
-\caption{ {Snapshots of the fraction of ice cover in the LBIM tabular iceberg calving simulation. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The dashed line in panel (c) shows the location of the vertical transects shown in Figure \ref{fig:Temperature_section_Collapse}}.}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/side_and_top_view_ALE_z_Mixed_Melt_Collapse_temp_layers_x12.png}
+\caption{ {Snapshots of a simulation where a Lagrangian ice-shelf calves a tabular iceberg viewed (a) from above and (b) from the side. The snapshots is taken 30 days after calving. Panel (a) shows the sea surface temperature. Grid cells with ice mass $>10^{4}$ kg are plotted in white, with grey shading indicating thinner ice. Panel (b) shows a vertical sections of ocean temperature at $x$=54~km. The position of the vertical section is shown by the dashed line in panel (a). The solid line in panel (a) shows the position of the grounding line.}}
 \end{center}
-\label{fig:Spread_area}
+\label{fig:Iceberg_calving}
 \end{figure}
  \clearpage
 
 
- 
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_ALE_z_Collapse_temp_layers_x10.png}
-\caption{ {Snapshots of vertical sections of ocean temperature at $x=58 $km in the LBIM tabular iceberg calving experiment. Snapshots are taken (a) 7, (b) 15, and (c) 30 days after calving. The position of the vertical transects is shown by the dashed lines in Figure \ref{fig:Spread_area}c.}}
-\end{center}
-\label{fig:Temperature_section_Collapse}
-\end{figure}
- \clearpage
- 
-
-
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_D_spread_mass_mass.png}
-\caption{ {(a) Ocean bottom topography and (b) ice-shelf draft used to initialized the tabular iceberg calving simulation. The ice draft is calculated from the total mass in an ocean grid cell after the mass-spreading interpolation has been applied (as explained in Section 2.2). (c) Initial ice draft that would be calculated if the mass-spreading interpolation were not used (i.e.: elements treated as point masses).}}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Lagrangian_shelf_domain.png}
+\caption{ {Ocean bottom topography and ice-shelf draft used in the Lagrangian and Eularian static ice-shelf simulations}}
 \end{center}
 \label{fig:ISOMIP_mass_and_topog}
 \end{figure}
@@ -605,10 +618,10 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
   
  \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_temp_temp_v.png}
-\caption{ {Results of the static ice-shelf experiment using the LIISM model coupled to MOM6. Panels show cross sections of the (a) initial temperature field, (b) temperature anomaly after 5-years (relative the the initial field), and (c) meridional velocity near the ice-shelf base after 5 years of simulation. The region shown in panel (c) is indicated by the black box on panel (b),}}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_temp_v_v.png}
+\caption{ {Snapshots of the static ice-shelf experiment taken after 5 years of model simulation, using the Lagrangian ice-shelf model coupled to the MOM6 ocean model. Panels show cross sections of the (a) ocean temperature anomaly relative the the initial temperature, and (b) the meridional ocean velocity. Panel (c) again shows the meridional ocean velocity, and is zoomed into the region near the ice-shelf base (the zoomed-in region is indicated with a black box (b)).}}
 \end{center}
-\label{fig:static_solo_temp_temp_v}
+\label{fig:static_solo_temp_v_v}
 \end{figure} 
  \clearpage
 
@@ -616,7 +629,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_melt_m_per_year_sst_ustar_iceberg.png}
-\caption{ {Results of the static ice-shelf experiment using the LIISM model coupled to MOM6. The three panels show 5 year time average of the (a) melt rate, (b) top-of-ocean and (c) frictional velocity, $u^{*}$, at the base of the ice shelf. Fields are only shown in regions where the ice area fraction is $\geq 0.8$.}}
+\caption{ {Results of the static ice-shelf experiment using the Lagrangian ice-shelf model coupled to MOM6. The three panels show 5 year time average of the (a) melt rate, (b) top-of-ocean temperature and (c) frictional velocity, $u^{*}$, at the base of the ice shelf. Fields are only shown in regions where the ice area fraction is $\geq 0.8$.}}
 \end{center}
 \label{fig:static_solo_melt}
 \end{figure} 
@@ -635,42 +648,6 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
  \clearpage
 
 
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_comparison_melt.png}
-\caption{ {Comparison of Eulerian ice-shelf model and Lagrangian Ice shelf model melt fields.}}
-\end{center}
-\label{fig:Melt_comparison}
-\end{figure}
- \clearpage
-
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_comparison_salt_layers.png}
-\caption{ {Comparison of Eulerian ice-shelf model and Lagrangian ice-shelf model salinity fields.}}
-\end{center}
-\label{fig:Salt_comparison}
-\end{figure}
- \clearpage
-
- 
- 
-
-
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/static_shelf_comparison_barotropic_sf.png}
-\caption{ {Layer: Comparison of Eulerian ice-shelf model and Lagrangian ice-shelf model barotropic stream function}}
-\end{center}
-\label{fig:layer_Bt_comparison}
-\end{figure}
- \clearpage   
-  
-  
-  
   
   
   \clearpage
@@ -723,7 +700,7 @@ Time Step for Iceberg Calving Experiment & $dt_{Calving}$ &  10  & s\\
 
 %\begin{figure}
 %\begin{center}
-%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/fixed_drift_bond_spread_area.png}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/fixed_drift_bond_Iceberg_calving.png}
 %\caption{ {Need to update this Figure. Also, I should try using orientation with the Bonds.}}
 %\end{center}
 %FIgure created by \end{center}
@@ -798,6 +775,32 @@ Time Step for Iceberg Calving Experiment & $dt_{Calving}$ &  10  & s\\
 \renewcommand{\thefigure}{S\arabic{figure}}
 
 
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_comparison_melt.png}
+\caption{ {Time-averaged melt rates in the (a) Lagrangian and (b) Eularian simulations in the static ice-shelf configuration. Panel (c) shows the difference between panels (a) and (b). The time averages are taken over 5 years of model time, beginning at the end of the 5 year spin up period.}}
+\end{center}
+\label{fig:Melt_comparison}
+\end{figure}
+ \clearpage
+
+
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_comparison_salt_layers.png}
+\caption{ {Time-averaged vertical sections of salility in the (a) Lagrangian and (b) Eularian simulations in the static ice-shelf configuration at at $x$=54~km. Panel (c) shows the difference between panels (a) and (b). The time averages are taken over 5 years of model time, beginning at the end of the 5 year spin up period.}}
+\end{center}
+\label{fig:Salt_comparison}
+\end{figure}
+ \clearpage
+
+ 
+  
+  
+  
 
 
   
