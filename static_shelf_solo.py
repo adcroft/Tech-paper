@@ -49,6 +49,9 @@ def parseCommandLine():
 	parser.add_argument('-use_ALE', type='bool', default=True,
 		                        help='''When true, it uses the results of the ALE simulations. When false, layed simulations are used.    ''')
 	
+	parser.add_argument('-use_Revision', type='bool', default=True,
+		                        help='''When true, it uses the results of the Revision simulations (including new drag and rolling)    ''')
+	
 	#What to plot?
 	parser.add_argument('-plot_horizontal_field', type='bool', default=True,
 		                        help='''    ''')
@@ -135,6 +138,7 @@ def main(args):
 	#General Flags
 	rotated=args.rotated
 	use_ALE=args.use_ALE
+	use_Revision=args.use_Revision
 	broken_shelf=args.broken_shelf
 
 	#What to plot?
@@ -168,9 +172,13 @@ def main(args):
 
 	#Using ALE ice shelf
 	use_ALE_flag=''
+	use_Revision_flag=''
 	if use_ALE is True:
 		use_ALE_flag='ALE_z_'
 		Folder_name='ALE_z_' +Folder_name
+		if use_Revision is True:
+			use_Revision_flag='Revision_'
+			Folder_name='Revision_' +Folder_name
 		
 		Shelf_path=Path+'Shelf/' + Folder_name
 		Berg_path=Path+'Bergs/' + Folder_name
@@ -462,7 +470,7 @@ def main(args):
 
 
 	if save_figure==True:
-		output_file='Figures/'+use_ALE_flag+'static_shelf_solo' + plot_flag +broken_path+ '.png'
+		output_file='Figures/'+use_Revision_flag +use_ALE_flag+'static_shelf_solo' + plot_flag +broken_path+ '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 

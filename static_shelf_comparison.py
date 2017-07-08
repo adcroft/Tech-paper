@@ -45,6 +45,9 @@ def parseCommandLine():
 	parser.add_argument('-use_ALE', type='bool', default=True,
 		                        help='''When true, it uses the results of the ALE simulations. When false, layed simulations are used.    ''')
 	
+	parser.add_argument('-use_Revision', type='bool', default=True,
+		                        help='''When true, it uses the results of the Revision simulations (including new drag and rolling)    ''')
+	
 	#What to plot?
 	parser.add_argument('-fields_to_compare', type=str, default='plot_bt_stream_comparison',
 		                        help=''' This flag determine whether to plot horizontal, vertical, or special case for barotropic stream function
@@ -362,8 +365,10 @@ def calculate_barotropic_streamfunction(filename,depth,ice_base,time_slice=None,
 	
 def get_vertical_dimentions(filename, vertical_coordinate, time_slice, time_slice_num, direction ,dir_slice, dir_slice_num,rotated=False):
 	if vertical_coordinate=='z':
+		print 'The filename is ....', filename
 		with nc.Dataset(filename) as file:
-			z = file.variables['zt'][:]
+			#z = file.variables['zt'][:]
+			z = file.variables['z_l'][:]
 		return z
 	if vertical_coordinate=='layers':
 		z=load_and_compress_data(filename, 'e' , time_slice, time_slice_num, direction ,dir_slice, dir_slice_num,rotated=rotated)
@@ -600,6 +605,7 @@ def main(args):
 	#General flags
 	rotated=args.rotated
 	use_ALE=args.use_ALE
+	use_Revision=args.use_Revision
 
 	#What to plot?
 	fields_to_compare=args.fields_to_compare
@@ -622,10 +628,13 @@ def main(args):
 
 	#Using ALE ice shelf
 	use_ALE_flag=''
+	use_Revision_flag=''
 	if use_ALE is True:
-		
 		use_ALE_flag='ALE_z_'
 		Folder_name='ALE_z_' +Folder_name
+		if use_Revision is True:
+			use_Revision_flag='Revision_'
+			Folder_name='Revision_' +Folder_name
 		Shelf_path=Path+'Shelf/' + Folder_name
 		Berg_path=Path+'Bergs/' + Folder_name
 
@@ -852,7 +861,7 @@ def main(args):
 
 
 	if save_figure==True:
-		output_file='Figures/'+ use_ALE_flag +'static_shelf_comparison_' + field + '.png'
+		output_file='Figures/'+ use_Revision_flag +use_ALE_flag +'static_shelf_comparison_' + field + '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 

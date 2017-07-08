@@ -55,6 +55,9 @@ def parseCommandLine():
 	parser.add_argument('-use_ALE', type='bool', default=True,
 		                        help='''When true, it uses the results of the ALE simulations. When false, layed simulations are used.    ''')
 	
+	parser.add_argument('-use_Revision', type='bool', default=True,
+		                        help='''When true, it uses the results of the Revision simulations (including new drag and rolling)    ''')
+	
 	parser.add_argument('-use_Mixed_Melt', type='bool', default=False,
 		                        help=''' When true, figure plots using Mixed_melt_data ''')
 	
@@ -131,6 +134,14 @@ def parseCommandLine():
 
 	parser.add_argument('-colorbar_units', type=str, default='',
 		                        help='''The units for the colorbar''')
+	
+	parser.add_argument('-second_colorbar_units', type=str, default='',
+		                        help='''The units for the colorbar''')
+	
+	parser.add_argument('-plot_second_colorbar', type='bool', default=False,
+		                        help=''' If true, then plots two colorbars ''')
+
+	
 
         optCmdLineArgs = parser.parse_args()
         return optCmdLineArgs
@@ -149,6 +160,7 @@ def main(args):
 	#General flags
 	rotated=args.rotated
 	use_ALE=args.use_ALE
+	use_Revision=args.use_Revision
 	use_days_title=args.use_days_title
 	use_Mixed_Melt=args.use_Mixed_Melt
 
@@ -162,8 +174,12 @@ def main(args):
 	berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/'
 	Geometry_path=berg_path+'Melt_on_high_melt_with_decay/'
 	ALE_flag=''
+	Revision_flag=''
 	if use_ALE is True:
 		ALE_flag='ALE_z_'
+		if use_Revision is True:
+			Revision_flag='Revision_'
+			berg_path=berg_path+Revision_flag
 		berg_path=berg_path+ALE_flag
 	Mixed_Melt_flag=''
 	if use_Mixed_Melt is True:
@@ -255,6 +271,7 @@ def main(args):
 	field=args.field
 	vmin=args.vmin
 	vmax=args.vmax
+	vanom=args.vanom
 	flipped=args.flipped
 	time_slice=args.time_slice
 	plot_anomaly=args.plot_anomaly
@@ -308,8 +325,10 @@ def main(args):
 			        e=load_and_compress_data(filename,field='e',time_slice='',time_slice_num=time_slice_num[n]\
 					,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=False)
 				
-				plot_data_field(e,x,y,-150.0, 50.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
-					ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=False)  
+				#greydata=plot_data_field(e,x,y,-150.0, 50.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
+				#	ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
+				greydata=plot_data_field(e,x,y,-220.0, 0.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
+					ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
 			#data1=mask_ocean(data1,shelf_area)
 			if use_days_title is True:
 				title='Time = '+ time_str + ' days'
@@ -325,11 +344,20 @@ def main(args):
 				plt.plot(np.array([xvec[dashed_num], xvec[dashed_num]]), np.array([130., 460.]),'--', color='k',linewidth=3 )
 		#Creating colorbar
 		fig.subplots_adjust(right=0.85)
-		cbar_ax = fig.add_axes([0.88,0.12 , 0.025, 0.75])
+		if args.plot_second_colorbar is True:	
+			cbar_ax = fig.add_axes([0.88,0.52 , 0.025, 0.4])
+		else:
+			cbar_ax = fig.add_axes([0.88,0.12 , 0.025, 0.75])
 		cbar=fig.colorbar(datamap, cax=cbar_ax)
 		cbar.set_label(args.colorbar_units, rotation=90,fontsize=20)
 		cbar.ax.tick_params(labelsize=20)
 
+		if args.plot_second_colorbar is True:	
+			cbar_ax = fig.add_axes([0.88,0.05 , 0.025, 0.4])
+			#cbar_ax = fig.add_axes([0.01,0.12 , 0.025, 0.45])
+			cbar=fig.colorbar(greydata, cax=cbar_ax)
+			cbar.set_label(args.second_colorbar_units, rotation=90,fontsize=20)
+			cbar.ax.tick_params(labelsize=20)
 
 
 		####################################################################################################################################################
@@ -345,7 +373,7 @@ def main(args):
 			direction='xz'
 			dist=xvec
 
-		for n in range(3):
+		for n in range(1):
 			#plot_anomaly=False
 			#vertical_coordinate='layers'  #'z'
 			#vertical_coordinate='z'
@@ -380,7 +408,7 @@ def main(args):
 				(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, dist, vertical_coordinate)
 				data1=data1-data0
 				vmin=-vanom  ; vmax=vanom
-			
+			print 'ZZZZZZZ', z1-z0	
 
 			ax=plt.subplot(3,1,n+1)
 			if use_days_title is True:
@@ -421,7 +449,7 @@ def main(args):
 
 
 	if save_figure==True:
-		output_file='Figures/snapshots_'+ALE_flag+Mixed_Melt_flag +simulation +'_'+ field + '.png'
+		output_file='Figures/snapshots_'+Revision_flag +ALE_flag+Mixed_Melt_flag +simulation +'_'+ field + '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 		#print 'Saving file not working yet'
