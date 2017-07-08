@@ -455,8 +455,17 @@ def get_plot_axes_limits(x, y, xlim_min, xlim_max, ylim_min, ylim_max):
 		ylim_max=np.max(y)
 	return [xlim_min, xlim_max, ylim_min, ylim_max]
 
+def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
+	cmap = plt.get_cmap(cmap)
+	new_cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
+        cmap(np.linspace(minval, maxval, n)))
+	return new_cmap
+
 def plot_data_field(data,x,y,vmin=None,vmax=None,flipped=False,colorbar=True,cmap='jet',title='',xlabel='',ylabel='',return_handle=False,grounding_line=None, \
 		xlim_min=None, xlim_max=None, ylim_min=None,ylim_max=None,colorbar_units='',colorbar_shrink=1.0): 
+	if cmap=='Greys':
+		cmap = truncate_colormap(cmap, 0.0, 0.75)
 	if flipped is True:
 		data=transpose_matrix(data)
 		tmp=y ; y=x ; x=tmp
