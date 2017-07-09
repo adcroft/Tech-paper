@@ -84,10 +84,10 @@ def main(args):
 	Revision_flag=''
 	path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/'
 	extension='00060101.icebergs_month.nc'
-	IcebergMelt_file = path + 'ALE_z_Berg_melt_After_melt_Collapse_diag_Strong_Wind/' + extension
 	if use_Revision is True:
 		Revision_flag='Revision_'
 		path=path+Revision_flag
+	IcebergMelt_file = path + 'ALE_z_Berg_melt_After_melt_Collapse_diag_Strong_Wind/' + extension
 	IceShelfMelt_file = path +  'ALE_z_After_melt_Collapse_diag_Strong_Wind/' +extension
 	MixedMelt_file = path + 'ALE_z_Mixed_Melt_After_melt_Collapse_diag_Strong_Wind/' + extension
 	print IceShelfMelt_file
@@ -141,10 +141,13 @@ def main(args):
 		for k in range(3):
 			ax=plt.subplot(1,3,k+1)
 			#Temporary line:
-			if k==1:
-				time_slice_num=40
-			else:
-				time_slice_num=args.time_ind
+			print k
+			#if k==1:
+			#	time_slice_num=40
+			#elif k==0:
+			#	time_slice_num=59
+			#else:
+			time_slice_num=args.time_ind
 			data=load_and_compress_data(filename_list[k],field=field,time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated)
 
 			mask_open_ocean = True
