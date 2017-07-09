@@ -373,7 +373,7 @@ def main(args):
 			direction='xz'
 			dist=xvec
 
-		for n in range(1):
+		for n in range(3):
 			#plot_anomaly=False
 			#vertical_coordinate='layers'  #'z'
 			#vertical_coordinate='z'
@@ -408,7 +408,7 @@ def main(args):
 				(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, dist, vertical_coordinate)
 				data1=data1-data0
 				vmin=-vanom  ; vmax=vanom
-			print 'ZZZZZZZ', z1-z0	
+			#print 'ZZZZZZZ', z1-z0	
 
 			ax=plt.subplot(3,1,n+1)
 			if use_days_title is True:

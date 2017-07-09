@@ -50,6 +50,12 @@ def parseCommandLine():
 	parser.add_argument('-ylim_max', type=float, default=440.0,
 		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
 	
+	parser.add_argument('-use_Revision', type='bool', default=True,
+		                        help='''When true, it uses the results of the Revision simulations (including new drag and rolling)    ''')
+	
+	parser.add_argument('-time_ind', type=int, default=40,
+		                        help='''Time index of snapshot 1  ''')
+	
 	optCmdLineArgs = parser.parse_args()
 	return optCmdLineArgs
 
@@ -74,11 +80,19 @@ def main(args):
 
 
 	#Defining path
+	use_Revision=args.use_Revision
+	Revision_flag=''
 	path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/'
 	extension='00060101.icebergs_month.nc'
-	IceShelfMelt_file = path +  'ALE_z_After_melt_Collapse_diag_Strong_Wind/' +extension
 	IcebergMelt_file = path + 'ALE_z_Berg_melt_After_melt_Collapse_diag_Strong_Wind/' + extension
+	if use_Revision is True:
+		Revision_flag='Revision_'
+		path=path+Revision_flag
+	IceShelfMelt_file = path +  'ALE_z_After_melt_Collapse_diag_Strong_Wind/' +extension
 	MixedMelt_file = path + 'ALE_z_Mixed_Melt_After_melt_Collapse_diag_Strong_Wind/' + extension
+	print IceShelfMelt_file
+	print IcebergMelt_file
+	print MixedMelt_file
 
 	#Geometry files
 	Shelf_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Shelf/Melt_on_without_decay_with_spreading_trimmed_shelf/' 
@@ -104,7 +118,7 @@ def main(args):
 	if plot_horizontal_field is True:
 		cmap='jet'
 		time_slice=''
-		time_slice_num=40
+		time_slice_num=args.time_ind
 		flipped=False
 		#field='uo' ; vmin=-0.03  ; vmax=0.03 ; cmap='bwr'; time_slice='mean'
 		#field='vo' ; vmin=-0.03  ; vmax=0.03 ; cmap='bwr'; time_slice='mean'
@@ -126,6 +140,11 @@ def main(args):
 		yhi=args.ylim_max
 		for k in range(3):
 			ax=plt.subplot(1,3,k+1)
+			#Temporary line:
+			if k==1:
+				time_slice_num=40
+			else:
+				time_slice_num=args.time_ind
 			data=load_and_compress_data(filename_list[k],field=field,time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated)
 
 			mask_open_ocean = True
@@ -156,7 +175,7 @@ def main(args):
 
 	#plt.tight_layout()
 	if save_figure==True:
-		output_file='Figures/three_melt_' + field + '.png'
+		output_file='Figures/'+Revision_flag +'three_melt_' + field + '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 
