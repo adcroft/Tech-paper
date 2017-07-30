@@ -55,6 +55,9 @@ def parseCommandLine():
 	parser.add_argument('-use_ALE', type='bool', default=True,
 		                        help='''When true, it uses the results of the ALE simulations. When false, layed simulations are used.    ''')
 	
+	parser.add_argument('-use_simulations_with_wind', type='bool', default=False,
+		                        help='''When true, use the newer simulations with wind on from the start.   ''')
+	
 	parser.add_argument('-use_Revision', type='bool', default=True,
 		                        help='''When true, it uses the results of the Revision simulations (including new drag and rolling)    ''')
 	
@@ -140,6 +143,9 @@ def parseCommandLine():
 	
 	parser.add_argument('-plot_second_colorbar', type='bool', default=False,
 		                        help=''' If true, then plots two colorbars ''')
+	
+	parser.add_argument('-plot_xz_direction', type='bool', default=False,
+		                        help=''' If true, then plots xz profile''')
 
 	
 
@@ -171,10 +177,18 @@ def main(args):
 	simulation=args.simulation
 
 	#Defining path
-	berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/'
-	Geometry_path=berg_path+'Melt_on_high_melt_with_decay/'
+	use_Wind_flag=''
+	if args.use_simulations_with_wind is True:
+		use_Wind_flag='Wind_'
+		berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Lagrangian_ISOMIP/Bergs/'
+		Geometry_path=berg_path+'Static_with_Wind/' 
+	else:
+		berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/'
+		Geometry_path=berg_path+'Melt_on_high_melt_with_decay/'
+
 	ALE_flag=''
 	Revision_flag=''
+	xz_flag=''
 	if use_ALE is True:
 		ALE_flag='ALE_z_'
 		if use_Revision is True:
@@ -203,6 +217,10 @@ def main(args):
 	elif simulation=='Drift':
 		Berg_path=berg_path+'After_melt_drift_diag_Strong_Wind/'
 		Berg_path_init=berg_path+'After_melt_drift_diag_Strong_Wind/'
+	elif simulation=='Wind_Collapse':
+		Berg_path=berg_path+'After_Collapse/'
+		#Berg_path=berg_path+'Exp1/'
+		Berg_path_init=berg_path+'After_Collapse/'
 	else:
 		return
 
@@ -212,7 +230,8 @@ def main(args):
 	ocean_geometry_filename=Geometry_path +'ocean_geometry.nc'
 	ice_geometry_filename=Geometry_path+'/MOM_Shelf_IC.nc'
 	ISOMIP_IC_filename=Geometry_path+'ISOMIP_IC.nc'
-	
+
+
 	#Berg files
 	#Berg_ocean_file_init=Berg_path_init+'00010101.ocean_month.nc'
 	if simulation=='high_melt':
@@ -240,6 +259,12 @@ def main(args):
 		Berg_ocean_file1=Berg_path+'00060101.'
 		Berg_ocean_file2=Berg_path+'00060101.'
 		Berg_ocean_file3=Berg_path+'00060101.'
+	if simulation=='Wind_Collapse':
+		Berg_ocean_file1=Berg_path+'00110101.'
+		Berg_ocean_file2=Berg_path+'00110101.'
+		Berg_ocean_file3=Berg_path+'00110101.'
+		#Remove this.
+		#Berg_ocean_file1=Berg_path+'00010101.'
 
 	Berg_ocean_file_list=np.array([Berg_ocean_file1 +extension ,Berg_ocean_file2+ extension ,Berg_ocean_file3 + extension])
 	Iceberg_file_list=np.array([Berg_ocean_file1 +'icebergs_month.nc' ,Berg_ocean_file2+ 'icebergs_month.nc' ,Berg_ocean_file3 + 'icebergs_month.nc'])
@@ -250,6 +275,8 @@ def main(args):
 
 	#Load static fields
 	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated=rotated)	
+      	grounding_line=find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec)
+	ice_front=find_ice_front(depth,shelf_area,x,y, xvec, yvec)
 	
 	#Defining figure characteristics
 	#fig=plt.figure(figsize=(10,10),facecolor='grey')
@@ -309,6 +336,15 @@ def main(args):
 			if simulation=='after_melt_fixed_01' or simulation=='Collapse' :
 				time=time-1825
 				print 'Subtracting t0', time
+
+			if plot_anomaly is True:
+				(data0,time)=load_and_compress_data(filename,field=field,time_slice='',time_slice_num=0\
+					,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=True)
+				data1= data1-data0
+				vmin=-vanom  ; vmax=vanom
+				cmap='bwr'
+
+
 			time_str=str(int(np.round(time)))
 			ax=plt.subplot(1,3,n+1)
 			if args.mask_using_bergs is True:
@@ -329,7 +365,16 @@ def main(args):
 				#	ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
 				greydata=plot_data_field(e,x,y,-220.0, 0.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
 					ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
-			#data1=mask_ocean(data1,shelf_area)
+			mask_out_ocean = True
+			if mask_out_ocean is True:
+				data1=mask_ocean(data1,shelf_area)
+				iceberg_filename=Iceberg_file_list[2]
+				ice_data=load_and_compress_data(iceberg_filename,field='spread_area',time_slice='',time_slice_num=time_slice_num[2],\
+						rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num)
+				data1=mask_ocean(data1,ice_data, tol=0.99)
+                		plt.plot(xvec,grounding_line, linewidth=3.0,color='black')
+                		#plt.plot(xvec,ice_front, linewidth=3.0,color='black')
+
 			if use_days_title is True:
 				title='Time = '+ time_str + ' days'
 			datamap=plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=False,cmap=cmap,title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
@@ -355,9 +400,10 @@ def main(args):
 		if args.plot_second_colorbar is True:	
 			cbar_ax = fig.add_axes([0.88,0.05 , 0.025, 0.4])
 			#cbar_ax = fig.add_axes([0.01,0.12 , 0.025, 0.45])
-			cbar=fig.colorbar(greydata, cax=cbar_ax)
-			cbar.set_label(args.second_colorbar_units, rotation=90,fontsize=20)
-			cbar.ax.tick_params(labelsize=20)
+			if args.mask_using_bergs is True:
+				cbar=fig.colorbar(greydata, cax=cbar_ax)
+				cbar.set_label(args.second_colorbar_units, rotation=90,fontsize=20)
+				cbar.ax.tick_params(labelsize=20)
 
 
 		####################################################################################################################################################
@@ -370,6 +416,11 @@ def main(args):
 			direction='yz'
 			dist=yvec
 		else:
+			direction='xz'
+			dist=xvec
+			xz_flag='XZ'
+
+		if args.plot_xz_direction is True:
 			direction='xz'
 			dist=xvec
 
@@ -395,17 +446,41 @@ def main(args):
 				#time=time-1824.5
 				time=time-1825.
 				print 'Subtracting t0', time
+
+			print "Data.shape", data1.shape
 			time_str=str(int(np.round(time)))
 			elevation1 = get_vertical_dimentions(filename,vertical_coordinate, time_slice, time_slice_num=time_slice_num[n],\
 					direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
 			(y1 ,z1 ,data1) =interpolated_onto_vertical_grid(data1, elevation1, dist, vertical_coordinate)
 
 			if plot_anomaly is True:
-				data0=load_and_compress_data(filename,field , time_slice=None, time_slice_num=0, \
-						direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
-				elevation0 = get_vertical_dimentions(filename,vertical_coordinate, time_slice=None, time_slice_num=-1, \
-						direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
-				(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, dist, vertical_coordinate)
+				subtract_linear= False
+				if subtract_linear is True:
+					M=z1.shape
+					z_ind=range(0,M[0]-1) ; y_ind=range(0,M[1]-1)
+					print("shapes", M, len(z_ind), len(y_ind))
+					z2=np.zeros((len(z_ind), len(y_ind)))
+					for i in range(len(z_ind)):
+						for j in range(len(y_ind)):
+							z2[i,j]=0.5*(z1[i,j]+ z1[i+1,j])
+					#z2=z1[z_ind, y_ind]
+					if field == "temp":
+						T_top= -1.9; T_bottom= 1.0 ; H_tot = 720 ; m_T=(T_top-T_bottom)/H_tot
+						data0 =(m_T*z2)+T_top
+					elif field=="salt":
+						S_top= -1.9; S_bottom= 1.0 ; H_tot = 720 ; m_S=(S_top-S_bottom)/H_tot
+						data0 =(m_S*z2)+S_top
+				else:
+					data0=load_and_compress_data(filename,field , time_slice=None, time_slice_num=0, \
+							direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
+					elevation0 = get_vertical_dimentions(filename,vertical_coordinate, time_slice=None, time_slice_num=-1, \
+							direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
+					(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, dist, vertical_coordinate)
+
+				print("Shape0" , data0.shape)
+				print("Shape1" , data1.shape)
+				print("z1" , z1.shape)
+				print("y1" , y1.shape)
 				data1=data1-data0
 				vmin=-vanom  ; vmax=vanom
 			#print 'ZZZZZZZ', z1-z0	
@@ -449,7 +524,7 @@ def main(args):
 
 
 	if save_figure==True:
-		output_file='Figures/snapshots_'+Revision_flag +ALE_flag+Mixed_Melt_flag +simulation +'_'+ field + '.png'
+		output_file='Figures/snapshots_'+ use_Wind_flag + xz_flag + Revision_flag +ALE_flag+Mixed_Melt_flag +simulation +'_'+ field + '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 		#print 'Saving file not working yet'

@@ -52,6 +52,9 @@ def parseCommandLine():
 	parser.add_argument('-use_Revision', type='bool', default=True,
 		                        help='''When true, it uses the results of the Revision simulations (including new drag and rolling)    ''')
 	
+	parser.add_argument('-use_simulations_with_wind', type='bool', default=False,
+		                        help='''When true, use the newer simulations with wind on from the start.   ''')
+	
 	#What to plot?
 	parser.add_argument('-plot_horizontal_field', type='bool', default=True,
 		                        help='''    ''')
@@ -147,9 +150,14 @@ def main(args):
 	#plot_temperature_cross_section=False
 
 	#Defining path
-	#Defining path
-	Path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/'
-	Folder_name= 'Melt_on_without_decay_with_spreading_trimmed_shelf/' 
+	use_Wind_flag=''
+	if args.use_simulations_with_wind is True:
+		use_Wind_flag='Wind_'
+		Path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Lagrangian_ISOMIP/'
+		Folder_name= 'Static_with_Wind/' 
+	else:
+		Path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/'
+		Folder_name= 'Melt_on_without_decay_with_spreading_trimmed_shelf/' 
 	Shelf_path=Path+'Shelf/' + Folder_name
 	broken_path=''
 	if broken_shelf is True:
@@ -470,7 +478,7 @@ def main(args):
 
 
 	if save_figure==True:
-		output_file='Figures/'+use_Revision_flag +use_ALE_flag+'static_shelf_solo' + plot_flag +broken_path+ '.png'
+		output_file='Figures/' + use_Wind_flag + use_Revision_flag +use_ALE_flag+'static_shelf_solo' + plot_flag +broken_path+ '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 

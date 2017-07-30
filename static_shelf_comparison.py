@@ -45,8 +45,11 @@ def parseCommandLine():
 	parser.add_argument('-use_ALE', type='bool', default=True,
 		                        help='''When true, it uses the results of the ALE simulations. When false, layed simulations are used.    ''')
 	
-	parser.add_argument('-use_Revision', type='bool', default=True,
+	parser.add_argument('-use_Revision', type='bool', default=False,
 		                        help='''When true, it uses the results of the Revision simulations (including new drag and rolling)    ''')
+	
+	parser.add_argument('-use_simulations_with_wind', type='bool', default=False,
+		                        help='''When true, use the newer simulations with wind on from the start.   ''')
 	
 	#What to plot?
 	parser.add_argument('-fields_to_compare', type=str, default='plot_bt_stream_comparison',
@@ -621,8 +624,14 @@ def main(args):
 
 
 	#Defining path
-	Path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/'
-	Folder_name= 'Melt_on_without_decay_with_spreading_trimmed_shelf/' 
+	use_Wind_flag=''
+	if args.use_simulations_with_wind is True:
+		use_Wind_flag='Wind_'
+		Path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Lagrangian_ISOMIP/'
+		Folder_name= 'Static_with_Wind/' 
+	else:
+		Path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/'
+		Folder_name= 'Melt_on_without_decay_with_spreading_trimmed_shelf/' 
 	Shelf_path=Path+'Shelf/' + Folder_name
 	Berg_path=Path+'Bergs/' + Folder_name
 
@@ -665,6 +674,11 @@ def main(args):
 	#Other
 	letter_labels=np.array(['(a)','(b)','(c)','(d)','(e)'])
 
+
+
+	print ice_geometry_filename
+	print ocean_geometry_filename
+	print ISOMIP_IC_filename
 	#Load static fields
 	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated)	
       	grounding_line=find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec)
@@ -711,6 +725,9 @@ def main(args):
 		else:
 			field2=field
 
+
+		print Shelf_file
+		print Berg_file
 		data1=load_and_compress_data(Shelf_file,field=field, time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated,\
 				direction=direction ,dir_slice=dir_slice, dir_slice_num=dir_slice_num )
 		data2=load_and_compress_data(Berg_file, field=field2, time_slice=time_slice,time_slice_num=time_slice_num,rotated=rotated,\
@@ -870,7 +887,7 @@ def main(args):
 
 
 	if save_figure==True:
-		output_file='Figures/'+ use_Revision_flag +use_ALE_flag +'static_shelf_comparison_' + field + '.png'
+		output_file='Figures/'+ use_Wind_flag +  use_Revision_flag +use_ALE_flag +'static_shelf_comparison_' + field + '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 

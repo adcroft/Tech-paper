@@ -55,6 +55,9 @@ def parseCommandLine():
 	parser.add_argument('-use_ALE', type='bool', default=True,
 		                        help='''When true, it uses the results of the ALE simulations. When false, layed simulations are used.    ''')
 	
+	parser.add_argument('-use_simulations_with_wind', type='bool', default=False,
+		                        help='''When true, use the newer simulations with wind on from the start.   ''')
+	
 	parser.add_argument('-use_Mixed_Melt', type='bool', default=False,
 		                        help=''' When true, figure plots using Mixed_melt_data ''')
 	
@@ -173,8 +176,15 @@ def main(args):
 	simulation=args.simulation
 
 	#Defining path
-	berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/'
-	Geometry_path=berg_path+'Melt_on_high_melt_with_decay/'
+	use_Wind_flag=''
+	if args.use_simulations_with_wind is True:
+		use_Wind_flag='Wind_'
+		berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Lagrangian_ISOMIP/Bergs/'
+		Geometry_path=berg_path+'Static_with_Wind/' 
+	else:
+		berg_path='/lustre/f1/unswept/Alon.Stern/MOM6-examples_Alon/ice_ocean_SIS2/Tech_ISOMIP/Bergs/'
+		Geometry_path=berg_path+'Melt_on_high_melt_with_decay/'
+	
 	ALE_flag=''
 	if use_ALE is True:
 		ALE_flag='ALE_z_'
@@ -201,6 +211,9 @@ def main(args):
 	elif simulation=='Drift':
 		Berg_path=berg_path+'After_melt_drift_diag_Strong_Wind/'
 		Berg_path_init=berg_path+'After_melt_drift_diag_Strong_Wind/'
+	elif simulation=='Wind_Collapse':
+		Berg_path=berg_path+'After_Collapse/'
+		Berg_path_init=berg_path+'After_Collapse/'
 	else:
 		return
 
@@ -238,6 +251,10 @@ def main(args):
 		Berg_ocean_file1=Berg_path+'00060101.'
 		Berg_ocean_file2=Berg_path+'00060101.'
 		Berg_ocean_file3=Berg_path+'00060101.'
+	if simulation=='Wind_Collapse':
+		Berg_ocean_file1=Berg_path+'00110101.'
+		Berg_ocean_file2=Berg_path+'00110101.'
+		Berg_ocean_file3=Berg_path+'00110101.'
 
 	Berg_ocean_file_list=np.array([Berg_ocean_file1 +extension ,Berg_ocean_file2+ extension ,Berg_ocean_file3 + extension])
 	Iceberg_file_list=np.array([Berg_ocean_file1 +'icebergs_month.nc' ,Berg_ocean_file2+ 'icebergs_month.nc' ,Berg_ocean_file3 + 'icebergs_month.nc'])
@@ -449,7 +466,7 @@ def main(args):
 
 
 	if save_figure==True:
-		output_file='Figures/side_and_top_view_'+ALE_flag+Mixed_Melt_flag +simulation +'_'+ field + '.png'
+		output_file='Figures/side_and_top_view_'+ use_Wind_flag +ALE_flag+Mixed_Melt_flag +simulation +'_'+ field + '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 		#print 'Saving file not working yet'

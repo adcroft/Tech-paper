@@ -1,0 +1,2 @@
+cd ../
+./snapshots.py -extension=ocean_month.nc -plot_horizontal_field=False -use_ALE=False  -time_ind1=14 -time_ind2=29 -time_ind3=99 -cmap=jet -field=temp -vmin=-2.0 -vmax=1.0  -use_days_title=False -mask_using_bergs=True -plot_anomaly=True -vanom=0.1 -vertical_coordinate=layers -xmin=0.0 -xmax=80.0 -dir_slice_num=149 -colorbar_units='(deg C)' -use_Mixed_Melt=False -use_Revision=False -simulation=Wind_Collapse -use_simulations_with_wind=True -plot_xz_direction=True -save_figure=True
