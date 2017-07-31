@@ -373,6 +373,12 @@ def get_vertical_dimentions(filename, vertical_coordinate, time_slice, time_slic
 			#z = file.variables['zt'][:]
 			z = file.variables['z_l'][:]
 		return z
+	if vertical_coordinate=='zold':
+		print 'The filename is ....', filename
+		with nc.Dataset(filename) as file:
+			#z = file.variables['zt'][:]
+			z = file.variables['zt'][:]
+		return z
 	if vertical_coordinate=='layers':
 		z=load_and_compress_data(filename, 'e' , time_slice, time_slice_num, direction ,dir_slice, dir_slice_num,rotated=rotated)
 
@@ -551,7 +557,7 @@ def interpolated_onto_vertical_grid(data, layer_interface, x, vertical_coordinat
 				Q[n,:,:]=Q_tmp
         
 	
-	if vertical_coordinate=='z':
+	if vertical_coordinate=='z' or  vertical_coordinate=='zold':
                 X=x
                 Z=-layer_interface
                 Q=data

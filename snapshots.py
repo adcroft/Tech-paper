@@ -147,6 +147,8 @@ def parseCommandLine():
 	parser.add_argument('-plot_xz_direction', type='bool', default=False,
 		                        help=''' If true, then plots xz profile''')
 
+	parser.add_argument('-plot_topog', type='bool', default=True,
+		                        help=''' If true, then plots xz profile''')
 	
 
         optCmdLineArgs = parser.parse_args()
@@ -218,11 +220,15 @@ def main(args):
 		Berg_path=berg_path+'After_melt_drift_diag_Strong_Wind/'
 		Berg_path_init=berg_path+'After_melt_drift_diag_Strong_Wind/'
 	elif simulation=='Wind_Collapse':
-		Berg_path=berg_path+'After_Collapse/'
+		Berg_path=berg_path+'After_Collapse3/'
 		#Berg_path=berg_path+'Exp1/'
-		Berg_path_init=berg_path+'After_Collapse/'
+		#Berg_path_init=berg_path+'After_Collapse3/'
+		Berg_path_init=berg_path+'After_Static3/'
 	else:
 		return
+
+	#Init file
+	filename_init=Berg_path_init+'00110101.ocean_month.nc'
 
 	extension=args.extension
 
@@ -233,7 +239,6 @@ def main(args):
 
 
 	#Berg files
-	#Berg_ocean_file_init=Berg_path_init+'00010101.ocean_month.nc'
 	if simulation=='high_melt':
 		Berg_ocean_file1=Berg_path+'00010101.'
 		Berg_ocean_file2=Berg_path+'00060101.'
@@ -263,8 +268,6 @@ def main(args):
 		Berg_ocean_file1=Berg_path+'00110101.'
 		Berg_ocean_file2=Berg_path+'00110101.'
 		Berg_ocean_file3=Berg_path+'00110101.'
-		#Remove this.
-		#Berg_ocean_file1=Berg_path+'00010101.'
 
 	Berg_ocean_file_list=np.array([Berg_ocean_file1 +extension ,Berg_ocean_file2+ extension ,Berg_ocean_file3 + extension])
 	Iceberg_file_list=np.array([Berg_ocean_file1 +'icebergs_month.nc' ,Berg_ocean_file2+ 'icebergs_month.nc' ,Berg_ocean_file3 + 'icebergs_month.nc'])
@@ -435,8 +438,17 @@ def main(args):
 			#field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.05  ; vanom=0.05 ; cmap='jet'
 			
 			filename=Berg_ocean_file_list[n]
+			filename_layers = filename
+			if n==0:
+				filename_init_layers = filename_init
 			if vertical_coordinate=='z':
 				filename=filename.split('.nc')[0] + '_z.nc'
+				if n==0:
+					filename_init=filename.split('.nc')[0] + '_z.nc'
+			if vertical_coordinate=='zold':
+				filename=filename.split('.nc')[0] + '_zold.nc'
+				if n==0:
+					filename_init=filename_init.split('.nc')[0] + '_zold.nc'
 
 			print filename
 
@@ -453,37 +465,27 @@ def main(args):
 					direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
 			(y1 ,z1 ,data1) =interpolated_onto_vertical_grid(data1, elevation1, dist, vertical_coordinate)
 
-			if plot_anomaly is True:
-				subtract_linear= False
-				if subtract_linear is True:
-					M=z1.shape
-					z_ind=range(0,M[0]-1) ; y_ind=range(0,M[1]-1)
-					print("shapes", M, len(z_ind), len(y_ind))
-					z2=np.zeros((len(z_ind), len(y_ind)))
-					for i in range(len(z_ind)):
-						for j in range(len(y_ind)):
-							z2[i,j]=0.5*(z1[i,j]+ z1[i+1,j])
-					#z2=z1[z_ind, y_ind]
-					if field == "temp":
-						T_top= -1.9; T_bottom= 1.0 ; H_tot = 720 ; m_T=(T_top-T_bottom)/H_tot
-						data0 =(m_T*z2)+T_top
-					elif field=="salt":
-						S_top= -1.9; S_bottom= 1.0 ; H_tot = 720 ; m_S=(S_top-S_bottom)/H_tot
-						data0 =(m_S*z2)+S_top
-				else:
-					data0=load_and_compress_data(filename,field , time_slice=None, time_slice_num=0, \
-							direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
-					elevation0 = get_vertical_dimentions(filename,vertical_coordinate, time_slice=None, time_slice_num=-1, \
-							direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
-					(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, dist, vertical_coordinate)
 
-				print("Shape0" , data0.shape)
-				print("Shape1" , data1.shape)
-				print("z1" , z1.shape)
-				print("y1" , y1.shape)
+			if plot_anomaly is True:
+				time_init_num=0
+				data0=load_and_compress_data(filename_init,field , time_slice=None, time_slice_num=time_init_num, \
+						direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
+				elevation0 = get_vertical_dimentions(filename_init,vertical_coordinate, time_slice=None, time_slice_num=time_init_num, \
+						direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
+
+				(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, dist, vertical_coordinate)
+				data1[np.where(data1<-10000.)]=np.NaN
+				data0[np.where(data1<-10000.)]=np.NaN
+				data1[np.where(data0<-10000.)]=np.NaN
+				data0[np.where(data0<-10000.)]=np.NaN
+
 				data1=data1-data0
 				vmin=-vanom  ; vmax=vanom
-			#print 'ZZZZZZZ', z1-z0	
+
+				data1=np.ma.array(data1, mask=np.isnan(data1))
+				cmap = matplotlib.cm.bwr
+				cmap.set_bad('lightgrey',1)
+					
 
 			ax=plt.subplot(3,1,n+1)
 			if use_days_title is True:
@@ -492,8 +494,29 @@ def main(args):
 			#xmin=450.  ;xmax=750.
 			plt.xlim([args.xmin,args.xmax])
 			
-			surface=np.squeeze(elevation1[0,:])
-			plot(dist, surface,'black')
+			if vertical_coordinate=='layers': 
+				surface=np.squeeze(elevation1[0,:])
+				plot(dist, surface,'black')
+			else:
+				#plotting ice shelf base
+				elevation2 = get_vertical_dimentions(filename_layers,'layers', time_slice, time_slice_num=time_slice_num[n],\
+						direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
+				surface=np.squeeze(elevation2[0,:])
+				plot(dist, surface,color= 'black', linestyle=':')
+				#Plotting original ice base
+				if plot_anomaly is True:
+					elevation2 = get_vertical_dimentions(filename_init_layers,'layers', time_slice, time_slice_num=time_init_num,\
+						direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
+					surface=np.squeeze(elevation2[0,:])
+					plot(dist, surface,color= 'black')
+
+			if args.plot_topog is True:
+				print("Yolo", depth.shape, len(dist))
+				if direction == 'yz': 
+					topog=np.squeeze(depth[:,dir_slice_num])
+				else:
+					topog=np.squeeze(depth[dir_slice_num,:])
+				plt.plot(dist, -topog, 'black')
 			#data1_tmp=data1
 			#tol=0.000000000001
 			#data1[np.where(abs(data1)<tol)]=10000.
