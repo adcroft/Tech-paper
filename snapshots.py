@@ -150,6 +150,8 @@ def parseCommandLine():
 	parser.add_argument('-plot_topog', type='bool', default=True,
 		                        help=''' If true, then plots xz profile''')
 	
+	parser.add_argument('-mask_out_ocean', type='bool', default=False,
+		                        help=''' If true, then masks out the ocean''')
 
         optCmdLineArgs = parser.parse_args()
         return optCmdLineArgs
@@ -373,8 +375,7 @@ def main(args):
 				#	ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
 				greydata=plot_data_field(e,x,y,-220.0, 0.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
 					ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
-			mask_out_ocean = True
-			if mask_out_ocean is True:
+			if args.mask_out_ocean is True:
 				data1=mask_ocean(data1,shelf_area)
 				iceberg_filename=Iceberg_file_list[2]
 				ice_data=load_and_compress_data(iceberg_filename,field='spread_area',time_slice='',time_slice_num=time_slice_num[2],\
@@ -544,8 +545,8 @@ def main(args):
 		
 		#For plotting purposes
 		field=field+'_'+ vertical_coordinate + '_x' +str(dir_slice_num)
-		if plot_anomaly is True:
-			field=field+'_anomaly'
+	if plot_anomaly is True:
+		field=field+'_anomaly'
 
 
 
