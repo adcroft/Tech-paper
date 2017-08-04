@@ -220,10 +220,15 @@ def main(args):
 		Berg_path=berg_path+'After_melt_drift_diag_Strong_Wind/'
 		Berg_path_init=berg_path+'After_melt_drift_diag_Strong_Wind/'
 	elif simulation=='Wind_Collapse':
-		Berg_path=berg_path+'After_Collapse3/'
+		Berg_path=berg_path+'After_Collapse/'
 		#Berg_path=berg_path+'Exp1/'
-		#Berg_path_init=berg_path+'After_Collapse3/'
-		Berg_path_init=berg_path+'After_Static3/'
+		#Berg_path_init=berg_path+'After_Collapse/'
+		Berg_path_init=berg_path+'After_Static/'
+	elif simulation=='Wind_Static':
+		Berg_path=berg_path+'After_Static/'
+		#Berg_path=berg_path+'Exp1/'
+		#Berg_path_init=berg_path+'After_Collapse/'
+		Berg_path_init=berg_path+'After_Static/'
 	else:
 		return
 
@@ -264,7 +269,7 @@ def main(args):
 		Berg_ocean_file1=Berg_path+'00060101.'
 		Berg_ocean_file2=Berg_path+'00060101.'
 		Berg_ocean_file3=Berg_path+'00060101.'
-	if simulation=='Wind_Collapse':
+	if simulation=='Wind_Collapse' or simulation=='Wind_Static':
 		Berg_ocean_file1=Berg_path+'00110101.'
 		Berg_ocean_file2=Berg_path+'00110101.'
 		Berg_ocean_file3=Berg_path+'00110101.'
@@ -530,7 +535,10 @@ def main(args):
 			
 			text(0.075,1.0,letter_labels[n], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 			if n==2:
-				plt.xlabel('y (km)',fontsize=20)
+				if direction=='yz':
+					plt.xlabel('y (km)',fontsize=20)
+				else:
+					plt.xlabel('x (km)',fontsize=20)
 			if n<2:
 				ax.set_xticks([])
 		
