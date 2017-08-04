@@ -133,6 +133,8 @@ def parseCommandLine():
 	
 	parser.add_argument('-dashed_num', type=int, default=1,
 		                        help='''The index where the dashed line is plotted''')
+	parser.add_argument('-dashed_num_hor', type=int, default=1,
+		                        help='''The index where the horizontal dashed line is plotted''')
 
 
 	parser.add_argument('-colorbar_units', type=str, default='',
@@ -315,6 +317,7 @@ def main(args):
 	vertical_coordinate=args.vertical_coordinate
 	dir_slice_num=args.dir_slice_num
 	dashed_num=args.dashed_num
+	dashed_num_hor=args.dashed_num_hor
 
 	######################################################################################################################
 	################################  Plotting melt comparison  ##########################################################
@@ -396,6 +399,9 @@ def main(args):
 				ax.set_yticks([])
 			if (n==2) and ( (args.field=='spread_area') or (args.field=='temp')) and (simulation=='Collapse'):
 				plt.plot(np.array([xvec[dashed_num], xvec[dashed_num]]), np.array([130., 460.]),'--', color='k',linewidth=3 )
+			if (n==0) and ( (args.field=='spread_area') or (args.field=='temp')) and (simulation=='Wind_Collapse'):
+				plt.plot(np.array([xvec[dashed_num], xvec[dashed_num]]), np.array([130., 460.]),'--', color='k',linewidth=3 )
+				plt.plot(np.array([0.0 ,  80.0]),  [yvec[dashed_num_hor], yvec[dashed_num_hor]], '--', color='darkblue',linewidth=3 )
 		#Creating colorbar
 		fig.subplots_adjust(right=0.85)
 		if args.plot_second_colorbar is True:	
