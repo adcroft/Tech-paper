@@ -266,6 +266,9 @@ def main(args):
 			if use_ALE is True:
 				vmin_list=np.array([0.0, -1.9, 0.0])
 				vmax_list=np.array([args.melt_vmax, -0.5, 0.005])
+			if args.use_simulations_with_wind is True:
+				vmin_list=np.array([0.0, -1.9, 0.0])
+				vmax_list=np.array([args.melt_vmax, -1.0, 0.005])
 			cmap_list=np.array(['jet', 'jet', 'jet'])
 			mask_grounded=np.array([True,True, True])
 			#mask_open_ocean=np.array([True,False, True])
