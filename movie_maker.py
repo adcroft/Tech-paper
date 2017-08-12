@@ -133,6 +133,15 @@ def make_data_anomolous(data,vanom,field_name):
 	cmap='bwr'
 	return [data,cmap,field_name,vmin,vmax]
 
+def create_e_with_correct_form(x, y ,time,  onc):
+	z = onc.variables['zw'][:]
+	e = np.zeros((len(time), len(z), len(y), len(x)))
+	for i in range(e.shape[0]):
+		for j in range(e.shape[2]):
+			for k in range(e.shape[3]):
+				e[i,:,j,k]=z
+	return e
+
 def create_double_image(n,e,t,x,y,time,m):
 	#im=plt.figure(figsize=(10,6))
 	nt = e.shape[0];
@@ -187,7 +196,8 @@ def main():
 	#exp_name='Melt_on_without_decay'
 	#exp_name='ALE_z_After_melt_Collapse_diag_Strong_Wind'
 	#exp_name='ALE_z_After_melt_drift_Strong_Wind'
-	exp_name='ALE_z_After_melt_Collapse_diag_Strong_Wind_Splitting'
+	#exp_name='ALE_z_After_melt_Collapse_diag_Strong_Wind_Splitting'
+	exp_name='Lag_After_Collapse'
 
 
 	if exp_name=='fixed_u01_from_zero':
@@ -208,6 +218,8 @@ def main():
 		experiment_path='ALE_z_After_melt_drift_Strong_Wind/'    
 	if exp_name=='ALE_z_After_melt_Collapse_diag_Strong_Wind_Splitting':
 		experiment_path='ALE_z_After_melt_Collapse_diag_Strong_Wind_Splitting/'    
+	if exp_name=='Lag_After_Collapse':
+		experiment_path='Lag_After_Collapse/'    
 	Berg_path=Base_path + experiment_path
 
 
@@ -227,6 +239,7 @@ def main():
 
 
 
+
         #Berg_ocean_file=Berg_path+'00010101.ocean_month.nc'
         Berg_ocean_file=Berg_path+extension_name
 	print Berg_ocean_file
@@ -234,7 +247,9 @@ def main():
 
 	#These two are used for the Alistair movie maker script. I should clean this up later (so the script has less repitition)
 	berg_extension='icebergs_month.nc'
-	ocean_extension='ocean_month.nc'
+	#ocean_extension='ocean_month.nc'
+	ocean_extension='ocean_month_zold.nc'
+	#ocean_zold_extension='ocean_month_zold.nc'
         Berg_file=Berg_path+berg_extension
 	ocean_file=Berg_path+ocean_extension
 	
@@ -342,18 +357,22 @@ def main():
 
 	if Alistair_double_movie is True:
 		print 'Making movies in a whole new way!'
+		print ocean_file
 		
 		#Upload the data
 		onc = scipy.io.netcdf_file(ocean_file)
 		snc = scipy.io.netcdf_file(Berg_file)
 		
 		#Pull the variables
-		e = onc.variables['e']
 		t = onc.variables['temp']
 		x = onc.variables['xh'][:]
 		y = onc.variables['yh'][:]
 		time = onc.variables['time']
 		m = snc.variables['spread_mass']
+		if "zold" in ocean_file:
+			e = create_e_with_correct_form(x, y ,time[:],  onc)
+		else:
+			e = onc.variables['e']
 
 		#movie parameter:
 		frame_interval=30
