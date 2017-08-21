@@ -203,8 +203,8 @@ def create_e_with_correct_form(x, y ,time,  onc):
 				e[i,:,j,k]=z
 	return e
 
-def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=None, depth=None, ymin=600.0, ymax =780.0 , plot_anon=False, x_num=None, plot_four=False ):
-	ymin=450.0 ; ymax =780.0 ; plot_anon=True ; x_num=20  ;y_num=149 ;  plot_four=True
+def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=None, depth=None, ymin=600.0, ymax =780.0 , plot_anom=False, x_num=None, plot_four=False ):
+	ymin=450.0 ; ymax =780.0 ; plot_anom=True ; x_num=20  ;y_num=149 ;  plot_four=True
 	num_col=1 ;
 	if plot_four is True:
 		num_col=2
@@ -225,8 +225,20 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=Non
 	plt.clf();
 	im=plt.subplot(2,num_col,1);
 	sst = np.ma.array(t[n,0], mask=m[n,:,:]>1e4)
+	
+	if plot_anom is False:
+		sst=np.ma.array(t[n,0], mask=(m[n,:,:])>1e4)
+		vmin =-1.8 ; vmax=-1.2
+		cmap= 'jet'
+	else:
+		#t_m=np.ma.array(t_z[n,:,j,:]-t_z[0,:,j,:], mask=( abs(t_z[n,:,j,:]) +  abs(t_z[0,:,j,:]))  >1e4)
+		sst=np.ma.array(t[n,0]-t[0,0], mask=(m[n,:,:])>1e4)
+		vmin =-0.1 ; vmax=0.1
+		cmap= 'bwr'
+
+
 	plt.pcolormesh(x,y,e[n,0], cmap='Greys'); plt.xlim(ymin,ymax); plt.clim(-150,50);# plt.colorbar(); plt.title(r'$\eta$ (m)');
-	plt.pcolormesh(x, y, sst); plt.xlim(ymin,ymax); plt.clim(-1.8,-1.2); plt.colorbar(); plt.title(r'SST ($^\degree$C)')
+	plt.pcolormesh(x, y, sst,cmap=cmap); plt.xlim(ymin,ymax); plt.clim(vmin,vmax); plt.colorbar(); plt.title(r'SST ($^\degree$C)')
 	plt.ylabel('X (km)');
 	plt.xlabel('Y (km)');
 	#plt.gca().set_xticklabels([]);
