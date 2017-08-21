@@ -30,6 +30,21 @@ def get_nth_values(n,data,x,y,axes_fixed):
 	return [data_n, x_n, y_n]
 
 
+def find_grounding_line_new(depth, shelf_area, ice_base, x,y, xvec, yvec):
+        #Finding grounding line (assuming shelf in the South)
+        M=depth.shape
+        grounding_line=np.zeros(M[1])
+        for i in range(M[1]):
+                Flag=False
+                for j in range(M[0]):
+			tol=-0.1
+			condition = ( ice_base[j,i] -depth[j,i]  ) <tol
+                        if (Flag is False) and condition:
+                                Flag=True
+                                grounding_line[i]=yvec[j]
+				print("grounding_line[i]",grounding_line[i])
+        return grounding_line
+
 def ani_frame(x,y,data,output_filename,vmin,vmax,cmap,axes_fixed,fig_length=14,fig_height=6,resolution=360,xlabel='',ylabel='',frames_per_second=120, frame_interval=100, Max_frames=None,\
 		grounding_line=None,flipped=False,just_a_test=False):
 	
@@ -188,7 +203,7 @@ def create_e_with_correct_form(x, y ,time,  onc):
 				e[i,:,j,k]=z
 	return e
 
-def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None , ymin=600.0, ymax =780.0 , plot_anon=False, x_num=None, plot_four=False ):
+def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=None, depth=None, ymin=600.0, ymax =780.0 , plot_anon=False, x_num=None, plot_four=False ):
 	ymin=450.0 ; ymax =780.0 ; plot_anon=True ; x_num=20  ;y_num=149 ;  plot_four=True
 	num_col=1 ;
 	if plot_four is True:
@@ -199,6 +214,7 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None , ymin=600.0, ymax 
 	nt = e.shape[0];
 	#for n in range(nt):
 	#for n in range(nt):
+	i =y_num
 	if x_num is None:
 		j=max(8, int( 20 - (50.*n)/nt))
 	else:
@@ -216,6 +232,8 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None , ymin=600.0, ymax 
 	#plt.gca().set_xticklabels([]);
 	plt.text(740,90,'Time = %.1f days'%(time[n]-time[0]));
 	plt.plot([x[0],x[-1]],[y[j],y[j]],'k--');
+	plt.plot([x[i],x[i]],[y[0],y[-1]],'k--');
+	plt.plot(grounding_line,y, 'k')
 
 
 	#########################################
@@ -233,10 +251,10 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None , ymin=600.0, ymax 
 		t_m=np.ma.array(t_z[n,:,j,:]-t_z[0,:,j,:], mask=( abs(t_z[n,:,j,:]) +  abs(t_z[0,:,j,:]))  >1e4)
 		e_m = e_z
 		vmin =-0.1 ; vmax=0.1
-		cmap= 'jet'
+		cmap= 'bwr'
 
 	#plt.pcolormesh(x, e[n,:,j,:], t[n,:,j,:]); plt.xlim(600,780); plt.ylim(-600,2); plt.colorbar();
-	plt.pcolormesh(x, e_m[n,:,j,:], t_m,cmap=cmap); plt.xlim(ymin,780); plt.ylim(-700,2); plt.colorbar();
+	plt.pcolormesh(x, e_m[n,:,j,:], t_m,cmap=cmap); plt.xlim(ymin,780); plt.ylim(-760,2); plt.colorbar();
 
 	plt.plot(x, e[n,0,j,:], color='black' )
 	if plot_anom is True:
@@ -245,14 +263,14 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None , ymin=600.0, ymax 
 	plt.clim(vmin,vmax); 
 	#plt.clim(-1.8,0);
 	plt.xlabel('Y (km)'); plt.ylabel('Z (m)'); plt.title(r'$\theta$ ($^\degree$C)');
-	#plt.figure(figsize=(10,10),facecolor='grey')
+	plt.plot([x[i],x[i]],[-720,0],'k--');
+	plt.plot(x,-depth[:,j],'k');
 
 
 
 	#########################################################		
 	if plot_four is True:
 		plt.subplot(2,num_col, 4);
-		i =y_num
 		if plot_anom is False:
 			t_m=np.ma.array(t[n,:,:,i], mask=abs(t[n,:,:,i])>1e4)
 			e_m = e
@@ -262,14 +280,16 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None , ymin=600.0, ymax 
 			t_m=np.ma.array(t_z[n,:,:,i]-t_z[0,:,:,i], mask=( abs(t_z[n,:,:,i]) +  abs(t_z[0,:,:,i]))  >1e4)
 			e_m = e_z
 			vmin =-0.1 ; vmax=0.1
-			cmap= 'jet'
+			cmap= 'bwr'
 
-		plt.pcolormesh(y, e_m[n,:,:,i], t_m,cmap=cmap); plt.xlim(0.0,80.0); plt.ylim(-700,2); plt.colorbar();
+		plt.pcolormesh(y, e_m[n,:,:,i], t_m,cmap=cmap); plt.xlim(0.0,80.0); plt.ylim(-760,2); plt.colorbar();
 		plt.plot(y, e[n,0,:,i], color='black' )
 		if plot_anom is True:
 			plt.plot(y, e[0,0,:,i], color='black',linestyle=':' )
 		plt.clim(vmin,vmax); 
+		plt.plot([y[j],y[j]],[-720,0],'k--');
 		plt.xlabel('X (km)'); plt.ylabel('Z (m)'); plt.title(r'$\theta$ ($^\degree$C)');
+		plt.plot(y,-depth[i,:],'k');
 
 
 
@@ -283,12 +303,14 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None , ymin=600.0, ymax 
 
 		#plt.pcolormesh(x,y,e[n,0], cmap='Greys'); plt.xlim(ymin,ymax); plt.clim(-150,50);# plt.colorbar(); plt.title(r'$\eta$ (m)');
 		#plt.pcolormesh(x, y, sst); plt.xlim(ymin,ymax); plt.clim(-0.5,0.5); plt.colorbar(); plt.title(r'SST ($^\degree$C)')
-		plt.pcolormesh(x, y, melt_m); plt.xlim(ymin,ymax); plt.clim(-0.5,0.5); plt.colorbar(); plt.title("melt (m/yr)")
+		plt.pcolormesh(x, y, melt_m, cmap=cmap); plt.xlim(ymin,ymax); plt.clim(-0.5,0.5); plt.colorbar(); plt.title("melt (m/yr)")
 		plt.ylabel('Y (km)');
 		plt.xlabel('X (km)');
 		#plt.gca().set_xticklabels([]);
 		plt.text(740,90,'Time = %.1f days'%(time[n]-time[0]));
 		plt.plot([x[0],x[-1]],[y[j],y[j]],'k--');
+		plt.plot(grounding_line,y, 'k')
+		plt.plot([x[i],x[i]],[y[0],y[-1]],'k--');
 	#plt.show()
 
 	return im
@@ -397,9 +419,12 @@ def main():
 	rotated=True	
 
         #Load static fields
-	if Alistair_double_movie is False:
-	        (depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated)
-		grounding_line=find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec)
+	#if Alistair_double_movie is False:
+	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated,xy_from_zero=False)
+	grounding_line=find_grounding_line_new(depth, shelf_area, ice_base, x,y, xvec, yvec)
+
+	print("Grounding", grounding_line)
+	#return
 
 
 	
@@ -530,7 +555,7 @@ def main():
 		#fig=plt.figure(figsize=(fig_length,fig_height),facecolor='grey')
 		#fig=plt.figure(figsize=(10,6))
 		fig=plt.figure(figsize=(15,10))
-		im = create_double_image(0,e,t,x,y,time,m,e_z, t_z, melt)
+		im = create_double_image(0,e,t,x,y,time,m,e_z, t_z, melt, grounding_line,depth)
 
 
 
@@ -544,7 +569,7 @@ def main():
 			ax = fig.add_subplot(111,axisbg='gray')
 			#(data_n , xn ,yn)=get_nth_values(n,data,x,y,axes_fixed)
 			#im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=flipped,colorbar=True,cmap=cmap,title='',xlabel=xlabel,ylabel=ylabel,return_handle=True,grounding_line=grounding_line)
-			im = create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt)
+			im = create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt, grounding_line, depth)
 			
 			return im
 
