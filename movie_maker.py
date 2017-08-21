@@ -115,6 +115,52 @@ def save_pngs_from_data(x,y,data,output_folder,vmin,vmax,cmap,axes_fixed,fig_len
 	plt.show()
 
 
+		#Upload the data
+def adjust_initial(t, m, melt, e,t_z,  init_ocean_file, init_ocean_file_z, init_Berg_file):
+	print("init_ocean_file", init_ocean_file)
+	print("init_ocean_file_z", init_ocean_file_z)
+	print("init_Berg_file", init_Berg_file)
+	onc = scipy.io.netcdf_file(init_ocean_file)
+	onc_z = scipy.io.netcdf_file(init_ocean_file_z)
+	snc = scipy.io.netcdf_file(init_Berg_file)
+		
+	#Pull the variables
+	t_init = onc.variables['temp'][:,:,:,:]
+	m_init = snc.variables['spread_mass'][:,:,:]
+	melt_init = snc.variables['melt_m_per_year'][:,:,:]
+	e_init = onc.variables['e'][:,:,:,:]
+	t_z_init = onc_z.variables['temp'][:,:,:,:]
+
+	M=shape(t)
+	t_new=np.zeros((M[0],M[1],M[2],M[3]))
+	t_new[:,:,:,:]=t[:,:,:,:]
+	t_new[0,:,:,:]=t_init[0,:,:,:]
+
+	M=shape(t_z)
+	t_z_new=np.zeros((M[0],M[1],M[2],M[3]))
+	t_z_new[:,:,:,:]=t_z[:,:,:,:]
+	t_z_new[0,:,:,:]=t_z_init[0,:,:,:]
+
+	M=shape(e)
+	e_new=np.zeros((M[0],M[1],M[2],M[3]))
+	e_new[:,:,:,:]=e[:,:,:,:]
+	e_new[0,:,:,:]=e_init[0,:,:,:]
+
+	M=shape(m)
+	m_new=np.zeros((M[0],M[1],M[2]))
+	m_new[:,:,:]=m[:,:,:]
+	m_new[0,:,:]=m_init[0,:,:]
+
+	#print("m", m)
+	M=shape(melt)
+	melt_new=np.zeros((M[0],M[1],M[2]))
+	melt_new[:,:,:]=melt[:,:,:]
+	melt_new[0,:,:]=melt_init[0,:,:]
+
+	return (t_new, m_new , melt_new, e_new, t_z_new) 
+
+
+
 def load_data_from_nc_file(filename,field_name):
         #Importing the data file
         nc = Dataset(filename, mode='r')
@@ -134,7 +180,7 @@ def make_data_anomolous(data,vanom,field_name):
 	return [data,cmap,field_name,vmin,vmax]
 
 def create_e_with_correct_form(x, y ,time,  onc):
-	z = onc.variables['zw'][:]
+	z = -onc.variables['zw'][:]
 	e = np.zeros((len(time), len(z), len(y), len(x)))
 	for i in range(e.shape[0]):
 		for j in range(e.shape[2]):
@@ -142,26 +188,109 @@ def create_e_with_correct_form(x, y ,time,  onc):
 				e[i,:,j,k]=z
 	return e
 
-def create_double_image(n,e,t,x,y,time,m):
-	#im=plt.figure(figsize=(10,6))
+def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None , ymin=600.0, ymax =780.0 , plot_anon=False, x_num=None, plot_four=False ):
+	ymin=450.0 ; ymax =780.0 ; plot_anon=True ; x_num=20  ;y_num=149 ;  plot_four=True
+	num_col=1 ;
+	if plot_four is True:
+		num_col=2
+
+
+	#im=plt.figure(figsize=(10,6), facecolor='grey')
 	nt = e.shape[0];
 	#for n in range(nt):
 	#for n in range(nt):
-	j=max(8, int( 20 - (50.*n)/nt))
+	if x_num is None:
+		j=max(8, int( 20 - (50.*n)/nt))
+	else:
+		j=x_num
+
+
 	#display.display(plt.gcf())
 	plt.clf();
-	im=plt.subplot(211);
+	im=plt.subplot(2,num_col,1);
 	sst = np.ma.array(t[n,0], mask=m[n,:,:]>1e4)
-	plt.pcolormesh(x,y,e[n,0], cmap='Greys'); plt.xlim(600,780); plt.clim(-150,50);# plt.colorbar(); plt.title(r'$\eta$ (m)');
-	plt.pcolormesh(x, y, sst); plt.xlim(600,780); plt.clim(-1.8,-1.2); plt.colorbar(); plt.title(r'SST ($^\degree$C)')
-	plt.ylabel('Y (km)');
-	plt.gca().set_xticklabels([]);
+	plt.pcolormesh(x,y,e[n,0], cmap='Greys'); plt.xlim(ymin,ymax); plt.clim(-150,50);# plt.colorbar(); plt.title(r'$\eta$ (m)');
+	plt.pcolormesh(x, y, sst); plt.xlim(ymin,ymax); plt.clim(-1.8,-1.2); plt.colorbar(); plt.title(r'SST ($^\degree$C)')
+	plt.ylabel('X (km)');
+	plt.xlabel('Y (km)');
+	#plt.gca().set_xticklabels([]);
 	plt.text(740,90,'Time = %.1f days'%(time[n]-time[0]));
 	plt.plot([x[0],x[-1]],[y[j],y[j]],'k--');
-	plt.subplot(212);
-	plt.pcolormesh(x, e[n,:,j,:], t[n,:,j,:]); plt.xlim(600,780); plt.ylim(-600,2); plt.colorbar();
-	plt.xlabel('X (km)'); plt.ylabel('Z (m)'); plt.title(r'$\theta$ ($^\degree$C)');
+
+
+	#########################################
+	if plot_four is False:
+		plt.subplot(2,num_col, 2);
+	else:
+		plt.subplot(2,num_col, 3);
+	plot_anom = True
+	if plot_anom is False:
+		t_m=np.ma.array(t[n,:,j,:], mask=abs(t[n,:,j,:])>1e4)
+		e_m = e
+		vmin =-1.8 ; vmax=0
+		cmap= 'jet'
+	else:
+		t_m=np.ma.array(t_z[n,:,j,:]-t_z[0,:,j,:], mask=( abs(t_z[n,:,j,:]) +  abs(t_z[0,:,j,:]))  >1e4)
+		e_m = e_z
+		vmin =-0.1 ; vmax=0.1
+		cmap= 'jet'
+
+	#plt.pcolormesh(x, e[n,:,j,:], t[n,:,j,:]); plt.xlim(600,780); plt.ylim(-600,2); plt.colorbar();
+	plt.pcolormesh(x, e_m[n,:,j,:], t_m,cmap=cmap); plt.xlim(ymin,780); plt.ylim(-700,2); plt.colorbar();
+
+	plt.plot(x, e[n,0,j,:], color='black' )
+	if plot_anom is True:
+		plt.plot(x, e[0,0,j,:], color='black',linestyle=':' )
+
+	plt.clim(vmin,vmax); 
+	#plt.clim(-1.8,0);
+	plt.xlabel('Y (km)'); plt.ylabel('Z (m)'); plt.title(r'$\theta$ ($^\degree$C)');
+	#plt.figure(figsize=(10,10),facecolor='grey')
+
+
+
+	#########################################################		
+	if plot_four is True:
+		plt.subplot(2,num_col, 4);
+		i =y_num
+		if plot_anom is False:
+			t_m=np.ma.array(t[n,:,:,i], mask=abs(t[n,:,:,i])>1e4)
+			e_m = e
+			vmin =-1.8 ; vmax=0
+			cmap= 'jet'
+		else:
+			t_m=np.ma.array(t_z[n,:,:,i]-t_z[0,:,:,i], mask=( abs(t_z[n,:,:,i]) +  abs(t_z[0,:,:,i]))  >1e4)
+			e_m = e_z
+			vmin =-0.1 ; vmax=0.1
+			cmap= 'jet'
+
+		plt.pcolormesh(y, e_m[n,:,:,i], t_m,cmap=cmap); plt.xlim(0.0,80.0); plt.ylim(-700,2); plt.colorbar();
+		plt.plot(y, e[n,0,:,i], color='black' )
+		if plot_anom is True:
+			plt.plot(y, e[0,0,:,i], color='black',linestyle=':' )
+		plt.clim(vmin,vmax); 
+		plt.xlabel('X (km)'); plt.ylabel('Z (m)'); plt.title(r'$\theta$ ($^\degree$C)');
+
+
+
+		plt.subplot(2,num_col,2);
+		if plot_anom  is False:
+			melt_m=np.ma.array(melt[n,:,:], mask=abs(t[n,:,:])==0)
+			#melt_m =melt[n, :, :]
+		else:
+			#melt_m =melt[n, :, :] - melt[0, :, :]
+			melt_m=np.ma.array(melt[n,:,:]-melt[0,:,:], mask=( (melt[n,:,:]==0)+(melt[0,:,:]==0)>0.5 ))
+
+		#plt.pcolormesh(x,y,e[n,0], cmap='Greys'); plt.xlim(ymin,ymax); plt.clim(-150,50);# plt.colorbar(); plt.title(r'$\eta$ (m)');
+		#plt.pcolormesh(x, y, sst); plt.xlim(ymin,ymax); plt.clim(-0.5,0.5); plt.colorbar(); plt.title(r'SST ($^\degree$C)')
+		plt.pcolormesh(x, y, melt_m); plt.xlim(ymin,ymax); plt.clim(-0.5,0.5); plt.colorbar(); plt.title("melt (m/yr)")
+		plt.ylabel('Y (km)');
+		plt.xlabel('X (km)');
+		#plt.gca().set_xticklabels([]);
+		plt.text(740,90,'Time = %.1f days'%(time[n]-time[0]));
+		plt.plot([x[0],x[-1]],[y[j],y[j]],'k--');
 	#plt.show()
+
 	return im
 			
 	    #plt.savefig('figs/img_%3.3i.png'%(n+1))
@@ -220,6 +349,7 @@ def main():
 		experiment_path='ALE_z_After_melt_Collapse_diag_Strong_Wind_Splitting/'    
 	if exp_name=='Lag_After_Collapse':
 		experiment_path='Lag_After_Collapse/'    
+		init_path='Lag_After_Static/'    
 	Berg_path=Base_path + experiment_path
 
 
@@ -247,12 +377,22 @@ def main():
 
 	#These two are used for the Alistair movie maker script. I should clean this up later (so the script has less repitition)
 	berg_extension='icebergs_month.nc'
-	#ocean_extension='ocean_month.nc'
-	ocean_extension='ocean_month_zold.nc'
+	ocean_extension='ocean_month.nc'
+	#ocean_extension='ocean_month_zold.nc'
+	ocean_z_extension='ocean_month_zold.nc'
 	#ocean_zold_extension='ocean_month_zold.nc'
         Berg_file=Berg_path+berg_extension
 	ocean_file=Berg_path+ocean_extension
-	
+	ocean_file_z=Berg_path+ocean_z_extension
+
+	#Specifying initial file
+	replace_init=True
+	if replace_init is True:
+		Berg_path_init=Base_path + init_path
+        	init_Berg_file=Berg_path_init+berg_extension
+		init_ocean_file=Berg_path_init+ocean_extension
+		init_ocean_file_z=Berg_path_init+ocean_z_extension
+
 	#General flags
 	rotated=True	
 
@@ -361,18 +501,26 @@ def main():
 		
 		#Upload the data
 		onc = scipy.io.netcdf_file(ocean_file)
+		onc_z = scipy.io.netcdf_file(ocean_file_z)
 		snc = scipy.io.netcdf_file(Berg_file)
 		
 		#Pull the variables
-		t = onc.variables['temp']
+		t = onc.variables['temp'][:,:,:,:]
 		x = onc.variables['xh'][:]
 		y = onc.variables['yh'][:]
 		time = onc.variables['time']
-		m = snc.variables['spread_mass']
-		if "zold" in ocean_file:
-			e = create_e_with_correct_form(x, y ,time[:],  onc)
+		m = snc.variables['spread_mass'][:,:,:]
+		melt = snc.variables['melt_m_per_year'][:,:,:]
+		e = onc.variables['e'][:,:,:,:]
+		
+		if  ocean_file_z is not None:
+			t_z = onc_z.variables['temp']
+			e_z = create_e_with_correct_form(x, y ,time[:],  onc_z)
 		else:
-			e = onc.variables['e']
+			t_z = None ; e_z = None
+
+		if replace_init is True:
+			(t, m , melt, e, t_z) = adjust_initial(t, m, melt, e,t_z,  init_ocean_file, init_ocean_file_z, init_Berg_file)
 
 		#movie parameter:
 		frame_interval=30
@@ -380,8 +528,9 @@ def main():
 		resolution=300
 		
 		#fig=plt.figure(figsize=(fig_length,fig_height),facecolor='grey')
-		fig=plt.figure(figsize=(10,6))
-		im = create_double_image(0,e,t,x,y,time,m)
+		#fig=plt.figure(figsize=(10,6))
+		fig=plt.figure(figsize=(15,10))
+		im = create_double_image(0,e,t,x,y,time,m,e_z, t_z, melt)
 
 
 
@@ -395,7 +544,7 @@ def main():
 			ax = fig.add_subplot(111,axisbg='gray')
 			#(data_n , xn ,yn)=get_nth_values(n,data,x,y,axes_fixed)
 			#im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=flipped,colorbar=True,cmap=cmap,title='',xlabel=xlabel,ylabel=ylabel,return_handle=True,grounding_line=grounding_line)
-			im = create_double_image(n,e,t,x,y,time,m)
+			im = create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt)
 			
 			return im
 
