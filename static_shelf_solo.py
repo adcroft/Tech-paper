@@ -404,7 +404,7 @@ def main(args):
 			vmax_list=np.array([1.0, 0.01, 0.01])
 			vanom_list=np.array([0.6, 0.01, 0.01])
 			cmap_list=np.array(['jet', 'jet', 'jet'])
-			colorbar_unit_list=np.array(['(deg C)','(deg C)','(m/s)'])
+			colorbar_unit_list=np.array(['(deg C)','(m/s)','(m/s)'])
 			time_slice_num_list=np.array([-1,-1,-1])
 			plot_anomaly_list=np.array([True, False, False])
 			filename_list=np.array([Berg_ocean_file_init, Berg_ocean_file,Berg_ocean_file])

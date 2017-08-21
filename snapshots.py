@@ -178,6 +178,7 @@ def main(args):
 
 	#What to plot?
         plot_horizontal_field=args.plot_horizontal_field
+	number_of_plots=3
 
 	#Which simulation to use
 	simulation=args.simulation
@@ -233,13 +234,24 @@ def main(args):
 		#Berg_path=berg_path+'Exp1/'
 		#Berg_path_init=berg_path+'After_Collapse/'
 		Berg_path_init=berg_path+'After_Static/'
+	elif simulation=='Wind_Broken_Compare':
+		Berg_path=berg_path+'After_Collapse/'
+		#Berg_path2=berg_path+'After_Broken/'
+		Berg_path2=berg_path+'Broken_with_Wind/'
+		#Berg_path=berg_path+'Exp1/'
+		#Berg_path_init=berg_path+'After_Collapse/'
+		Berg_path_init=berg_path+'After_Static/'
+		number_of_plots=2
 	else:
 		return
 
-	#Init file
-	filename_init=Berg_path_init+'00110101.ocean_month.nc'
 
 	extension=args.extension
+	
+	#Init file
+	#filename_init=Berg_path_init+'00110101.ocean_month.nc'
+	filename_init=Berg_path_init+'00110101.' +extension
+	print filename_init
 
 	#Geometry files
 	ocean_geometry_filename=Geometry_path +'ocean_geometry.nc'
@@ -276,6 +288,10 @@ def main(args):
 	if simulation=='Wind_Collapse' or simulation=='Wind_Static':
 		Berg_ocean_file1=Berg_path+'00110101.'
 		Berg_ocean_file2=Berg_path+'00110101.'
+		Berg_ocean_file3=Berg_path+'00110101.'
+	if simulation=='Wind_Broken_Compare':
+		Berg_ocean_file1=Berg_path+'00110101.'
+		Berg_ocean_file2=Berg_path2+'00060101.'
 		Berg_ocean_file3=Berg_path+'00110101.'
 
 	Berg_ocean_file_list=np.array([Berg_ocean_file1 +extension ,Berg_ocean_file2+ extension ,Berg_ocean_file3 + extension])
@@ -324,12 +340,12 @@ def main(args):
         ######################################################################################################################
         
         if plot_horizontal_field is True:
-		fig, axes = plt.subplots(nrows=1,ncols=3)
+		fig, axes = plt.subplots(nrows=1,ncols=number_of_plots)
 		fig.set_size_inches(15.0,10.0, forward=True)
 		#fig=plt.figure(figsize=(15,10),facecolor='grey')
 		ylim_min=args.ylim_min
 		ylim_max=args.ylim_max
-		for n in range(3):
+		for n in range(number_of_plots):
 			#flipped=False
 			#field='spread_area'  ;vmin=0.0  ; vmax=1.0
 			#field='melt_m_per_year'  ;vmin=0.0  ; vmax=5.000
@@ -351,7 +367,9 @@ def main(args):
 				print 'Subtracting t0', time
 
 			if plot_anomaly is True:
-				(data0,time)=load_and_compress_data(filename,field=field,time_slice='',time_slice_num=0\
+				#(data0,time)=load_and_compress_data(filename,field=field,time_slice='',time_slice_num=0\
+				#	,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=True)
+				(data0,time)=load_and_compress_data(filename_init,field=field,time_slice='',time_slice_num=-1\
 					,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=True)
 				data1= data1-data0
 				vmin=-vanom  ; vmax=vanom
@@ -359,7 +377,7 @@ def main(args):
 
 
 			time_str=str(int(np.round(time)))
-			ax=plt.subplot(1,3,n+1)
+			ax=plt.subplot(1,number_of_plots,n+1)
 			if args.mask_using_bergs is True:
 				iceberg_filename=Iceberg_file_list[n]
 				print iceberg_filename
@@ -402,6 +420,7 @@ def main(args):
 			if (n==0) and ( (args.field=='spread_area') or (args.field=='temp')) and (simulation=='Wind_Collapse'):
 				plt.plot(np.array([xvec[dashed_num], xvec[dashed_num]]), np.array([130., 460.]),'--', color='k',linewidth=3 )
 				plt.plot(np.array([0.0 ,  80.0]),  [yvec[dashed_num_hor], yvec[dashed_num_hor]], '--', color='darkblue',linewidth=3 )
+				print("Dashed lines at: ", yvec[dashed_num_hor] , xvec[dashed_num])
 		#Creating colorbar
 		fig.subplots_adjust(right=0.85)
 		if args.plot_second_colorbar is True:	
