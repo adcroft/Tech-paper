@@ -30,21 +30,6 @@ def get_nth_values(n,data,x,y,axes_fixed):
 	return [data_n, x_n, y_n]
 
 
-def find_grounding_line_new(depth, shelf_area, ice_base, x,y, xvec, yvec):
-        #Finding grounding line (assuming shelf in the South)
-        M=depth.shape
-        grounding_line=np.zeros(M[1])
-        for i in range(M[1]):
-                Flag=False
-                for j in range(M[0]):
-			tol=-0.1
-			condition = ( ice_base[j,i] -depth[j,i]  ) <tol
-                        if (Flag is False) and condition:
-                                Flag=True
-                                grounding_line[i]=yvec[j]
-				print("grounding_line[i]",grounding_line[i])
-        return grounding_line
-
 def ani_frame(x,y,data,output_filename,vmin,vmax,cmap,axes_fixed,fig_length=14,fig_height=6,resolution=360,xlabel='',ylabel='',frames_per_second=120, frame_interval=100, Max_frames=None,\
 		grounding_line=None,flipped=False,just_a_test=False):
 	
@@ -205,6 +190,7 @@ def create_e_with_correct_form(x, y ,time,  onc):
 
 def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=None, depth=None, ymin=600.0, ymax =780.0 , plot_anom=False, x_num=None, plot_four=False ):
 	ymin=450.0 ; ymax =780.0 ; plot_anom=True ; x_num=20  ;y_num=149 ;  plot_four=True
+	xnum=None
 	num_col=1 ;
 	if plot_four is True:
 		num_col=2
@@ -232,11 +218,14 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=Non
 		cmap= 'jet'
 	else:
 		#t_m=np.ma.array(t_z[n,:,j,:]-t_z[0,:,j,:], mask=( abs(t_z[n,:,j,:]) +  abs(t_z[0,:,j,:]))  >1e4)
-		sst=np.ma.array(t[n,0]-t[0,0], mask=(m[n,:,:])>1e4)
+		#sst=np.ma.array(t[n,0]-t[0,0], mask=(m[n,:,:])>1e4)
+		sst=np.ma.array(t[n,0]-t[0,0], mask=(abs(m[n,:,:]) + abs(m[0,:,:]))>1e4)
 		vmin =-0.1 ; vmax=0.1
 		cmap= 'bwr'
 
-
+	#y_new=zeros([len(y)])
+	#for k in range(len(y)):
+	#	y_new[k] = y[len(y)-k-1]	
 	plt.pcolormesh(x,y,e[n,0], cmap='Greys'); plt.xlim(ymin,ymax); plt.clim(-150,50);# plt.colorbar(); plt.title(r'$\eta$ (m)');
 	plt.pcolormesh(x, y, sst,cmap=cmap); plt.xlim(ymin,ymax); plt.clim(vmin,vmax); plt.colorbar(); plt.title(r'SST ($^\degree$C)')
 	plt.ylabel('X (km)');
@@ -316,8 +305,8 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=Non
 		#plt.pcolormesh(x,y,e[n,0], cmap='Greys'); plt.xlim(ymin,ymax); plt.clim(-150,50);# plt.colorbar(); plt.title(r'$\eta$ (m)');
 		#plt.pcolormesh(x, y, sst); plt.xlim(ymin,ymax); plt.clim(-0.5,0.5); plt.colorbar(); plt.title(r'SST ($^\degree$C)')
 		plt.pcolormesh(x, y, melt_m, cmap=cmap); plt.xlim(ymin,ymax); plt.clim(-0.5,0.5); plt.colorbar(); plt.title("melt (m/yr)")
-		plt.ylabel('Y (km)');
-		plt.xlabel('X (km)');
+		plt.ylabel('X (km)');
+		plt.xlabel('Y (km)');
 		#plt.gca().set_xticklabels([]);
 		plt.text(740,90,'Time = %.1f days'%(time[n]-time[0]));
 		plt.plot([x[0],x[-1]],[y[j],y[j]],'k--');
@@ -361,6 +350,8 @@ def main():
 	#exp_name='ALE_z_After_melt_drift_Strong_Wind'
 	#exp_name='ALE_z_After_melt_Collapse_diag_Strong_Wind_Splitting'
 	exp_name='Lag_After_Collapse'
+	#exp_name='Lag_After_No_Bonds'
+	#exp_name='Lag_After_No_Friction_Collapse'
 
 
 	if exp_name=='fixed_u01_from_zero':
@@ -383,6 +374,12 @@ def main():
 		experiment_path='ALE_z_After_melt_Collapse_diag_Strong_Wind_Splitting/'    
 	if exp_name=='Lag_After_Collapse':
 		experiment_path='Lag_After_Collapse/'    
+		init_path='Lag_After_Static/'    
+	if exp_name=='Lag_After_No_Bonds':
+		experiment_path='Lag_After_No_Bonds/'    
+		init_path='Lag_After_Static/'    
+	if exp_name=='Lag_After_No_Friction_Collapse':
+		experiment_path='Lag_After_No_Friction_Collapse/'    
 		init_path='Lag_After_Static/'    
 	Berg_path=Base_path + experiment_path
 
@@ -433,9 +430,8 @@ def main():
         #Load static fields
 	#if Alistair_double_movie is False:
 	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated,xy_from_zero=False)
-	grounding_line=find_grounding_line_new(depth, shelf_area, ice_base, x,y, xvec, yvec)
+	grounding_line=find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec)
 
-	print("Grounding", grounding_line)
 	#return
 
 
