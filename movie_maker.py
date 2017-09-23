@@ -25,7 +25,11 @@ def parseCommandLine():
 
 
 	parser.add_argument('-replace_init', type='bool', default=True,
+		                        help=''' When true the intitial time slice is replaced with the control..''')
+	
+	parser.add_argument('-x_num', type=int, default=20,
 		                        help=''' When true, a four panel movie is produced, otherwise 2 panel.''')
+
 
 	parser.add_argument('-plot_four', type='bool', default=False,
 		                        help=''' When true, a four panel movie is produced, otherwise 2 panel.''')
@@ -264,8 +268,8 @@ def create_e_with_correct_form(x, y ,time,  onc):
 				e[i,:,j,k]=z
 	return e
 
-def create_double_image(n,e,t,x,y,time,m,e_z, t_z, melt  ,grounding_line, depth,vmin_top , vmax_top, vanom_top , vmax_side, vmin_side, vanom_side,  ymin=600.0, ymax =780.0 , plot_anom=False, x_num=None, plot_four=False, top_ind=0):
-	ymin=450.0 ; ymax =780.0 ; x_num=20  ;y_num=149 ; 
+def create_double_image(n,e,t,x,y,time,m,e_z, t_z, melt  ,grounding_line, depth,vmin_top , vmax_top, vanom_top , vmax_side, vmin_side, vanom_side,  ymin=600.0, ymax =780.0 , plot_anom=False, x_num=0, plot_four=False, top_ind=0):
+	ymin=450.0 ; ymax =780.0   ;y_num=149 ; 
 	#x_num=None
 	num_col=1 ;
 	if plot_four is True:
@@ -277,7 +281,7 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z, melt  ,grounding_line, depth,
 	#for n in range(nt):
 	#for n in range(nt):
 	i =y_num
-	if x_num is None:
+	if x_num==0:
 		j=max(8, int( 20 - (50.*n)/nt))
 	else:
 		j=x_num
@@ -371,16 +375,19 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z, melt  ,grounding_line, depth,
 
 
 		plt.subplot(2,num_col,2);
+		#plot_anom=True
 		if plot_anom  is False:
-			melt_m=np.ma.array(melt[n,:,:], mask=abs(t[n,:,:])==0)
-			#melt_m =melt[n, :, :]
+			#melt_m=np.ma.array(melt[n,:,:], mask=abs(t[n,:,:])==0)
+			melt_m =melt[n, :, :]
+			vmin_melt=0.0 ; vmax_melt=5.0
 		else:
 			#melt_m =melt[n, :, :] - melt[0, :, :]
 			melt_m=np.ma.array(melt[n,:,:]-melt[0,:,:], mask=( (melt[n,:,:]==0)+(melt[0,:,:]==0)>0.5 ))
+			vmin_melt=-0.5 ; vmax_melt=0.5
 
 		#plt.pcolormesh(x,y,e[n,0], cmap='Greys'); plt.xlim(ymin,ymax); plt.clim(-150,50);# plt.colorbar(); plt.title(r'$\eta$ (m)');
 		#plt.pcolormesh(x, y, sst); plt.xlim(ymin,ymax); plt.clim(-0.5,0.5); plt.colorbar(); plt.title(r'SST ($^\degree$C)')
-		plt.pcolormesh(x, y, melt_m, cmap=cmap); plt.xlim(ymin,ymax); plt.clim(-0.5,0.5); plt.colorbar(); plt.title("melt (m/yr)")
+		plt.pcolormesh(x, y, melt_m, cmap=cmap); plt.xlim(ymin,ymax); plt.clim(vmin_melt,vmax_melt); plt.colorbar(); plt.title("melt (m/yr)")
 		plt.ylabel('X (km)');
 		plt.xlabel('Y (km)');
 		#plt.gca().set_xticklabels([]);
@@ -628,6 +635,7 @@ def main(args):
 		plot_anom=args.plot_anom
 		plot_four=args.plot_four
 		top_ind=args.top_ind
+		x_num=args.x_num
 
 
 		
@@ -657,7 +665,7 @@ def main(args):
 		#fig=plt.figure(figsize=(fig_length,fig_height),facecolor='grey')
 		#fig=plt.figure(figsize=(10,6))
 		fig=plt.figure(figsize=(15,10))
-		im = create_double_image(0,e,t,x,y,time,m,e_z, t_z, melt, grounding_line,depth, vmin_top , vmax_top, vanom_top , vmax_side, vmin_side, vanom_side, plot_anom=plot_anom, plot_four=plot_four,top_ind=top_ind)
+		im = create_double_image(0,e,t,x,y,time,m,e_z, t_z, melt, grounding_line,depth, vmin_top , vmax_top, vanom_top , vmax_side, vmin_side, vanom_side, plot_anom=plot_anom, plot_four=plot_four,top_ind=top_ind,x_num=x_num)
 
 
 
@@ -671,15 +679,31 @@ def main(args):
 			ax = fig.add_subplot(111,axisbg='gray')
 			#(data_n , xn ,yn)=get_nth_values(n,data,x,y,axes_fixed)
 			#im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=flipped,colorbar=True,cmap=cmap,title='',xlabel=xlabel,ylabel=ylabel,return_handle=True,grounding_line=grounding_line)
-			im = create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt, grounding_line, depth, vmin_top , vmax_top, vanom_top , vmax_side, vmin_side, vanom_side, plot_anom=plot_anom, plot_four=plot_four, top_ind=top_ind)
+			im = create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt, grounding_line, depth, vmin_top , vmax_top, vanom_top , vmax_side, vmin_side, vanom_side, plot_anom=plot_anom, plot_four=plot_four, top_ind=top_ind,x_num=x_num)
 			
 			return im
 
 
+		#Plotting Flags
+		if x_num==0:
+			x_num_flag="_following"
+		else:
+			x_num_flag="_x" +str(x_num)
+		if plot_anom is True:
+			plot_anom_flag="_anomaly"
+		else:
+			plot_anom_flag="" 
+		if plot_four is True:
+			plot_four_flag="_4Panel"
+		else:
+			plot_four_flag="2Panel" +str(x_num)
+
+
+		#Writing movie
 		ani = animation.FuncAnimation(fig,update_img,Number_of_images,interval=frame_interval)
 		writer = animation.writers['ffmpeg'](fps=frames_per_second)
 
-		output_filename='movies/' + exp_name + '/'  + 'Iceberg_movie_'+ field + '.mp4'
+		output_filename='movies/' + exp_name + '/'  + 'Iceberg_movie_'+ field + plot_four_flag+ plot_anom_flag + x_num_flag +'.mp4'
 		ani.save(output_filename,writer=writer,dpi=resolution)
 		#plt.show()
 		print 'Movie saved: ' , output_filename
