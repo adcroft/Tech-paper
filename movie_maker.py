@@ -8,6 +8,82 @@ import scipy.io
 from static_shelf_comparison import *
 
 
+def parseCommandLine():
+        """
+        Parse the command line positional and optional arguments.
+        This is the highest level procedure invoked from the very end of the script.
+        """
+
+        parser = argparse.ArgumentParser(description=
+        '''
+        Plot snapshots of either surface or vertical sections, for Tech paper.
+        ''',
+        epilog='Written by Alon Stern, Dec. 2016.')
+	
+	#Adding an extra boolian type argument
+        parser.register('type','bool',str2bool) # add type keyword to registries
+
+
+	parser.add_argument('-replace_init', type='bool', default=True,
+		                        help=''' When true, a four panel movie is produced, otherwise 2 panel.''')
+
+	parser.add_argument('-plot_four', type='bool', default=False,
+		                        help=''' When true, a four panel movie is produced, otherwise 2 panel.''')
+
+
+	parser.add_argument('-plot_anom', type='bool', default=True,
+		                        help=''' When true, the anomaly is plotted''')
+
+	parser.add_argument('-exp_name', type=str, default='Lag_After_fixed_motion',
+		                        help='''Name of Experiment to plot ''')
+
+	#Plotting parameters
+	parser.add_argument('-cmap', type=str, default='jet',
+		                        help='''Colormap to use when producing the figure ''')
+
+	parser.add_argument('-field', type=str, default='temp',
+		                        help=''' Which field is being plotted  ''')
+
+	parser.add_argument('-top_ind', type=int, default=0,
+		                        help='''Horizontal layer number''')
+
+	parser.add_argument('-vmin_top', type=float, default=-1.8,
+		                        help='''Minimum value used for plotting top''')
+
+	parser.add_argument('-vmax_top', type=float, default=-1.2,
+		                        help='''Maximum value used for plotting top''')
+
+	parser.add_argument('-vanom_top', type=float, default=0.1,
+		                        help='''Anomaly value used for plotting side''')
+
+	parser.add_argument('-vmin_side', type=float, default=-1.8,
+		                        help='''Minimum value used for plotting side''')
+
+	parser.add_argument('-vmax_side', type=float, default=0.0,
+		                        help='''Maximum value used for plotting side''')
+
+	parser.add_argument('-vanom_side', type=float, default=0.1,
+		                        help='''Anomaly value used for plotting top''')
+
+	parser.add_argument('-vmax', type=float, default=1.0,
+		                        help='''Maximum values used for plotting''')
+
+	#parser.add_argument('-xmin', type=float, default=0.0,
+	#	                        help='''Minimum x used for plotting (only applies to vertical sectins for now)''')
+
+	#parser.add_argument('-xmax', type=float, default=960.0,
+	#	                        help='''Minimum x used for plotting (only applies to vertical sectins for now)''')
+
+	#parser.add_argument('-ylim_min', type=float, default=240.0,
+	#	                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
+
+	#parser.add_argument('-ylim_max', type=float, default=440.0,
+	#	                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
+        
+	optCmdLineArgs = parser.parse_args()
+        return optCmdLineArgs
+
+
 def get_nth_values(n,data,x,y,axes_fixed):
 	data_n=data[n,:,:]
 	
@@ -116,7 +192,7 @@ def save_pngs_from_data(x,y,data,output_folder,vmin,vmax,cmap,axes_fixed,fig_len
 
 
 		#Upload the data
-def adjust_initial(t, m, melt, e,t_z,  init_ocean_file, init_ocean_file_z, init_Berg_file):
+def adjust_initial(t, m, melt, e,t_z,  init_ocean_file, init_ocean_file_z, init_Berg_file,field):
 	print("init_ocean_file", init_ocean_file)
 	print("init_ocean_file_z", init_ocean_file_z)
 	print("init_Berg_file", init_Berg_file)
@@ -125,11 +201,11 @@ def adjust_initial(t, m, melt, e,t_z,  init_ocean_file, init_ocean_file_z, init_
 	snc = scipy.io.netcdf_file(init_Berg_file)
 		
 	#Pull the variables
-	t_init = onc.variables['temp'][:,:,:,:]
+	t_init = onc.variables[field][:,:,:,:]
 	m_init = snc.variables['spread_mass'][:,:,:]
 	melt_init = snc.variables['melt_m_per_year'][:,:,:]
 	e_init = onc.variables['e'][:,:,:,:]
-	t_z_init = onc_z.variables['temp'][:,:,:,:]
+	t_z_init = onc_z.variables[field][:,:,:,:]
 
 	M=shape(t)
 	t_new=np.zeros((M[0],M[1],M[2],M[3]))
@@ -188,9 +264,9 @@ def create_e_with_correct_form(x, y ,time,  onc):
 				e[i,:,j,k]=z
 	return e
 
-def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=None, depth=None, ymin=600.0, ymax =780.0 , plot_anom=False, x_num=None, plot_four=False ):
-	ymin=450.0 ; ymax =780.0 ; plot_anom=True ; x_num=20  ;y_num=149 ;  plot_four=True
-	xnum=None
+def create_double_image(n,e,t,x,y,time,m,e_z, t_z, melt  ,grounding_line, depth,vmin_top , vmax_top, vanom_top , vmax_side, vmin_side, vanom_side,  ymin=600.0, ymax =780.0 , plot_anom=False, x_num=None, plot_four=False, top_ind=0):
+	ymin=450.0 ; ymax =780.0 ; x_num=20  ;y_num=149 ; 
+	#x_num=None
 	num_col=1 ;
 	if plot_four is True:
 		num_col=2
@@ -213,14 +289,14 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=Non
 	sst = np.ma.array(t[n,0], mask=m[n,:,:]>1e4)
 	
 	if plot_anom is False:
-		sst=np.ma.array(t[n,0], mask=(m[n,:,:])>1e4)
-		vmin =-1.8 ; vmax=-1.2
+		sst=np.ma.array(t[n,top_ind], mask=(m[n,:,:])>1e4)
+		vmin =vmin_top ; vmax=vmax_top
 		cmap= 'jet'
 	else:
 		#t_m=np.ma.array(t_z[n,:,j,:]-t_z[0,:,j,:], mask=( abs(t_z[n,:,j,:]) +  abs(t_z[0,:,j,:]))  >1e4)
 		#sst=np.ma.array(t[n,0]-t[0,0], mask=(m[n,:,:])>1e4)
-		sst=np.ma.array(t[n,0]-t[0,0], mask=(abs(m[n,:,:]) + abs(m[0,:,:]))>1e4)
-		vmin =-0.1 ; vmax=0.1
+		sst=np.ma.array(t[n,top_ind]-t[0,top_ind], mask=(abs(m[n,:,:]) + abs(m[0,:,:]))>1e4)
+		vmin =-vanom_top ; vmax= vanom_top
 		cmap= 'bwr'
 
 	#y_new=zeros([len(y)])
@@ -242,16 +318,16 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=Non
 		plt.subplot(2,num_col, 2);
 	else:
 		plt.subplot(2,num_col, 3);
-	plot_anom = True
+	#plot_anom = True
 	if plot_anom is False:
 		t_m=np.ma.array(t[n,:,j,:], mask=abs(t[n,:,j,:])>1e4)
 		e_m = e
-		vmin =-1.8 ; vmax=0
+		vmin =vmin_side ; vmax= vmax_side
 		cmap= 'jet'
 	else:
 		t_m=np.ma.array(t_z[n,:,j,:]-t_z[0,:,j,:], mask=( abs(t_z[n,:,j,:]) +  abs(t_z[0,:,j,:]))  >1e4)
 		e_m = e_z
-		vmin =-0.1 ; vmax=0.1
+		vmin =-vanom_side ; vmax=vanom_side
 		cmap= 'bwr'
 
 	#plt.pcolormesh(x, e[n,:,j,:], t[n,:,j,:]); plt.xlim(600,780); plt.ylim(-600,2); plt.colorbar();
@@ -275,12 +351,12 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=Non
 		if plot_anom is False:
 			t_m=np.ma.array(t[n,:,:,i], mask=abs(t[n,:,:,i])>1e4)
 			e_m = e
-			vmin =-1.8 ; vmax=0
+			vmin =vmin_side ; vmax=vmax_side
 			cmap= 'jet'
 		else:
 			t_m=np.ma.array(t_z[n,:,:,i]-t_z[0,:,:,i], mask=( abs(t_z[n,:,:,i]) +  abs(t_z[0,:,:,i]))  >1e4)
 			e_m = e_z
-			vmin =-0.1 ; vmax=0.1
+			vmin =-vanom_side ; vmax=vanom_side
 			cmap= 'bwr'
 
 		plt.pcolormesh(y, e_m[n,:,:,i], t_m,cmap=cmap); plt.xlim(0.0,80.0); plt.ylim(-760,2); plt.colorbar();
@@ -322,7 +398,7 @@ def create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt =None ,grounding_line=Non
 ###########################################################################################################################
 
 
-def main():
+def main(args):
 
 	#General flags
 	horizontal_movie=False
@@ -349,7 +425,10 @@ def main():
 	#exp_name='ALE_z_After_melt_Collapse_diag_Strong_Wind'
 	#exp_name='ALE_z_After_melt_drift_Strong_Wind'
 	#exp_name='ALE_z_After_melt_Collapse_diag_Strong_Wind_Splitting'
-	exp_name='Lag_After_Collapse'
+	#exp_name='Lag_After_Collapse'
+	#exp_name='Lag_After_Static'
+	#exp_name='Lag_After_fixed_motion'
+	exp_name=args.exp_name
 	#exp_name='Lag_After_No_Bonds'
 	#exp_name='Lag_After_No_Friction_Collapse'
 
@@ -380,6 +459,12 @@ def main():
 		init_path='Lag_After_Static/'    
 	if exp_name=='Lag_After_No_Friction_Collapse':
 		experiment_path='Lag_After_No_Friction_Collapse/'    
+		init_path='Lag_After_Static/'    
+	if exp_name=='Lag_After_Static':
+		experiment_path='Lag_After_Static/'    
+		init_path='Lag_After_Static/'    
+	if exp_name=='Lag_After_fixed_motion':
+		experiment_path='Lag_After_fixed_motion/'    
 		init_path='Lag_After_Static/'    
 	Berg_path=Base_path + experiment_path
 
@@ -417,7 +502,7 @@ def main():
 	ocean_file_z=Berg_path+ocean_z_extension
 
 	#Specifying initial file
-	replace_init=True
+	replace_init=args.replace_init
 	if replace_init is True:
 		Berg_path_init=Base_path + init_path
         	init_Berg_file=Berg_path_init+berg_extension
@@ -536,9 +621,18 @@ def main():
 		onc = scipy.io.netcdf_file(ocean_file)
 		onc_z = scipy.io.netcdf_file(ocean_file_z)
 		snc = scipy.io.netcdf_file(Berg_file)
+
+		field = args.field
+		vmin_top = args.vmin_top  ; vmax_top =args.vmax_top; vanom_top=args.vanom_top ; 
+		vmax_side = args.vmax_side;  vmin_side=args.vmin_side; vanom_side=args.vanom_side
+		plot_anom=args.plot_anom
+		plot_four=args.plot_four
+		top_ind=args.top_ind
+
+
 		
 		#Pull the variables
-		t = onc.variables['temp'][:,:,:,:]
+		t = onc.variables[field][:,:,:,:]
 		x = onc.variables['xh'][:]
 		y = onc.variables['yh'][:]
 		time = onc.variables['time']
@@ -547,13 +641,13 @@ def main():
 		e = onc.variables['e'][:,:,:,:]
 		
 		if  ocean_file_z is not None:
-			t_z = onc_z.variables['temp']
+			t_z = onc_z.variables[field]
 			e_z = create_e_with_correct_form(x, y ,time[:],  onc_z)
 		else:
 			t_z = None ; e_z = None
 
-		if replace_init is True:
-			(t, m , melt, e, t_z) = adjust_initial(t, m, melt, e,t_z,  init_ocean_file, init_ocean_file_z, init_Berg_file)
+		if replace_init is True and plot_anom is True:
+			(t, m , melt, e, t_z) = adjust_initial(t, m, melt, e,t_z,  init_ocean_file, init_ocean_file_z, init_Berg_file, field)
 
 		#movie parameter:
 		frame_interval=30
@@ -563,7 +657,7 @@ def main():
 		#fig=plt.figure(figsize=(fig_length,fig_height),facecolor='grey')
 		#fig=plt.figure(figsize=(10,6))
 		fig=plt.figure(figsize=(15,10))
-		im = create_double_image(0,e,t,x,y,time,m,e_z, t_z, melt, grounding_line,depth)
+		im = create_double_image(0,e,t,x,y,time,m,e_z, t_z, melt, grounding_line,depth, vmin_top , vmax_top, vanom_top , vmax_side, vmin_side, vanom_side, plot_anom=plot_anom, plot_four=plot_four,top_ind=top_ind)
 
 
 
@@ -577,7 +671,7 @@ def main():
 			ax = fig.add_subplot(111,axisbg='gray')
 			#(data_n , xn ,yn)=get_nth_values(n,data,x,y,axes_fixed)
 			#im=plot_data_field(data_n,xn,yn,vmin,vmax,flipped=flipped,colorbar=True,cmap=cmap,title='',xlabel=xlabel,ylabel=ylabel,return_handle=True,grounding_line=grounding_line)
-			im = create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt, grounding_line, depth)
+			im = create_double_image(n,e,t,x,y,time,m,e_z, t_z,melt, grounding_line, depth, vmin_top , vmax_top, vanom_top , vmax_side, vmin_side, vanom_side, plot_anom=plot_anom, plot_four=plot_four, top_ind=top_ind)
 			
 			return im
 
@@ -585,7 +679,7 @@ def main():
 		ani = animation.FuncAnimation(fig,update_img,Number_of_images,interval=frame_interval)
 		writer = animation.writers['ffmpeg'](fps=frames_per_second)
 
-		output_filename='movies/' + exp_name + '/'  + 'Iceberg_movie' + '.mp4'
+		output_filename='movies/' + exp_name + '/'  + 'Iceberg_movie_'+ field + '.mp4'
 		ani.save(output_filename,writer=writer,dpi=resolution)
 		#plt.show()
 		print 'Movie saved: ' , output_filename
@@ -595,6 +689,6 @@ def main():
 	
 
 if __name__ == '__main__':
-        main()
-        #sys.exit(main())
+	optCmdLineArgs= parseCommandLine()
+	main(optCmdLineArgs)
 
