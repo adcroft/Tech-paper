@@ -219,7 +219,8 @@ The Lagrangian model is then used to simulate the ocean's response to a tabular 
 \begin{itemize}
 \item A novel modeling framework is developed to model breakable ice shelves and ice-shelf cavities using Lagrangian elements, held together by numerical bonds.
 \item The ocean circulation beneath a (static) Lagrangian ice shelf is almost indistinguishable from the circulation beneath an Eulerian ice-shelf model run in an identical configuration, which  provides a proof of concept for the Lagrangian model. 
-\item Enhanced ocean mixing occurs near the ice front after a large calving event, which warms the ocean surface and cools the water column at depth. The cool sub-surface anomalies enter the ice shelf cavity and cause reduced basal melt in the period following the calving event. 
+%\item Enhanced ocean mixing occurs near the ice front after a large calving event, which warms the ocean surface and cools the water column at depth. The cool sub-surface anomalies enter the ice shelf cavity and cause reduced basal melt in the period following the calving event. 
+\item After an iceberg calves away from an ice shelf, a complex interaction is observed between the iceberg motion and ocean hydrography. This interaction leads to the formation of a Taylor column beneath the iceberg, a subsurface cooling at the ice front, and reduced melt rates within the ice shelf cavity.
 \end{itemize}
 
 
@@ -314,7 +315,7 @@ At every time step, ice-shelf fields are passed from the ice-shelf model to the 
 Fields which are passed from the ocean model to the Lagrangian ice shelf model have to be interpolated from the Eulerian grid onto the Lagrangian grid (i.e.: onto the elements). This is done using a bilinear interpolation scheme.  Four ocean fields are passed from the ocean model to the ice-shelf model: temperature, salinity and zonal and meridional velocities. 
 
 At the end of an ice-shelf model time step, ice-shelf fields are aggregated from the elements back onto the Eulerian ocean grid, and are then passed from the ice-shelf model to the ocean model. 
-The aggregation from the Lagrangian elements onto the Eulerian grid is done by calculating the fraction of each element's volume that lies in each ocean grid cell, and dividing the fields in proportion to this fraction. For example, the amount of ice mass aggregated onto a given ocean grid cell is found by summing up the masses of all elements which intersect that grid cell, only counting the part of an element's mass that  actually intersects the ocean grid cell. When calculating the intersection between an element and a grid cell, we assume that the elements have surface areas that are shaped as regular hexagons. Seven fields are passed from the ice-shelf models to ocean model: iceberg mass and surface area (used the upper-ocean pressure field), temperature flux, salinity flux and mass flux, and meridian and zonal velocity (used to calculate the momentum flux). 
+The aggregation from the Lagrangian elements onto the Eulerian grid is done by calculating the fraction of each element's volume that lies in each ocean grid cell, and dividing the fields in proportion to this fraction. For example, the amount of ice mass aggregated onto a given ocean grid cell is found by summing up the masses of all elements which intersect that grid cell, only counting the part of an element's mass that  actually intersects the ocean grid cell. When calculating the intersection between an element and a grid cell, we assume that the elements have surface areas that are shaped as regular hexagons. Seven fields are passed from the ice-shelf models to ocean model: iceberg mass and surface area (used to calculate the upper-ocean pressure field), temperature flux, salinity flux and mass flux, and meridian and zonal velocity (used to calculate the momentum flux). 
 
 %While the internal framework and grids of the Eulerian and Lagrangian ice-shelf models are quite different, both models are coupled to the ocean model using the same coupling structure.Five fields are passed from the ice-shelf models to ocean model: mass, surface area, temperature flux, salinity flux and mass flux. The Eulerian model uses the same grid as the ocean model, while in the Lagrangian model these fields are aggregated onto the ocean model grid before being passed through the coupler. Once in the ocean model, these fields and are used to: (i) apply a pressure to the ocean surface, \textcolor{red}{??? This condition is specific to MOM6. Some explanations are required either about MOM6 specifics or how this could be handled in general. What if an ocean would be z-coordinate, what would be an equivalent of this condition???}(ii) alter the upper-ocean boundary condition to reflect that the ocean is covered by ice, \textcolor{red}{another ambiguous statement} and (iii) apply salt, temperature and mass fluxes associated with ice-shelf melting and freezing. 
 %
@@ -322,7 +323,7 @@ The aggregation from the Lagrangian elements onto the Eulerian grid is done by c
 
 
 
- \section{Experiment Setup}
+ \section{Experiment setup}
 % the proof of concept for
 %\sout{The KID model is used to represent the ice shelf in an idealized ice-shelf cavity MOM6 ocean flow. The simulations are repeated using an Eulerian ice shelf with an identical configuration. The details of the experimental setup for both the Lagrangian and Eulerian models are presented here.}
 %
@@ -336,7 +337,7 @@ The configuration consists of an idealized ice shelf in a rectangular domain $L_
 \end{enumerate}
 These three changes were made in order to make the circulation beneath the ice shelf easier to interpret. 
 
-\subsection{Ocean Model}
+\subsection{Ocean model}
 The Lagrangian and Eulerian ice shelves are coupled to the MOM6 ocean model \citep{Hallberg2013}. 
 The ocean model is run using a hybrid vertical coordinate system which blends a sigma-level and a z-level coordinate \citep{Stern2017}, implemented using the ALE method \citep{White2009}. In this vertical coordinate, model layers bend underneath surface topography (i.e.: the ice shelf), as they would in a sigma coordinate model, and intersect the bottom topography, as they would in a z-coordinate model. The model has 72 vertical layers and has a horizontal resolution of $\Delta x= 2$ km. The numerical simulations were all repeated using an isopycnal coordinate (without ALE regrinding-remapping). The results were qualitatively similar to the hybrid-coordinate results, and are therefore not presented here.
 % All results presented below are from the ALE simulations, unless specified otherwise.
@@ -344,51 +345,33 @@ The ocean model is run using a hybrid vertical coordinate system which blends a 
 The ocean parameters used in the simulations are as specified in the MISOMIP configuration \citep{Asay-Davis2016}, and are shown in Table 1. The simulation is initialized from rest, with horizontally uniform initial ocean temperature and salinity profiles which vary linearly between specified open-ocean surface and bottom values: $T_{top}=-1.9^{\circ}$C, $T_{bottom}=1.0^{\circ}$C, $S_{top}=33.8$ psu, $S_{bottom}=34.7$. The maximum ocean depth is $H_{ocean}=720$ m.  A sponge layer is used on the northern boundary, which relaxes back to the initial temperature and salinity with a relaxation time scale of $T_{sponge}=0.1$ days over a distance of 10 km. Melting is set to zero for ocean cells where the ocean column thickness is less than 10m.
 
 
-\subsection{Initializing Lagrangian elements:}
+%\subsection{Initializing Lagrangian elements:}
+\subsection{Lagrangian ice-shelf model:}
+The Lagrangian ice-shelf simulations are performed using the Kinematic Iceberg Dynamics (KID) model described in Section 2.
 %\subsection{Lagrangian and Eulerian ice shelf simulations:}
 The Lagrangian ice shelf is created using 10882 Lagrangian hexagonal elements with sides of length $S=0.98$ km . The positions of the hexagonal elements are initialized by packing them together in a space-filling staggered lattice. Gaps along the boundaries are filled in using smaller elements so that the total ice-shelf area is preserved. The initial mass of the ice elements is determined using bilinear interpolation from a prescribed gridded ice mass field. 
 
-\subsection{Eulerian ice-shelf:}
-We validate the Lagrangian ice shelf model by comparing the results to the results found using an Eularian ice shelf model in an identical static ice shelf configuration (see below).
+\subsection{Eulerian ice-shelf model:}
 The Eulerian ice-shelf simulation is performed using an existing Eulerian ice-shelf cavity model \citep{Goldberg2012}, which is an optional module of the the MOM6 ocean model. The ice shelf is initialized on the same grid as the ocean model with a horizontal resolution of $\Delta x = 2$ km. The ice-shelf thickness field is initialized using the same ice-shelf draft used for the Lagrangian model (Figure \ref{fig:ISOMIP_mass_and_topog}). The melt rates in the Eulerian ice-shelf simulation are calculated using the 3 equation model for ice-shelf decay \citep{Holland1999}, with the same parameters used to calculate the ice shelf melt rates in the Lagrangian model.
 
 
-\subsection{Static ice shelf simulation:}
-We test the Lagrangian ice shelf model by simulating the flow beneath the idealized ice shelf with the ice shelf being held statice (i.e.: elements are held stationary). In this simulation the ice shelf is thermodynamically active and is able to `melt' but has a time-invariant thickness (as specified in the Ocean0 experiment in the MISOMIP \citep{Asay-Davis2016}). In this setup, ice-shelf melting generates temperature and salinity fluxes into the ocean, but does not change the thickness of the ice shelf / ice elements. %This can be thought to represent an ice shelf in dynamic equilibrium where the melt is exactly balanced ice-shelf advection. 
+\section{Model validation}
+The Lagrangian ice shelf model is validated by comparing it to an existing Eularian ice shelf model in an identical static configuration.  
+
+\subsection{Setup of static validation experiment:}
+The experimental setup for the model validation experiment is based on the Ocean0 MISOMIP experiment \citep{Asay-Davis2016}.  In this experiment the ice shelves are thermodynamically active but have a time-invariant thickness. Temperature and salinity fluxes from ice shelf melt drive the circulation within the cavity. 
+
 A constant wind stress $\vec{\tau} = <\tau_{x},\tau_{y}> = < 0.05, 0.05 >$  $\frac{N}{m^{2}}$ is applied to the ocean surface. Note that this wind stress is was not applied in the original MISOMIP experiments \citep{Asay-Davis2016}.
-The model is spun up for 5 years, and the analysis is done on the second 5 years after the spinup. 
 
-\subsection{Iceberg calving simulation:}
-In a second experiment, the Lagrangian ice shelf model is used to simulate a tabular iceberg detaching from the ice shelf, and drifting into the open ocean. The iceberg calving simulation is initialized using the final state of the static Lagrangian ice shelf simulation (i.e.: at time $t = 10 $ years). When initializing the calving event, we bypass the question of how to prescribe a physical calving law \citep{Benn2007, Alley2008, Levermann2012, Bassis2013} by manually breaking off a semi-circular iceberg. 
-
-In the iceberg calving simulation, all ice elements initially within a 14.4~km radius of the center of the ice front to move freely while the other ice elements continue to be held stationary. Ice elements less than 12~km from the center of the ice front, are bonded together to form a semi-circular tabular iceberg. A ring of elements whose distance, $d$, from the ice front center obeys $12 \textrm{ km} \leq   d \leq14.4 \textrm{ km}$, are allowed to move freely, but have all their bonds removed. Elements in this half annulus represent fragments of the ice shelf which calve into small pieces during the calving event.
-
-\textcolor{red}{Should these two simulations be included?}
-\subsubsection{Fixed iceberg velocity simulation}
-To aid in the analysis of the ocean response to iceberg calving, another iceberg calving simulation was preformed, using a fixed iceberg velocity. This fixed velocity iceberg simulation is identical to the iceberg calving simulation (Section 3.6), except that the velocity of the calving icebergs is prescribed as $\vec{v} = = < 0, 0.01 >$ m/s. Since the iceberg speed is prescribed, this simulation is not fully coupled.
-
-\subsubsection{Missing-Iceberg simulation}
-A simulation is preformed to help analyze how the changing ice shelf geometry affects the sub-ice-shelf circulation and hydrography. In this simulation, calving iceberg (with the same geometry as the iceberg simulations above) is removed at the start of the simulation, and the simulation is spun up from rest. The simulation is run for 10 years, so that it is easily comparable to the Static ice shelf simulation (described in Section 3.5).
+The elements in the Lagrangian ice shelf simulation are held stationary so that the ice shelf is static and comparable to the Eularian simulation.
+The models are spun up for 5 years. The analysis is performed on year 6 to 10 of the simulations. 
 
 
-%\section{Results}
-\section{Static ice-shelf simulation results}
-\subsection{Static ice-shelf simulation}
-The results in the Lagrangian static ice-shelf simulation fit within the current understanding of ice-shelf cavity circulations based on ice-shelf observations \citep{MacAyeal1984, Lewis1986, Jacobs2011} and previous modeling efforts \citep{Determan1994, Holland2006, Losch2008}.
-The ocean temperatures inside the domain are warmer than the in-situ freezing point (Figure \ref{fig:static_solo_temp_v_v}a), and cause melting at the ice-shelf base (Figure  \ref{fig:static_solo_melt}a). The meltwater entering the domain is more buoyant than the water around it, and rises along the ice shelf as a cool fresh plume (Figure \ref{fig:static_solo_temp_v_v}b,c). 
-%As the plume rises, it entrains ambient water causing a warming of the upper ocean (Figure \ref{fig:static_solo_temp_v_v}a).
-This injection of positive buoyancy at depth drives a clockwise circulation outside of the ice-shelf cavity (Figure \ref{fig:Bt_comparison}a), providing the ice-shelf cavity with a continuous supply of warm water, which provides the thermal energy required for continuous ice-shelf melt.
-Strong meridional jets are observed at the ice front along the flanks of the domain, fluxing water into the ice shelf cavity on the eastern flank and allowing water to leave the ice shelf cavity on the western side (Figure \ref{fig: meridional_velocity_snapshots}a). The meridional flow in the center of the ice front is much smaller, consistent with the dynamical barrier at the ice shelf front discussed in previous modeling and experimental studies \citep{Holland2001, Stern2014}.
+\subsection{Results of validation experiment}
 
-The highest melt rates are observed within 100km of the grounding line (Figure  \ref{fig:static_solo_melt}a). These elevated melt rates are caused by the presence of warm water (Figure  \ref{fig:static_solo_melt}b) and increased ocean velocities (Figure  \ref{fig:static_solo_melt}c) near the grounding line, as well as the fact that freezing point of ice decreases with increasing pressure. Elevated melt rates are also seen near the ice front, caused by strong currents running along the ice-shelf front (Figure  \ref{fig:static_solo_melt}c).\\
+The results of the static ice shelf simulations in both simulations are qualitatively similar to results presented in \citep{Asay-Davis2016}. Melting at the base of the ice shelf drives a circulation within the cavity and strong jets are observed at the ice front and along the sides of the domain (Figure \ref{fig:Bt_comparison}). A more complete description of the circulation is provided in the supplementarity material.
 
-%\subsubsection{Comparison with Eulerian ice-shelf model}
-
-\subsection{Comparison of Lagrangian and Eulerian ice-shelf models}
-The Lagrangian ice-shelf model results are qualitatively similar to most of the simulations from the MISOMIP experiment \citep{Asay-Davis2016}, which use a similar configuration (see Section 3.4). To get a quantitative comparison, we compare the Lagrangian ice-shelf model results to a simulation using an Eulerian ice-shelf model with an identical configuration. 
-Since the Lagrangian and Eularian ice shelf models are coupled to the same ocean model and the ice shelf models use the same parametrization for ice shelf melt, we expect the results of the two models to be the almost the same, with the only differences arising from the interpolation and aggregation schemes (see Section 2.6).  This allows us to use the Eularian ice shelf model to validate the Lagrangian model.
-
-The results show that two simulations are almost indistinguishable. This is demonstrated, for example, in Figures \ref{fig:Bt_comparison}, which shows the time-averaged barotropic stream function of the Lagrangian (Figures \ref{fig:Bt_comparison}a) and Eulerian (Figures \ref{fig:Bt_comparison}b) simulations, and the difference between the two (Figures \ref{fig:Bt_comparison}c). 
+Since the Lagrangian and Eularian ice shelf models are coupled to the same ocean model and the ice shelf models use the same parametrization for ice shelf melt, we expect the results of the two models to be the almost the same, with the only differences arising from the interpolation and aggregation schemes (see Section 2.6).   The results show that two simulations are almost indistinguishable. This is demonstrated, for example, in Figure \ref{fig:Bt_comparison}, which shows the time-averaged barotropic stream function of the Lagrangian (Figures \ref{fig:Bt_comparison}a) and Eulerian (Figures \ref{fig:Bt_comparison}b) simulations, and the difference between the two (Figures \ref{fig:Bt_comparison}c). 
 %For scale, we note that the differences between the barotropic stream functions in the two simulations, are two orders of magnitude smaller than the differences between two simulations using the same Eulerian ice shelf with different vertical coordinate systems described in Section 3.2 (not shown).
 The difference between the Lagrangian and Eulerian barotropic stream functions are two orders of magnitude smaller than typical differences observed between simulations using different models in the MISOMIP \citep{Asay-Davis2016}. 
 The similarity of the Lagrangian and Eulerian simulations are also reflected in the fact that the simulations have very similar ice-shelf melt rates and ocean temperature/salinity profiles (shown in Figures \ref{fig:Melt_comparison} and Figures \ref{fig:Salt_comparison} in the supplementary materials). 
@@ -401,59 +384,129 @@ The agreement between the Eulerian and Lagrangian simulations is a confirmation 
 
 
 
+%\section{Results}
 
-\section{Iceberg calving simulation results}
-The infrequency of large calving events together with the difficulty of placing observational instruments around tabular icebergs means that little is known about how calving icebergs affect ocean circulation around the iceberg and at the ice front. The Lagrangian ice shelf model developed in this study allows us for the first time to simulate an iceberg calving away from the ice shelf, and to study what effect this has on the ocean around the iceberg and beneath the ice shelf.  Since the Lagrangian iceberg/ice shelf model is fully coupled to the ocean, the iceberg motion affects the ocean hydrography, and the changing ocean conditions feedback onto the ice. 
+
+\section{Iceberg calving experiment}
+
+The infrequency of large calving events together with the difficulty of placing observational instruments around tabular icebergs means that little is known about how calving icebergs affect ocean circulation around the iceberg and at the ice front. The Lagrangian ice-shelf model developed in this study allows us for the first time to simulate an iceberg calving away from the ice shelf, and to study what effect this has on the ocean around the iceberg and beneath the ice shelf.  Since the Lagrangian iceberg/ice shelf model is fully coupled to the ocean, the iceberg motion affects the ocean hydrography, and the changing ocean conditions feedback onto the ice. 
 %The effect of iceberg calving on the ocean around the iceberg is discussed in \citep{Stern2017}. Here we focus on how the calving event affects the region close to the ice front and beneath the ice shelf.
 
+In this section, the Lagrangian ice shelf model is used to simulate a tabular iceberg detaching from the ice shelf, and drifting into the open ocean. 
 The results below show that the calving of a large tabular iceberg can cause significant changes to the ocean stratification and circulation around the iceberg and at the ice shelf front. 
+
+
+\subsection{Setup of iceberg calving experiment:}
+The iceberg calving experiment is initialized using the final state of the static Lagrangian ice shelf simulation (i.e.: at time $t = 10 $ years).  When initializing the calving event, we bypass the question of how to prescribe a physical calving law \citep{Benn2007, Alley2008, Levermann2012, Bassis2013} by manually breaking off a semi-circular iceberg. 
+All ice elements initially within a 14.4~km radius of the center of the ice front are allowed to move freely while the other ice elements continue to be held stationary. Ice elements less than 12~km from the center of the ice front, are bonded together to form a semi-circular tabular iceberg. A ring of elements whose distance, $d$, from the ice front center obeys $12 \textrm{ km} \leq   d \leq14.4 \textrm{ km}$, are allowed to move freely, but have all their bonds removed. 
+%Elements in this half annulus represent fragments of the ice shelf which calve into small pieces during the calving event.
+
+
+%\textcolor{red}{Should these two simulations be included?}
+%\subsubsubsection{Fixed iceberg velocity simulation}
+%To aid in the analysis of the ocean response to iceberg calving, another iceberg calving simulation was preformed, using a fixed iceberg velocity. This fixed velocity iceberg simulation is identical to the iceberg calving simulation (Section 3.6), except that the velocity of the calving icebergs is prescribed as $\vec{v} = = < 0, 0.01 >$ m/s. Since the iceberg speed is prescribed, this simulation is not fully coupled.
+%
+%\subsubsection{Missing-Iceberg simulation}
+%A simulation is preformed to help analyze how the changing ice shelf geometry affects the sub-ice-shelf circulation and hydrography. In this simulation, calving iceberg (with the same geometry as the iceberg simulations above) is removed at the start of the simulation, and the simulation is spun up from rest. The simulation is run for 10 years, so that it is easily comparable to the Static ice shelf simulation (described in Section 3.5).
+
+
+\subsection{Results of iceberg calving experiment}
+
+
+
 %The changes at the ice shelf front persist, even once the tabular iceberg has drifted away from the ice shelf cavity, eventually reaching a new equilibrium consistent with the new ice front geometry. 
-Changing conditions at the ice front alter the temperature fluxes into the ice shelf cavity, which impacts the hydrography inside the ice shelf cavity, and drives changes to the ice-shelf melt rates across the entire ice shelf. Local changes to the ocean hydrography are also observed around the iceberg. A Taylor column is observed below the iceberg, which travels with the iceberg as it drifts into the open ocean.
+%Changing conditions at the ice front alter the temperature fluxes into the ice shelf cavity, which impacts the hydrography inside the ice shelf cavity, and drives changes to the ice-shelf melt rates across the entire ice shelf. A current is also observed circling the iceberg in a clockwise direction as the iceberg drift northwards. The  drive local changes to the ocean hydrography around the iceberg, and also influence the basin-wide circulation.
+% A Taylor column is observed below the iceberg, which travels with the iceberg as it drifts into the open ocean.
 
-\subsection{At the ice front}
+%\subsection{Ocean response to iceberg detatchment}
 %\subsubsection{Surface warming}
-After the iceberg calves, the large semi-circular tabular iceberg drifts to the northeast, driven primarily by the wind and Coriolis force. As this large iceberg and the smaller fragments moves through the water a warming of the sea surface temperature is observed around the iceberg and at the ice front (Figure \ref{fig:SST_snapshots}). The warm anomalies near the ice front persist and strengthen, even once the large iceberg fragment has drifted away. Part of this warmed surface water at the ice front is advected to west by the strong currents at the ice front (Figure \ref{fig:SST_snapshots}c). On the western side of the domain, most of this warm anomaly is advected northwards, while some of the warmth is forced southward, and is able to subduct beneath ice shelf on the western side of the ice shelf front. 
- 
-%\subsubsection{Sub-surface cooling}
-In addition to the surface warming, a subsurface cooling is also observed around the iceberg and at the ice front in the days following the calving event (Figure \ref{fig:Temperature_section_Collapse_yz}). 
-The sub-subsurface cooling and warm surface temperature anomalies are accompanied by a freshening at depth and increase in surface salinity (not shown).
-Since the background stratification has positive temperature and salinity gradients (cold/fresh water above over warm/salty), the pattern of warm salty surface anomalies above cold fresh subsurface anomalies suggests that these changes are driven by enhanced vertical mixing.
+%After the iceberg calves, the large semi-circular tabular iceberg begins to drift away from the ice shelf (Figure \ref{fig:SST_snapshots}). The iceberg drifts towards the northeast, driven primarily by the wind and Coriolis force. As the iceberg drifts, it rotates in a counter-clockwise direction. After about 45 days, the iceberg collides with the eastern boundary of the domain and from their continues to drift northwards.
 
-At the ice front, the subsurface negative temperature anomalies strengthen over time and within a month of the calving event, the negative anomalies occupy most of the water column close to the ice front (Figure \ref{fig:Temperature_section_Collapse_xz}). 
+\subsubsection{Ocean response to iceberg detachment}
+Immediately after the numerical bonds are broken, a large semi-circular tabular iceberg detaches from the ice shelf, and begins to drift northwards (Figure \ref{fig:SST_snapshots}).
+The northwards motion of the iceberg creates a region of open water at the new calving front, between the ice shelf and the tabular iceberg. The formation of a region of open ocean behind the iceberg causes a sudden stretching of the water column in the wake of the iceberg, which drives an upwelling throughout the water column. The negative background temperature gradient (cold over warm) means that this upwelling is observed as warm water anomaly beneath newly formed ice front (Figure \ref{fig:Temperature_section_Collapse_yz}a and \ref{fig:Temperature_section_Collapse_xz}a). The warming is observed throughout the water column, but is largest near the surface.  Similarly, the upwelling leads to increased salinity beneath newly formed ice front (not shown).
+
+The calving event also drives an immediate change in circulation around the newly created ice front as the ocean adjusts to the topographic changes. 
+Since the Coriolis parameter is negative, a stretching of the water column behind the iceberg has to be accompanied by the creation of negative relative vorticity in order for potential vorticity (PV) to be conserved. 
+The creation of negative relative vorticity along the newly calved ice front, gives rise to a pair of oppositely orientated ocean jets running along the ice front. A westward barotropic jet is created to the south of the calving front, and an eastward barotropic jet is created to the north of the calving front (Figures \ref{fig:u_velocity_horizontal}a and \ref{fig:v_velocity_vertical}b). The positive gradient in zonal velocity created by this pair of oppositely orientated jets yields the negative relative vorticity, needed to conserve PV. 
+ 
+To the north of the iceberg, the iceberg detachment has the opposite effect on the ocean. The forward movement of the iceberg causes a squeezing of the water column directly in front of the iceberg. This shortening of the water column causes a downwelling in the water column in front of the iceberg, which is observed as a cool water anomaly in front of the iceberg (Figure \ref{fig:Temperature_section_Collapse_yz}a). The squeezing of the water column generates positive relative vorticity, so that the total PV is conserved. The positive relative vorticity creates an eastward and westward jet to the south and north of the northern edge of the iceberg (Figures \ref{fig:u_velocity_horizontal}a and \ref{fig:v_velocity_vertical}b). The stretching and squeezing of the water column to the south and north of the iceberg, both contribute to the eastward jet which forms directly beneath the iceberg which plays an important role in driving iceberg motion.
+%The eastward jets created beneath the iceberg merge into one combined jet, so that the flow beneath the iceberg is towards the east.
+
+ \textcolor{red}{(If you have time, check whether when the wind goes in the other direction, the jet beneath the iceberg moves in the other direction.)}
+%\begin{equation}
+%q = \frac{f + \zeta}{h}
+%\end{equation}
+\subsubsection{Iceberg motion}
+After the iceberg breaks away from the ice shelf, the motion of iceberg is primarily driven by the drag from ocean currents beneath the iceberg, wind drag and by Coriolis force. The eastward jet beneath the iceberg drives the iceberg towards the east (Figures \ref{fig:u_velocity_horizontal}a and \ref{fig:v_velocity_vertical}b), while the wind and Coriolis force drive the iceberg offshore. Initially, as the iceberg drifts eastward, it collides with the ice shelf, which hinders its motion (Figure \ref{fig:SST_snapshots}a). Only once the iceberg has drifted sufficiently far northwards to be clear of the ice shelf, does it begin to drift towards the east. Once this happens, the iceberg velocity quickly adjusts so that it is approximately equal to the ocean velocity below the iceberg. % \textcolor{red}{(check this is true)}.
+As the iceberg drifts northwards, it rotates in a counter-clockwise direction (Figure \ref{fig:SST_snapshots}). 
+
+%The rotation is partly due to the semi-circular shape of the iceberg being guided by the semi-circular ice front, but is also observed in experiments using rectangular icebergs, where it is mainly caused by the Coriolis force. The iceberg continues to rotate even after it has moved entirely away from the ice shelf. 
+The motion of the iceberg plays a large role in setting the direction of the ocean flow below and around the iceberg, since the ocean has to adjust to topographical changes so that PV is conserved.  This is illustrated, for example, by the change in orientation of the ocean jets running beneath the iceberg that occurs as the iceberg rotates (Figure \ref{fig:u_velocity_horizontal}b). An important consequence of the controlling effect of iceberg topography is formation of a Taylor Column below the iceberg: the water column below the iceberg is constrained to move at the same speed as the iceberg above, since differential motion would force the water column out from under the iceberg, causing the water column to stretch, and generating PV.  This means that the column of water beneath the iceberg is largely separated from the water around the iceberg and strong gradients in temperature, salinity and velocity can exist at the iceberg edge. In our experiment, a Taylor Column is clearly observed below the iceberg throughout the simulation (Figure \ref{fig:Taylor_column}). %(the changes in PV associated with the rotation of the jets are ultimately driven by the external force of the wind)
+
+Once the iceberg reaches the eastern side of the domain, it begins to interact the boundary of the domain and with the southward boundary current running along the edge of the domain (Figures \ref{fig:SST_snapshots}b and \ref{fig:v_velocity_horizontal}c). 
+The presence of the iceberg along the eastern boundary impedes the southward boundary current, so that the current has to flow to the west of the iceberg (Figure \ref{fig:v_velocity_horizontal}b). 
+The diverted current follows the topographic contour created by the iceberg so that it sets up a  counter-clockwise circulation running around the iceberg (Figure \ref{fig:u_velocity_horizontal}c). The eastward jet which was previously positioned beneath the iceberg shifts to the south and becomes part of the flow directing the boundary current around the iceberg. This counter-clockwise circulation around the iceberg remains around the iceberg until the end of the simulation. Interestingly, the iceberg continues to move northward despite the fact that it is moving within a southward flowing boundary current (Figure \ref{fig:Taylor_column}b). This is partly due to the Taylor Column beneath the iceberg, which allows the northward velocity beneath the iceberg to be separated from the southward moving current around the iceberg. 
+
+%The iceberg continues to rotate as it approaches the side of the domain, while the mean iceberg motion is directed to move parallel to the eastern boundary so that the iceberg motion is towards the north. 
+
+%The diverting of the flow towards the west is aided by the westward current in front of the iceberg (discussed above). 
+
+
+%\textcolor{red}{Mention: Similar Taylor columns have been observed above sea mounts [reference].}
+
+%\textcolor{red}{Possibly include: Directly below the iceberg on the ocean floor, an increased dipycnal mixing is observed in the bottom boundary layer. This elevated mixing in the bottom boundary layer is likely a result of a barotropic adjustment driven by the iceberg motion. As the iceberg drifts through the water, the region of elevated dipycnal mixing shifts so that it remains directly below the iceberg. Similarly elevated rates in dipycnal mixing are observed at the bottom of the water column near the ice front. }
+
+%\subsection{Changes in stratification}
+%\subsection{Stratification at the ice front and around the iceberg}
+\subsubsection{Surface warming and sub-surface cooling}
+%After the iceberg calves, the large semi-circular tabular iceberg drifts to the northeast, driven primarily by the wind and Coriolis force. 
+After the tabular iceberg detaches from the ice shelf, a warming is observed throughout the water column to the south of the iceberg (Figure \ref{fig:Temperature_section_Collapse_yz}a, as discussed above). This warming extends to the ocean surface, resulting in warm sea surface temperature (SST) anomalies at the newly calved ice front and around the southern side of the iceberg (Figure \ref{fig:SST_snapshots} and \ref{fig:Temperature_section_Collapse_xz}a  \textcolor{red}{- make sure it is clear in the Figure}). In the weeks following calving, part of this warm SST anomaly remains at the ice front, influencing the heat flux into the ice shelf cavity, and some the SST anomaly drifts with the iceberg into the open ocean. 
+
+The warm SST anomalies at the ice front persist and strengthen, even once the tabular iceberg has drifted away, as water continues to upwell at the newly formed ice front. Some of this warmed surface water is advected to west by the westward jet at the ice front (Figure \ref{fig:SST_snapshots}c). Once these warmed surface waters reach the western side of the domain, most of this warm anomaly is advected northwards following the western boundary, while some of the warmth is forced southward, and is able to subduct beneath ice shelf on the western side of the ice shelf front. 
+
+The SST anomalies that drift along with the iceberg are initially concentrated along the curved southern side of the iceberg. As the tabular iceberg drifts away from the ice shelf (and begins to rotate), the currents that develop around the iceberg advect this warm SST anomaly counter-clockwise around the perimeter of the iceberg so that by 15 days after calving, the SST around the most of the iceberg's perimeter is anomalously warm (Figure \ref{fig:SST_snapshots}).  As the iceberg drifts further into the open ocean, the warmed surface waters around the iceberg's perimeter mix with the ambient surface water, leaving a trail of warmed surface water which maps out the wake of the iceberg. It is likely that as the iceberg drifts, the motion of the iceberg and strong sheer in horizontal velocity at the iceberg edges contribute to continued upwelling, leading to further increased surface warming.
+ 
+As discussed above, the downwelling on the northern side of the iceberg observed immediately after calving, leads to a cooling/freshening of the water column beneath and to the north of the iceberg (Figure \ref{fig:Temperature_section_Collapse_yz} and \ref{fig:Temperature_section_Collapse_xz}). As the iceberg drifts away from the ice shelf, the cool water anomalies remain beneath the iceberg, traveling with the iceberg into the open ocean, leaving a trail of cool subsurface temperature anomalies which maps out the (subsurface) wake of the iceberg (not shown). The pattern of warm surface anomalies around the iceberg, and cool subsurface anomalies around the iceberg, is clearly visible throughout the simulation (Figure \ref{fig:Taylor_column}c), and suggests continued vertical mixing around the iceberg perimeter as it drifts into the open ocean.
+
+About 5 days after calving, as the iceberg begins to rotate counter clockwise, the jet to the north of the iceberg begins to drive the cool water anomaly towards the ice front (Figure \ref{fig:u_velocity_horizontal}b). The strong jet moving towards the ice front causes water to subduct beneath the ice front, leading to further cool sub-surface anomalies. Below the depth of the ice shelf, the cool water anomalies are stronger than the warm water anomalies caused by the initial water column stretching. The subsurface negative temperature anomalies strengthen over time and within a month of the calving event, the negative anomalies occupy most of the water column close to the ice front (Figure \ref{fig:Temperature_section_Collapse_xz}). This subsurface cooling at the ice front is the most prominent temperature response observed in our iceberg calving experiments. Similar subsurface cooling at the ice front was observed in other experiments using different sizes and shapes for the calving iceberg (not shown).
+
 The zonal current along the ice front drives the cool anomaly to the west, causing an enhancement of the cool anomalies on the western side of the ice shelf front (Figure \ref{fig:Temperature_section_Collapse_xz}c).
 Most of the subsurface cooling occurs outside of the ice shelf cavity, as the dynamical barrier caused by the ice shelf inhibits exchange of water across the ice front. 
-However over time, an increasing amount of cooler water is able to enter the ice shelf cavity, and is advected below the ice shelf (Figure \ref{fig:Temperature_section_Collapse_yz}). 
+However over time, an increasing amount of cooler water is able to enter the ice shelf cavity, and is advected below the ice shelf (Figure \ref{fig:Temperature_section_Collapse_yz}c). 
 
 %The cooler waters entering the ice shelf cavity mix with the water within the ice shelf cavity, causing the strength of the cool anomaly to be reduced towards the grounding line (Figure \ref{fig:Temperature_section_Collapse_yz}c).
-
-
 %\subsubsection{Circulation Changes}
-The changing temperature flux into the ice shelf cavity in the center of the domain is partly driven by changing ocean velocities, observed at the ice front directly after the iceberg calves. The pre-calving meridional flow at the ice front is dominated by strong boundary currents moving water into and out of the ice shelf cavity along the flanks for the domain, while very little meridional velocity is observed in the center of the domain (as discussed in Section 4.1). After the iceberg calves, large meridional velocities are observed at the ice front (Figure \ref{fig:meridional_velocity_snapshots}). The structure and variability of the velocity field observed at the ice front after calving, suggest the elevated flow speed are driving by ocean instabilities that are triggered by the calving iceberg. These instabilities presumably a key driver of the enhanced vertical mixing described above. \textcolor{red}{[How do these instabilities work?]}
+%The changing temperature flux into the ice shelf cavity in the center of the domain is partly driven by changing ocean velocities, observed at the ice front directly after the iceberg calves. The pre-calving meridional flow at the ice front is dominated by strong boundary currents moving water into and out of the ice shelf cavity along the flanks for the domain, while very little meridional velocity is observed in the center of the domain (as discussed in Section 4.1). After the iceberg calves, large meridional velocities are observed at the ice front (Figure \ref{fig:meridional_velocity_snapshots}). The structure and variability of the velocity field observed at the ice front after calving, suggest the elevated flow speed are driving by ocean instabilities that are triggered by the calving iceberg. These instabilities presumably a key driver of the enhanced vertical mixing described above. \textcolor{red}{[How do these instabilities work?]}
 %The motion near the ice front remains elevated while the tabular iceberg in the vicinityand then dissipate, presumably finding a new equilibrium.
 
+\textcolor{red}{The sub-subsurface cooling and warm surface temperature anomalies discussed above are accompanied by a freshening at depth and increase in surface salinity (not shown).}\\
+%\textcolor{red}{Mention: cool subsurface temperature anomalies are observed in the wake of the iceberg at depth (not shown)}
 
-\subsection{Inside the ice shelf cavity }
+\subsubsection{Inside the ice shelf cavity }
 %\subsubsection{Melt rate response}
 The combination of cool sub-surface temperature anomalies and elevated ocean velocities at the ice front, results in a temperature flux across the ice front, as cool temperature anomalies to enter the ice shelf cavity (Figure \ref{fig:Temperature_section_Collapse_yz}). Once the cooler water has entered the ice shelf cavity, the anomalies spread southwards within the ice shelf cavity, eventually reaching all the way to the grounding line. As the cool water spreads into the cavity, it mixes with the water within the ice shelf cavity, causing a reduction in the strength of the anomaly towards the grounding line (Figure \ref{fig:Temperature_section_Collapse_yz}c).
 
 The cooling of the water inside the ice shelf cavity after calving leads to a reduction of the melt rates at the base of the ice shelf (Figure \ref{fig:Melt_rate_snapshots}). The reduced melt rates occur over a wide area extending from the newly calved ice front, all the way towards the grounding line. The negative melt rate anomalies increase over time, as more cold water enters the ice shelf cavity.  The strongest negative anomalies are observed near the ice front, while the strength of the negative melt rate anomalies are reduced towards the grounding. The reduction in melt rates are up to  0.5 m per year, which is small compared to the mean melt rates near the grounding line, but is a substantial fraction of the melt at intermediate depths (Figure \ref{fig:static_solo_melt}a).
 
-Near the ice front, the competing effects of warm surface water subducting beneath the ice shelf on the flanks of the domain, and the cool water entering the ice shelf in the enter of the domain, lead to a complex of pattern of positive and negative melt rate anomalies within 20 km of the ice front (Figure \ref{fig:static_solo_melt}). The strongest positive anomalies are observe on the western side of the ice shelf front, while the strongest negative melt rate anomalies are observed in the center of the domain. This is likely related to the geometry of the calving iceberg.
+Near the ice front, the competing effects of warm surface water subducting beneath the ice shelf on the flanks of the domain, and the cool water entering the ice shelf in the enter of the domain, lead to a complex of pattern of positive and negative melt rate anomalies within 20 km of the ice front (Figure \ref{fig:static_solo_melt}).
 
-The changes in ice shelf melt rates following the calving event are primarily driven by changing ocean temperatures at the base of the ice shelf. In contrast the ocean velocities, and hence the frictional velocity at the ice base, remain largely unchanged after the calving event (see Figure \ref{fig:ustar_calving} in the supplementary material), and do not play a large role in the changing melt rates. 
+%The strongest positive anomalies are observe on the western side of the ice shelf front, while the strongest negative melt rate anomalies are observed in the center of the domain. This is likely related to the geometry of the calving iceberg.
+%
+%The changes in ice shelf melt rates following the calving event are primarily driven by changing ocean temperatures at the base of the ice shelf. In contrast the ocean velocities, and hence the frictional velocity at the ice base, remain largely unchanged after the calving event (see Figure \ref{fig:ustar_calving} in the supplementary material), and do not play a large role in the changing melt rates. 
 
-The presence of a northern boundary in our simulation mean that we are unable to entirely remove the iceberg from the domain and observe the system approaching a new equilibrium state. However, a comparison between the iceberg calving simulation and the missing-iceberg simulation (where the model was spun up with the iceberg removed from the start of the simulation) shows that after 60 days the hydrography inside the ice shelf cavity in the iceberg-calving simulation appears to be qualitatively similar to missing-iceberg simulation steady state (see Figure \ref{fig:broken_melt} in the supplementary material, for example). 
-This suggests that the processes occurring at the ice front directly after calving are transient processes which allow the system to move towards a steady state that is largely controlled by the ice shelf geometry. Since the ice shelf geometry in our simulation is highly idealize, it is unclear whether the adjustment time scale seen here is relevant to real-world ice shelves.
+\subsubsection{Equilibrium hydrography}
+The presence of a northern boundary in our simulation mean that we are unable to entirely remove the iceberg from the domain and observe the system approaching a new equilibrium state. However, a comparison between the iceberg calving simulation and an `equilibrium-shelf simulation' (where the model was spun up with the iceberg removed from the start), shows that after 60 days the hydrography inside the ice shelf cavity in the iceberg-calving simulation appears to be qualitatively similar to equilibrium-shelf simulation steady state (see Figure \ref{fig:broken_melt} in the supplementary material, for example). 
+This suggests that the processes occurring at the ice front directly after calving are transient processes which allow the system to move towards a steady state that is largely controlled by the ice shelf geometry. Since the ice shelf geometry in our simulation is highly idealized and is in a closed domain, it is unclear whether the adjustment time scale seen here is relevant to real-world ice shelves.
 
-
-\subsection{Around the tabular iceberg}
-As the iceberg drifts through the water, it affects the ocean velocity and stratification in its immediate vicinity. As was seen near the ice front, the enhanced mixing around the iceberg causes warm salty anomalies around the iceberg near the surface, and cool fresh anomalies at depth (Figure \ref{fig:Taylor_column}a). 
+%\subsection{Around the tabular iceberg}
+%As the iceberg drifts through the water, it affects the ocean velocity and stratification in its immediate vicinity. As was seen near the ice front, the enhanced mixing around the iceberg causes warm salty anomalies around the iceberg near the surface, and cool fresh anomalies at depth (Figure \ref{fig:Taylor_column}a). 
 %As the iceberg drifts aways from the ice shelf, these anomalies are observed most strongly directly around the iceberg, suggesting that the enhanced mixing around this iceberg is a locally driven process, created by the presence of the iceberg in the water column.
-As the iceberg drifts away from the ice shelf, the iceberg leaves a trail of warm surface anomalies in its wake that maps out the iceberg path of the iceberg (as discussed in \citet{Stern2017}) (Figure \ref{fig:SST_snapshots}c). Similarly, cool subsurface temperature anomalies are observed in the wake of the iceberg at depth (not shown).
+%As the iceberg drifts away from the ice shelf, the iceberg leaves a trail of warm surface anomalies in its wake that maps out the iceberg path of the iceberg (as discussed in \citet{Stern2017}) (Figure \ref{fig:SST_snapshots}c). Similarly, cool subsurface temperature anomalies are observed in the wake of the iceberg at depth (not shown).
 
-Strong barotropic ocean currents are observed directly below the iceberg as it drifts through the water (Figure \ref{fig:Taylor_column}b). The column of uniform velocity below the iceberg is evidence of the Taylor column that forms below the iceberg. The sudden changing in ocean thickness when moving from below the iceberg to the open ocean causes a dynamical barrier which separates the flow beneath the iceberg from the rest of water column (as was seen across the ice front). Similar Taylor columns have been observed above sea mounts [reference]. Elevated largely barotropic flows are observed around the iceberg as it drifts. These currents are a result of complex interaction between the iceberg on the surrounding ocean. More work is needed (perhaps in a further idealized setting) to understand these ineractoins.
+%Strong barotropic ocean currents are observed directly below the iceberg as it drifts through the water (Figure \ref{fig:Taylor_column}b). The column of uniform velocity below the iceberg is evidence of the Taylor column that forms below the iceberg. The sudden changing in ocean thickness when moving from below the iceberg to the open ocean causes a dynamical barrier which separates the flow beneath the iceberg from the rest of water column (as was seen across the ice front). Similar Taylor columns have been observed above sea mounts [reference]. Elevated largely barotropic flows are observed around the iceberg as it drifts. These currents are a result of complex interaction between the iceberg on the surrounding ocean. More work is needed (perhaps in a further idealized setting) to understand these interactions.
 
-Directly below the iceberg on the ocean floor, an increased dipycnal mixing is observed in the bottom boundary layer. This elevated mixing in the bottom boundary layer is likely a result of a barotropic adjustment driven by the iceberg motion. As the iceberg drifts through the water, the region of elevated dipycnal mixing shifts so that it remains directly below the iceberg. Similarly elevated rates in dipycnal mixing are observed at the bottom of the water column near the ice front. 
+%\textcolor{red}{Idea: create a layered movie with many layers focused around the bottom edge of the ice, to give increase resolution}
 
 
 \section{Conclusion}
@@ -467,12 +520,43 @@ By breaking the bonds, we can use the Lagrangian model to simulate iceberg calvi
 %This allows us to use the Lagrangian ice-shelf model to large pieces of the ice-shelf breaking away from the ice shelf to becoming tabular icebergs that are fully embedded in the ocean (Figures  \ref{fig:SST_snapshots}). %
 %A consequence of using a Lagrangian ice-shelf model is all variables need to be interpolated from the Lagrangian grid onto the Eulerian ocean grid in order to be passed to the ocean model. This is done by exactly calculation the fraction of each ice element that lies in each ocean grid cell, and dividing the element's properties between the ocean grid cell in proportion to that fraction.
 
-We validate the Lagrangian ice shelf model by simulating the flow beneath a (static) idealized ice shelf, and comparing the results to an existing Eulerian model simulations with identical configuration.
-The results from the static ice shelf simulation using the Lagrangian ice-shelf model fit within our paradigm of understanding for circulation within ice-shelf cavities: buoyant meltwater that enters the ice-shelf cavity drives freshwater plumes at the ice-shelf base, which drives the circulation within the cavity.  The circulation, melt rates and ocean hydrography achieved using the Lagrangian ice shelf compare well with other simulations in the MISOMIP experiments. 
-Comparing the results to the results obtained using an Eularian model in an identical static configuration showed that the two models simulations are very similar. Small differences between the Lagrangian and Eulerian ice shelves models result from interpolation errors, but these errors are two orders of magnitude smaller than typical difference observe between simulations using different ocean models (for example). Demonstrating that the Lagrangian ice-shelf model is able to reproduce the results of an Eulerian ice-shelf model in the same static ice-shelf configuration is a prerequisite developing more advanced Lagrangian ice-shelf models and represents a good benchmark test for new Lagrangian ice-shelf models. 
+We validate the Lagrangian ice shelf model by simulating the flow beneath a (static) idealized ice shelf, and comparing the results to an existing Eulerian model simulation with identical configuration. This comparison show that the results from Lagrangian and Eularian models are almost indistinguishable. 
+This agreement confirms that the Lagrangian model is able to simulate sub-ice-shelf cavities as well as the Eulerian model. 
+Demonstrating that the Lagrangian ice-shelf model is able to reproduce the results of an Eulerian ice-shelf model in the same static ice-shelf configuration is a prerequisite developing more advanced Lagrangian models and represents a good benchmark test for new Lagrangian ice-shelf models. 
+%
+%
+%This is a prerequisite developing more advanced Lagrangian ice-shelf models and represents a good benchmark test for new Lagrangian ice-shelf models. 
+%
+%
+%Demonstrating that the Lagrangian ice-shelf model is able to reproduce the results of an Eulerian ice-shelf model in the same static ice-shelf configuration is a prerequisite developing more advanced Lagrangian ice-shelf models and represents a good benchmark test for new Lagrangian ice-shelf models. 
+%
+%Small differences between the Lagrangian and Eulerian ice shelves models result from interpolation errors, but these errors are two orders of magnitude smaller than typical difference observe between simulations using different ocean models (for example). 
+%
+%The results from the static ice shelf simulation using the Lagrangian ice-shelf model fit within our paradigm of understanding for circulation within ice-shelf cavities: buoyant meltwater that enters the ice-shelf cavity drives freshwater plumes at the ice-shelf base, which drives the circulation within the cavity.  The circulation, melt rates and ocean hydrography achieved using the Lagrangian ice shelf compare well with other simulations in the MISOMIP experiments. 
+%
+%Comparing the results to the results obtained using an Eularian model in an identical static configuration showed that the two models simulations are very similar.
+ 
+The Lagrangian model is then used to simulate a semi-circular iceberg detaching from the ice shelf. The results demonstrate that the calving of a large tabular iceberg can cause significant changes to the ocean stratification and circulation around the iceberg and at the ice front. 
+A number of robust features were observe in this iceberg-calving simulation, which could have real-world analogues:
 
-The Lagrangian model is then used to simulate iceberg calving. In the iceberg calving experiment, enhanced ocean mixing is observed near the ice front and around the tabular iceberg after the iceberg detaches from the ice shelf.
-The enhanced mixed brings warm water to the surface, leading to a warming of sea surface temperatures around the iceberg and ice front. The mixing allow leads to a cooling of sub-surface waters near the ice front. These cooler waters enter the ice shelf cavity and lead to reduced melt rates at the base of the ice shelf in the months following the calving event.
+\begin{itemize}
+\item As the iceberg detaches from the ice shelf, there is an immediate dynamical ocean response: a stretching of the water column directly behind the iceberg gives rise to ocean upwelling, which leads to a warm salty anomalies being created at the newly calved ice front. PV conservation implies that this ocean column stretching gives rise to the formation for pair of oppositely orientated jets which form directly behind berg. A similar (and oppositely signed) phenomenon occurs in front of the berg, where a squeezing of the water column leads to downwelling, a cooling/freshening of the water column and a pair of oppositely orientated jets being created along the front side of the iceberg.
+
+\item The iceberg topography has a controlling affect on the ocean below it. This is demonstrated by the shifting of ocean jets below the iceberg in response to the iceberg motion. It is also
+demonstrated by the Taylor forms directly below the iceberg. This Taylor column follows the iceberg as it drifts into the open ocean and leads to a separation between the ocean properties below the iceberg and the ambient ocean conditions.
+
+\item The calving and motion of the iceberg has a large and complex affect on ocean temperate and salinity around the iceberg and at the calving front. In our experiment, warmed water surrounds the iceberg as it drift away from the ice shelf and maps out a trail of warm surface anomalies in the wake of the iceberg. Similarly, cooler waters are observed below the iceberg and map out a trail of cool sub-surface anomalies in the iceberg wake.
+
+\item As the iceberg drifts away form the ice shelf, it interacts with the ocean current coming towards the ice shelf. The iceberg impedes the ocean current which is diverted around the iceberg and sets up a new circulation around the iceberg. In our simulation, the change in circulation directs a current towards the center of the ice shelf front. This water subduct causing large cool anomalies at the ice front.
+% The jets at the iceberg edge are consistent with the temperature / salinity front at the iceberg edge that form because of the Taylor column beneath the berg.
+
+\item Large changes in ocean properties which occur at the ice front following the iceberg calving can directly affect the temperature flux into the ice shelf cavity, which in turn alter the sub-ice shelf melt rates. In our experiment, the cool water subducting beneath the ice shelf lead to reduced melt rates beneath the ice shelf.  This decrease in melt rate extends far into the ice shelf cavity. 
+
+\item Once the iceberg has drifted far away from the ice shelf cavity, the conditions and melt rates within the ice-shelf cavity appear to be converge towards values similar to those in simulations run with the iceberg removed from the start. This result suggests that the melt rates inside the ice shelf cavity are largely controlled by the ice shelf geometry. The changes in ocean conditions caused by the interaction with the iceberg appear to be transient adjustment processes.
+\end{itemize}
+
+The results from this experiment demonstrate the complex interaction between a calving iceberg and the surrounding ocean, and suggests that iceberg-ocean interactions can significantly affect ocean currents and hydrography around calving sites, and can even feedback onto melt rates within the ice shelf cavity. More work is needed to  further understand these iceberg-ocean interactions, and to gauge how these dynamics might affect real-world ice shelf cavities.  
+The Lagrangian ice shelf model presented in this study could be a useful tool to study these interactions using both idealized and real-world geometries.
 
 
 %\subsection{Future developments}
@@ -492,44 +576,44 @@ The enhanced mixed brings warm water to the surface, leading to a warming of sea
 
 
 
-\section{To dos}
-\vspace{5mm}
-\subsection{Things to add:}
-\textcolor{red}{
-1) Time series showing variably quantities at points in the domain (e.g.: temperature flux, velocity, total melt...)\\
-2) Some aggregated numbers to emphasis some ideas (e.g.: Total change in melt volume and circulation....)\\
-3) Add some perspectives to the Conclusion/Discussion about whether we can trust the results shown here.\\
-}
+%\section{To dos}
+%\vspace{5mm}
+%\subsection{Things to add:}
+%\textcolor{red}{
+%1) Time series showing variably quantities at points in the domain (e.g.: temperature flux, velocity, total melt...)\\
+%2) Some aggregated numbers to emphasis some ideas (e.g.: Total change in melt volume and circulation....)\\
+%3) Add some perspectives to the Conclusion/Discussion about whether we can trust the results shown here.\\
+%}
 
-\subsection{New/Improvd figures}
-\textcolor{red}{
-1) Figure \ref{fig:Taylor_column}, domesticating below the iceberg (Temperature, velocity, kd (many v too)).
-2) Time series figure
-3) Ocean velocity snapshots xz 
-4) Ocean velocity snapshots yz (maybe)
-3) Late time figure  (maybe - see supp)
-}
-
-\subsection{Some other points to perhaps include}
-\textcolor{red}{
-1) The no-bonds simulation and the fixed velocity simulation both show the same surface warming and subsurface cooling signals, indicating that this is quite a robust feature.\\
-\\
-2) The fact that the warming/cooling is seen directly around the calving iceberg (see following video) indicates that the mechanism is a local mechanism rather than a global basin adjustment\\
-\\
-3) The changes in melt appear to tend towards the results from the Broken Shelf simulation, suggesting local processes around the iceberg causing warming/cooling, help the system to move between steady states, which are imposed by the large scale geometry and forcing.\\
-\\
-4) Looking at Kd shows largest mixing regions occur in places where there is open water. No enhanced Kd is observed below the iceberg (because it is too deep). This suggests that changes in mixing are caused by new regions being exposed to open water (i.e.: wind).\\
-\\
-5) A simulation using no sub-ice shelf friction has a very similar signal, suggesting that the signal is not caused my iceberg induced mixing.\\
-\\
-6) Is the enhanced mixing at the bottom of the water column around the iceberg related to the warming/cooling signal? Why is it there at all?\\
-\\}
-\subsection{Other questions:}
-\textcolor{red}{
-1) What is happening with the enhanced mixing exactly? It looks like it is driven by new area being exposed to open water. But does this make sense? When an iceberg moves, where does the water which takes its place come from?  \\
-2) Does the surface warming and subsurface cooling have to be a result of enhanced mixing? Is it possible that mixing is occurring even though kd is small?
-Possibilities:\\
-}
+%\subsection{New/Improvd figures}
+%\textcolor{red}{
+%1) Figure \ref{fig:Taylor_column}, domesticating below the iceberg (Temperature, velocity, kd (many v too)).
+%2) Time series figure
+%3) Ocean velocity snapshots xz 
+%4) Ocean velocity snapshots yz (maybe)
+%3) Late time figure  (maybe - see supp)
+%}
+%
+%\subsection{Some other points to perhaps include}
+%\textcolor{red}{
+%1) The no-bonds simulation and the fixed velocity simulation both show the same surface warming and subsurface cooling signals, indicating that this is quite a robust feature.\\
+%\\
+%2) The fact that the warming/cooling is seen directly around the calving iceberg (see following video) indicates that the mechanism is a local mechanism rather than a global basin adjustment\\
+%\\
+%3) The changes in melt appear to tend towards the results from the Broken Shelf simulation, suggesting local processes around the iceberg causing warming/cooling, help the system to move between steady states, which are imposed by the large scale geometry and forcing.\\
+%\\
+%4) Looking at Kd shows largest mixing regions occur in places where there is open water. No enhanced Kd is observed below the iceberg (because it is too deep). This suggests that changes in mixing are caused by new regions being exposed to open water (i.e.: wind).\\
+%\\
+%5) A simulation using no sub-ice shelf friction has a very similar signal, suggesting that the signal is not caused my iceberg induced mixing.\\
+%\\
+%6) Is the enhanced mixing at the bottom of the water column around the iceberg related to the warming/cooling signal? Why is it there at all?\\
+%\\}
+%\subsection{Other questions:}
+%\textcolor{red}{
+%1) What is happening with the enhanced mixing exactly? It looks like it is driven by new area being exposed to open water. But does this make sense? When an iceberg moves, where does the water which takes its place come from?  \\
+%2) Does the surface warming and subsurface cooling have to be a result of enhanced mixing? Is it possible that mixing is occurring even though kd is small?
+%Possibilities:\\
+%}
 
 
 
@@ -720,6 +804,18 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \end{thebibliography}
 
 
+\subsection{Supplementary matirial}
+\textcolor{red}{This must be moved to its own document.}
+\subsection{Static ice-shelf simulation}
+The results in the Lagrangian static ice-shelf simulation fit within the current understanding of ice-shelf cavity circulations based on ice-shelf observations \citep{MacAyeal1984, Lewis1986, Jacobs2011} and previous modeling efforts \citep{Determan1994, Holland2006, Losch2008}.
+The ocean temperatures inside the domain are warmer than the in-situ freezing point (Figure \ref{fig:static_solo_temp_v_v}a), and cause melting at the ice-shelf base (Figure  \ref{fig:static_solo_melt}a). The meltwater entering the domain is more buoyant than the water around it, and rises along the ice shelf as a cool fresh plume (Figure \ref{fig:static_solo_temp_v_v}b,c). 
+%As the plume rises, it entrains ambient water causing a warming of the upper ocean (Figure \ref{fig:static_solo_temp_v_v}a).
+This injection of positive buoyancy at depth drives a clockwise circulation outside of the ice-shelf cavity (Figure \ref{fig:Bt_comparison}a), providing the ice-shelf cavity with a continuous supply of warm water, which provides the thermal energy required for continuous ice-shelf melt.
+Strong meridional jets are observed at the ice front along the flanks of the domain, fluxing water into the ice shelf cavity on the eastern flank and allowing water to leave the ice shelf cavity on the western side (Figure \ref{fig:Bt_comparison}a). The meridional flow in the center of the ice front is much smaller, consistent with the dynamical barrier at the ice shelf front discussed in previous modeling and experimental studies \citep{Holland2001, Stern2014}.
+
+The highest melt rates are observed within 100km of the grounding line (Figure  \ref{fig:static_solo_melt}a). These elevated melt rates are caused by the presence of warm water (Figure  \ref{fig:static_solo_melt}b) and increased ocean velocities (Figure  \ref{fig:static_solo_melt}c) near the grounding line, as well as the fact that freezing point of ice decreases with increasing pressure. Elevated melt rates are also seen near the ice front, caused by strong currents running along the ice-shelf front (Figure  \ref{fig:static_solo_melt}c).\\
+
+
 
  \clearpage
  \end{article} 
@@ -760,47 +856,35 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
  \clearpage
 
 
+
+
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Lagrangian_shelf_domain.png}
-\caption{ {Ocean bottom topography and ice-shelf draft used in the Lagrangian and Eulerian static ice-shelf simulations}}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_D_mass_spread_mass.png}
+\caption{ {(a) Ocean bottom topography and (c) ice-shelf draft used to initialized the static ice shelf experiment simulation. The ice draft is calculated from the total mass in an ocean grid cell after the mass-spreading interpolation has been applied. Panel (b) shows the initial ice draft that would be calculated if the mass-spreading interpolation were not used (i.e. elements treated as point masses). The lower and upper black lines denote the grounding line and ice shelf front, respectively. This figure is reproduced from \citep{Stern2017}. } \label{fig:ISOMIP_mass_and_topog}}
 \end{center}
-\label{fig:ISOMIP_mass_and_topog}
 \end{figure}
  \clearpage
  
  
 
-
-  
- \begin{figure}
-\begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_temp_v_v.png}
-%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_temp_v_v.png}
-\caption{ {Snapshots of the static ice-shelf experiment taken after 5 years of model simulation, using the Lagrangian ice-shelf model coupled to the MOM6 ocean model. Panels show cross sections of the (a) ocean temperature anomaly relative the the initial temperature, and (b) the meridional ocean velocity. Panel (c) again shows the meridional ocean velocity, and is zoomed into the region near the ice-shelf base (the zoomed-in region is indicated with a black box (b)).}}
-\end{center}
-\label{fig:static_solo_temp_v_v}
-\end{figure} 
- \clearpage
-
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Lagrangian_shelf_domain.png}
+%\caption{ {Ocean bottom topography and ice-shelf draft used in the Lagrangian and Eulerian static ice-shelf simulations}}
+%\end{center}
+%\label{fig:ISOMIP_mass_and_topog}
+%\end{figure}
+% \clearpage
  
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_melt_m_per_year_sst_ustar_iceberg.png}
-%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_melt_m_per_year_sst_ustar_iceberg.png}
-\caption{ {Results of the static ice-shelf experiment using the Lagrangian ice-shelf model coupled to MOM6. The three panels show 5 year time average of the (a) melt rate, (b) top-of-ocean temperature and (c) frictional velocity, $u^{*}$, at the base of the ice shelf. Fields are only shown in regions where the ice area fraction is $\geq 0.8$.}}
-\end{center}
-\label{fig:static_solo_melt}
-\end{figure} 
- \clearpage
-
+ 
 
 
 \begin{figure}
 \begin{center}
 %\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_comparison_barotropic_sf.png}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_barotropic_sf.png}
-\caption{ {Time-averaged barotropic stream function in the (a) Lagrangian and (b) Eulerian simulations in the static ice-shelf configuration. Panel (c) shows the difference between panels (a) and (b). The time averages are taken over 5 years of model time, beginning at the end of the 5 year spin up period.}}
+\caption{ {Time-averaged barotropic stream function in the (a) Lagrangian and (b) Eulerian simulations in the static ice-shelf configuration. Panel (c) shows the difference between panels (a) and (b). The time averages are taken over 5 years of model time, beginning at the end of the 5 year spin up period. \textcolor{red}{Something is wrong with the units in this figure}}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:Bt_comparison}
@@ -813,7 +897,7 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_temp_zold_x20_anomaly.png}
-\caption{ {Snapshots of vertical sections of ocean temperature anomaly at $x$=40~km in the iceberg-calving experiment. The anomalies are relative to pre-calving temperatures. Snapshots are taken (a) 7, (b) 15, and (c) 50 days after calving. In each panel, the base of the ice before calving and at the time of the snapshot are shown by the solid and dashed black lines, respectively. Positions that were not the ocean interior at in both snapshots are masked in grey. The position of the vertical transects is shown by the black dashed lines in Figure \ref{fig:SST_snapshots}a.}}
+\caption{ {Snapshots of vertical sections of ocean temperature anomaly at $x$=40~km in the iceberg-calving experiment. The anomalies are relative to pre-calving temperatures. Snapshots are taken (a) 1, (b) 15, and (c) 50 days after calving. In each panel, the base of the ice before calving and at the time of the snapshot are shown by the solid and dashed black lines, respectively. Positions that were not the ocean interior at in both snapshots are masked in grey. The position of the vertical transects is shown by the black dashed lines in Figure \ref{fig:SST_snapshots}a.}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:Temperature_section_Collapse_yz}
@@ -821,10 +905,12 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
  \clearpage
 
 
+
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_temp_zold_x149_anomaly.png}
-\caption{ {Snapshots of vertical sections of ocean temperature anomaly at $y$=300~km in the tabular-iceberg-calving experiment. The anomalies are relative to pre-calving temperatures. Snapshots are taken (a) 7, (b) 15, and (c) 50 days after calving. The position of the vertical transects is shown by the blue dashed lines in Figure \ref{fig:SST_snapshots}a.}}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_temp_zold_x149_anomaly_mask.png}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_temp_zold_x149_anomaly.png}
+\caption{ {Snapshots of vertical sections of ocean temperature anomaly at $y$=300~km in the tabular-iceberg-calving experiment. The anomalies are relative to pre-calving temperatures. Snapshots are taken (a) 1, (b) 15, and (c) 50 days after calving. The position of the vertical transects is shown by the blue dashed lines in Figure \ref{fig:SST_snapshots}a. \textcolor{red}{Should include the warming just after calving perhaps}}}
 \end{center}
 %FIgure created by \end{center}
 \label{fig:Temperature_section_Collapse_xz}
@@ -832,6 +918,56 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
  \clearpage
  
  
+
+ 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_u.png}
+\caption{ {Snapshots of ocean zonal velocity at $z$=197.5~m(?) in the iceberg-calving experiment. Snapshots are taken (a) 1, (b) 15, and (c) 50 days after calving. \textcolor{red}{I should include an outline of the iceberg shape in this figure}}}
+\end{center}
+%FIgure created by \end{center}
+\label{fig:u_velocity_horizontal}
+\end{figure}
+ \clearpage
+
+ 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_temp_u_v_calved.png}
+\caption{ {Panel b: Zonal velocity at ice front, 1 day after calving. \textcolor{red}{This figure still needs to be fixed}}}
+\end{center}
+%FIgure created by \end{center}
+\label{fig:v_velocity_vertical}
+\end{figure}
+ \clearpage
+
+
+  
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_temp_zold_x10_anomaly_mask.png}
+\caption{ {Snapshots of vertical sections of ocean (i) zonal velocity, (ii) meridional velocity,  and (iii) temperature anomaly at $y$=60~km in the tabular-iceberg-calving experiment. The anomalies are relative to pre-calving temperatures. Snapshots are taken 50 days after calving. The position of the vertical transects is shown by the dashed lines in Figure \ref{fig:SST_snapshots}c.}}
+\end{center}
+\label{fig:Taylor_column}
+\end{figure}
+ \clearpage
+ 
+ 
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_z40_.png}
+\caption{ {Snapshots of ocean meridional velocity at $z$=197.5~m in the iceberg-calving experiment. Snapshots are taken (a) 1, (b) 15, and (c) 50 days after calving. \textcolor{red}{I should include an outline of the iceberg shape in this figure}}}
+\end{center}
+%FIgure created by \end{center}
+\label{fig:v_velocity_horizontal}
+\end{figure}
+ \clearpage
+
+
+
+
 
 \begin{figure}
 \begin{center}
@@ -847,37 +983,18 @@ White, L., A. Adcroft, and R. Hallberg (2009), High-order regridding–remapping s
   
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_layers_x153.png}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_layers_x149_mask_t1_t15_t50.png}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_layers_x149_mask_t0_t1_t50.png}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_layers_x149_mask.png}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_layers_x153.png}
 %\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_comparison_salt_layers.png}
-\caption{ {Snapshots of vertical sections of meridional velocity anomaly at $y$=300~km in the tabular-iceberg-calving experiment. The anomalies are relative to pre-calving temperatures. Snapshots are taken (a) 7, (b) 15, and (c) 50 days after calving. The position of the vertical transects is shown by the blue dashed lines in Figure \ref{fig:SST_snapshots}a.}}
+\caption{ {Snapshots of vertical sections of meridional velocity at $y$=300~km in the tabular-iceberg-calving experiment. Snapshots are taken (a) 0, (b) 1, and (c) 50 days after calving. The position of the vertical transects is shown by the blue dashed lines in Figure \ref{fig:SST_snapshots}a. \textcolor{red}{Could show 1,14 and 50 days after calving to be consistent with the other Figures. But this figure is more interesting}}}
 \end{center}
 \label{fig:meridional_velocity_snapshots}
 \end{figure}
  \clearpage
 
 
-
-
-  
-\begin{figure}
-\begin{center}
-%\includegraphics[width=0.99\textwidth]{}
-\caption{ {Snapshots of vertical sections of ocean (i) temperature anomaly, (ii) meridional velocity,  and (iii) dipyncnal diffusivity at $y$=???~km in the tabular-iceberg-calving experiment. The anomalies are relative to pre-calving temperatures. Snapshots are taken (a) 7, (b) 15, and (c) 50 days after calving. The position of the vertical transects is shown by the ??? dashed lines in Figure \ref{fig:SST_snapshots}a.}}
-\end{center}
-\label{fig:Taylor_column}
-\end{figure}
- \clearpage
- 
- 
- 
-\begin{figure}
-\begin{center}
-%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/.png}
-\caption{ {Time series of temperature fluxes, velocities, melt rates....}}
-\end{center}
-\label{fig:Time_Series}
-\end{figure}
- \clearpage
 
 
  
@@ -1028,7 +1145,33 @@ Time Step for Iceberg Calving Experiment & $dt_{Calving}$ &  10  & s\\
 \end{figure}
  \clearpage
 
+
+
+  
+ \begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_temp_v_v.png}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_temp_v_v.png}
+\caption{ {Snapshots of the static ice-shelf experiment taken after 5 years of model simulation, using the Lagrangian ice-shelf model coupled to the MOM6 ocean model. Panels show cross sections of the (a) the steady-state ocean temperature, and (b) the meridional ocean velocity. Panel (c) again shows the meridional ocean velocity, and is zoomed into the region near the ice-shelf base (the zoomed-in region is indicated with a black box (b)).}}
+\end{center}
+\label{fig:static_solo_temp_v_v}
+\end{figure} 
+ \clearpage
+
  
+
+
+ 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_melt_m_per_year_sst_ustar_iceberg.png}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_solo_melt_m_per_year_sst_ustar_iceberg.png}
+\caption{ {Results of the static ice-shelf experiment using the Lagrangian ice-shelf model coupled to MOM6. The three panels show 5 year time average of the (a) melt rate, (b) top-of-ocean temperature and (c) frictional velocity, $u^{*}$, at the base of the ice shelf. Fields are only shown in regions where the ice area fraction is $\geq 0.8$.}}
+\end{center}
+\label{fig:static_solo_melt}
+\end{figure} 
+ \clearpage
+
 
   
   \begin{figure}
@@ -1056,6 +1199,18 @@ Time Step for Iceberg Calving Experiment & $dt_{Calving}$ &  10  & s\\
   
   
   
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_salt_zold_x20_anomaly_mask.png}
+%\includegraphics[width=0.99\textwidth]{/Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Github_stuff/Tech-paper/Figures/ALE_z_static_shelf_comparison_salt_layers.png}
+\caption{ {Snapshots of vertical sections of ocean salinity anomaly at $x$=40~km in the iceberg-calving experiment. The anomalies are relative to pre-calving temperatures. Snapshots are taken (a) 1, (b) 15, and (c) 50 days after calving. In each panel, the base of the ice before calving and at the time of the snapshot are shown by the solid and dashed black lines, respectively. Positions that were not the ocean interior at in both snapshots are masked in grey. The position of the vertical transects is shown by the black dashed lines in Figure \ref{fig:SST_snapshots}a.}}
+\end{center}
+\label{fig:Salinity_section_Collapse_yz}
+\end{figure}
+ \clearpage
+
+
 
 
   
