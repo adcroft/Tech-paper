@@ -6,7 +6,7 @@ import numpy as np  # http://code.google.com/p/netcdf4-python/
 import matplotlib
 import math
 import os
-matplotlib.use("GTKAgg")
+#matplotlib.use("GTKAgg")
 from pylab import *
 #import matplotlib.pyplot as plt
 import pdb
@@ -45,6 +45,10 @@ def parseCommandLine():
 	parser.add_argument('-save_figure', type='bool', default=False,
 		                        help=''' When true, the figure produced by the script is saved''')
 
+	#Using Multiple fields
+	parser.add_argument('-use_multiple_fields', type='bool', default=False,
+		                        help=''' When true, the script uses multiple fields, seperated by _ for fieldname, units, scale....''')
+	
 	#parser.add_argument('', type='bool', default=,
 	#	                        help='''    ''')
 
@@ -72,6 +76,28 @@ def parseCommandLine():
 	#Which simulation to use
 	parser.add_argument('-simulation', type=str, default='Collapse',
 		                        help='''String determines which simulation to run. Options are Collapse, fixed_01, after_melt_fixed_01, high_melt. ''')
+
+	#Using Multiple Anomaly
+	parser.add_argument('-multiple_plot_anomaly', type=str, default="None",
+		                        help=''' When true, the script uses multiple values of plot_anomaly...''')
+	
+	#Using Multiple Dir_slice_num
+	parser.add_argument('-multiple_dir_slice_num', type=str, default="None",
+		                        help=''' When true, the script uses multiple values of dir_slice_num...''')
+
+	#Multiple vmax
+	parser.add_argument('-multiple_vmax', type=str, default="None",
+		                        help=''' If present, it provides values for vmax when script uses multiple fields.''')
+
+
+	#Multiple vmin
+	parser.add_argument('-multiple_vmin', type=str, default="None",
+		                        help=''' If present, it provides values for vmin when script uses multiple fields.''')
+
+
+	#Multiple vanom
+	parser.add_argument('-multiple_vanom', type=str, default="None",
+		                        help=''' If present, it provides values for vanom when script uses multiple fields.''')
 
 	#Which file type to use
 	parser.add_argument('-extension', type=str, default='icebergs_month.nc',
@@ -229,6 +255,9 @@ def main(args):
 		#Berg_path=berg_path+'Exp1/'
 		#Berg_path_init=berg_path+'After_Collapse/'
 		Berg_path_init=berg_path+'After_Static/'
+	elif simulation=='Wind_Collapse5':
+		Berg_path=berg_path+'After_Collapse5/'
+		Berg_path_init=berg_path+'After_Static/'
 	elif simulation=='Wind_Static':
 		Berg_path=berg_path+'After_Static/'
 		#Berg_path=berg_path+'Exp1/'
@@ -285,7 +314,7 @@ def main(args):
 		Berg_ocean_file1=Berg_path+'00060101.'
 		Berg_ocean_file2=Berg_path+'00060101.'
 		Berg_ocean_file3=Berg_path+'00060101.'
-	if simulation=='Wind_Collapse' or simulation=='Wind_Static':
+	if (simulation=='Wind_Collapse' or simulation=='Wind_Static') or (simulation=='Wind_Collapse5'):
 		Berg_ocean_file1=Berg_path+'00110101.'
 		Berg_ocean_file2=Berg_path+'00110101.'
 		Berg_ocean_file3=Berg_path+'00110101.'
@@ -334,6 +363,15 @@ def main(args):
 	dir_slice_num=args.dir_slice_num
 	dashed_num=args.dashed_num
 	dashed_num_hor=args.dashed_num_hor
+	colorbar_units = args.colorbar_units
+	if args.use_multiple_fields is True:
+		multiple_colorbar_units = colorbar_units
+		multiple_fields = field
+		multiple_vmax = args.multiple_vmax
+		multiple_vmin = args.multiple_vmin
+		multiple_vanom = args.multiple_vanom
+		multiple_plot_anomaly = args.multiple_plot_anomaly
+		multiple_dir_slice_num = args.multiple_dir_slice_num
 
 	######################################################################################################################
 	################################  Plotting melt comparison  ##########################################################
@@ -361,7 +399,7 @@ def main(args):
 
 			print filename
 			(data1,time)=load_and_compress_data(filename,field=field,time_slice='',time_slice_num=time_slice_num[n]\
-					,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=True)
+					,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=True,depth=depth, ice_base=ice_base)
 			if simulation=='after_melt_fixed_01' or simulation=='Collapse' :
 				time=time-1825
 				print 'Subtracting t0', time
@@ -370,7 +408,7 @@ def main(args):
 				#(data0,time)=load_and_compress_data(filename,field=field,time_slice='',time_slice_num=0\
 				#	,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=True)
 				(data0,time)=load_and_compress_data(filename_init,field=field,time_slice='',time_slice_num=-1\
-					,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=True)
+					,rotated=rotated,direction='xy',dir_slice=None, dir_slice_num=dir_slice_num, return_time=True,depth=depth, ice_base=ice_base)
 				data1= data1-data0
 				vmin=-vanom  ; vmax=vanom
 				cmap='bwr'
@@ -395,7 +433,7 @@ def main(args):
 				#greydata=plot_data_field(e,x,y,-150.0, 50.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
 				#	ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
 				greydata=plot_data_field(e,x,y,-220.0, 0.0,flipped,colorbar=False,cmap='Greys',title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
-					ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
+					ylim_max=ylim_max,colorbar_units=colorbar_units,return_handle=True)  
 			if args.mask_out_ocean is True:
 				data1=mask_ocean(data1,shelf_area)
 				iceberg_filename=Iceberg_file_list[2]
@@ -408,7 +446,7 @@ def main(args):
 			if use_days_title is True:
 				title='Time = '+ time_str + ' days'
 			datamap=plot_data_field(data1,x,y,vmin,vmax,flipped,colorbar=False,cmap=cmap,title=title,xlabel='x (km)',ylabel='',ylim_min=ylim_min,\
-					ylim_max=ylim_max,colorbar_units=args.colorbar_units,return_handle=True)  
+					ylim_max=ylim_max,colorbar_units=colorbar_units,return_handle=True)  
 
 			text(0.1,1,letter_labels[n], ha='right', va='bottom',transform=ax.transAxes,fontsize=20)
 			if n==0:
@@ -428,7 +466,7 @@ def main(args):
 		else:
 			cbar_ax = fig.add_axes([0.88,0.12 , 0.025, 0.75])
 		cbar=fig.colorbar(datamap, cax=cbar_ax)
-		cbar.set_label(args.colorbar_units, rotation=90,fontsize=20)
+		cbar.set_label(colorbar_units, rotation=90,fontsize=20)
 		cbar.ax.tick_params(labelsize=20)
 
 		if args.plot_second_colorbar is True:	
@@ -439,6 +477,8 @@ def main(args):
 				cbar.set_label(args.second_colorbar_units, rotation=90,fontsize=20)
 				cbar.ax.tick_params(labelsize=20)
 
+		#For plotting purposes
+		field=field + '_z' +str(dir_slice_num)
 
 		####################################################################################################################################################
 		####################################################  Cross Section     ############################################################################
@@ -467,6 +507,31 @@ def main(args):
 			#field='v'  ; vmin=-0.1  ; vmax=0.1    ; vanom=0.3 ; cmap='seismic'
 			#field='temp'  ; vmin=-2.0  ; vmax=1.0 ; vanom=0.3 ; cmap='jet'
 			#field='salt'  ; vmin=34  ; vmax=34.7  ;vdiff=0.05  ; vanom=0.05 ; cmap='jet'
+
+			#If you are using multiple fields this code gets run.
+			if args.use_multiple_fields  is True:
+				if '_' in multiple_fields:
+					field = multiple_fields.split('_')[n]
+					if field =="Kd":
+						field =  field + "_" + multiple_fields.split('_')[n+1]
+						print "Field", field
+				if '_' in multiple_colorbar_units:
+					colorbar_units = multiple_colorbar_units.split('_')[n]
+				if '_' in multiple_plot_anomaly:
+					plot_anomaly = (multiple_plot_anomaly.split('_')[n] =="True")
+				if '_' in multiple_vmax:
+					multiple_vmax = float(multiple_vmax.split('_')[n])
+				if '_' in multiple_vmin:
+					multiple_vmin = float(multiple_vmin.split('_')[n])
+				if '_' in multiple_vanom:
+					multiple_vanom = float(multiple_vanom.split('_')[n])
+				if '_' in multiple_dir_slice_num:
+					dir_slice_num = int(multiple_dir_slice_num.split('_')[n])
+				
+
+
+
+				
 			
 			filename=Berg_ocean_file_list[n]
 			filename_layers = filename
@@ -495,7 +560,11 @@ def main(args):
 			elevation1 = get_vertical_dimentions(filename,vertical_coordinate, time_slice, time_slice_num=time_slice_num[n],\
 					direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
 			(y1 ,z1 ,data1) =interpolated_onto_vertical_grid(data1, elevation1, dist, vertical_coordinate)
+			
 
+			data1[np.where(data1>100)]=np.NaN
+			data1[np.where(data1<-100)]=np.NaN
+			data1=np.ma.array(data1, mask=np.isnan(data1))
 
 			if plot_anomaly is True:
 				time_init_num=0
@@ -505,10 +574,11 @@ def main(args):
 						direction=direction ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
 
 				(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, dist, vertical_coordinate)
-				data1[np.where(data1<-10000.)]=np.NaN
-				data0[np.where(data1<-10000.)]=np.NaN
-				data1[np.where(data0<-10000.)]=np.NaN
-				data0[np.where(data0<-10000.)]=np.NaN
+				cutoff=-10000
+				data1[np.where(data1<cutoff)]=np.NaN
+				data0[np.where(data1<cutoff)]=np.NaN
+				data1[np.where(data0<cutoff)]=np.NaN
+				data0[np.where(data0<cutoff)]=np.NaN
 
 				data1=data1-data0
 				vmin=-vanom  ; vmax=vanom
@@ -516,12 +586,15 @@ def main(args):
 				data1=np.ma.array(data1, mask=np.isnan(data1))
 				cmap = matplotlib.cm.bwr
 				cmap.set_bad('lightgrey',1)
+			else:
+				vmax=args.vmax
+				vmin=args.vmin
 					
 
 			ax=plt.subplot(3,1,n+1)
 			if use_days_title is True:
 				title='Time = '+ time_str + ' days'
-			plot_data_field(data1, y1, z1, vmin, vmax, flipped=False, colorbar=True, cmap=cmap,title=title,ylabel='Depth (m)', colorbar_units=args.colorbar_units)
+			plot_data_field(data1, y1, z1, vmin, vmax, flipped=False, colorbar=True, cmap=cmap,title=title,ylabel='Depth (m)', colorbar_units=colorbar_units)
 			#xmin=450.  ;xmax=750.
 			plt.xlim([args.xmin,args.xmax])
 			
@@ -574,14 +647,16 @@ def main(args):
 		field=field+'_anomaly'
 
 
-
+	mask_flag = ''
+	if args.mask_using_bergs is True:
+		mask_flag = 'mask'
 
 
 	#plt.tight_layout()
 
 
 	if save_figure==True:
-		output_file='Figures/snapshots_'+ use_Wind_flag + xz_flag + Revision_flag +ALE_flag+Mixed_Melt_flag +simulation +'_'+ field + '.png'
+		output_file='Figures/snapshots_'+ use_Wind_flag + xz_flag + Revision_flag +ALE_flag+Mixed_Melt_flag +simulation +'_'+ field +'_'+ mask_flag+ '.png'
 		plt.savefig(output_file,dpi=300,bbox_inches='tight')
 		print 'Saving ' ,output_file
 		#print 'Saving file not working yet'

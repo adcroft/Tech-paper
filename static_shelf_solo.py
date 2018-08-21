@@ -6,7 +6,7 @@ import numpy as np  # http://code.google.com/p/netcdf4-python/
 import matplotlib
 import math
 import os
-matplotlib.use("GTKAgg")
+#matplotlib.use("GTKAgg")
 from pylab import *
 #import matplotlib.pyplot as plt
 import pdb
@@ -63,6 +63,9 @@ def parseCommandLine():
 	parser.add_argument('-broken_shelf', type='bool', default=False,
 		                        help=''' When true, figure plots data after ice shelf breakoff ''')
 	
+	parser.add_argument('-After_calving', type='bool', default=False,
+		                        help=''' When true, figure plots data for given experiment ''')
+
 	parser.add_argument('-use_Mixed_Melt', type='bool', default=False,
 		                        help=''' When true, figure plots using Mixed_melt_data ''')
 	
@@ -104,6 +107,9 @@ def parseCommandLine():
 	parser.add_argument('-time_slice', type=str, default='',
 			help='''Time slice tells the code whether to do a time mean or a snapshot. Options: mean, None (default is snapshot)''')
 	
+	parser.add_argument('-exp_name', type=str, default=None,
+			help='''Chooses experiment name for Figure''')
+	
 	parser.add_argument('-time_slice_num', type=int, default=59,
 		                        help='''The index of the transect used (in the direction not plotted''')
 
@@ -113,8 +119,8 @@ def parseCommandLine():
 	#parser.add_argument('-xmax', type=float, default=960.0,
 	#	                        help='''Minimum x used for plotting (only applies to vertical sectins for now)''')
 
-	#parser.add_argument('-dir_slice_num', type=int, default=1,
-	#	                        help='''The index of the transect used (in the direction not plotted''')
+	parser.add_argument('-dir_slice_num', type=int, default=20,
+		                        help='''The index of the transect used (in the direction not plotted''')
 
 	parser.add_argument('-ylim_min', type=float, default=0.0,
 		                        help='''Minimum y used for plotting (only applies to horizontal sections)''')
@@ -161,9 +167,11 @@ def main(args):
 	Shelf_path=Path+'Shelf/' + Folder_name
 	broken_path=''
 	if broken_shelf is True:
-		Folder_name= 'After_melt_Collapse_diag_Strong_Wind/' 
-		Folder_name= 'After_melt_Collapse_diag_Strong_Wind/' 
+		#Folder_name= 'After_melt_Collapse_diag_Strong_Wind/' 
+		Folder_name= 'After_Collapse5/'
 		broken_path='_calved'
+	#if args.exp_name is not None:
+	#	Folder_name =args.experiment_name
 	Berg_path=Path+'Bergs/' + Folder_name
 
 	#Geometry files
@@ -197,6 +205,13 @@ def main(args):
 	Berg_iceberg_file=Berg_path+'00060101.icebergs_month.nc'
 
 
+	if args.After_calving is True:
+		Berg_ocean_file_init=Berg_path+'00110101.ocean_month.nc'
+		Berg_ocean_file=Berg_path+'00110101.ocean_month.nc'
+		Berg_iceberg_file=Berg_path+'00110101.icebergs_month.nc'
+
+
+
 	#Load static fields
 	(depth, shelf_area, ice_base, x,y, xvec, yvec)=load_static_variables(ocean_geometry_filename,ice_geometry_filename,ISOMIP_IC_filename,rotated)	
 	grounding_line=find_grounding_line(depth, shelf_area, ice_base, x,y, xvec, yvec)
@@ -216,6 +231,7 @@ def main(args):
 	ylim_max=args.ylim_max
 		
 	cmap=args.cmap
+	dir_slice_num=args.dir_slice_num
 
 	######################################################################################################################
 	################################  Plotting melt comparison  ##########################################################
@@ -406,9 +422,20 @@ def main(args):
 			cmap_list=np.array(['jet', 'jet', 'jet'])
 			colorbar_unit_list=np.array(['(deg C)','(m/s)','(m/s)'])
 			time_slice_num_list=np.array([-1,-1,-1])
-			plot_anomaly_list=np.array([True, False, False])
+			plot_anomaly_list=np.array([False, False, False])
 			filename_list=np.array([Berg_ocean_file_init, Berg_ocean_file,Berg_ocean_file])
 			time_slice_list=np.array(['mean','mean','mean'])
+		if args.three_fields_flag=='plot_temp_u_v':
+			field_list=np.array(['temp','u','v'])
+			vmin_list=np.array([-2.0, -0.02 , -0.02])
+			vmax_list=np.array([1.0, 0.02, 0.02])
+			vanom_list=np.array([0.1, 0.01, 0.01])
+			cmap_list=np.array(['bwr', 'bwr', 'bwr'])
+			colorbar_unit_list=np.array(['(deg C)','(m/s)','(m/s)'])
+			time_slice_num_list=np.array([time_slice_num,time_slice_num,time_slice_num])
+			plot_anomaly_list=np.array([True, False, False])
+			filename_list=np.array([Berg_ocean_file, Berg_ocean_file,Berg_ocean_file])
+			time_slice_list=np.array(['','',''])
 
 		
 		if vertical_coordinate=='z':
@@ -437,24 +464,24 @@ def main(args):
 			ax=plt.subplot(N,1,k+1)
 
 			data=load_and_compress_data(filename,field , time_slice, time_slice_num=time_slice_num, direction='yz',\
-					dir_slice=None, dir_slice_num=20,rotated=rotated)
+					dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
 			data[np.where(data==0.)]=np.nan
 			elevation = get_vertical_dimentions(filename,vertical_coordinate, time_slice,\
-					time_slice_num=-1, direction='yz' ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+					time_slice_num=time_slice_num, direction='yz' ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
 			(y ,z ,data) =interpolated_onto_vertical_grid(data, elevation, yvec, vertical_coordinate)
 	
 			if plot_anomaly is True:
 				data0=load_and_compress_data(filename_init,field , time_slice=None, time_slice_num=0,\
-						direction='yz' ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+						direction='yz' ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
 				elevation0 = get_vertical_dimentions(filename_init,vertical_coordinate, time_slice=None,\
-						time_slice_num=-1, direction='yz' ,dir_slice=None, dir_slice_num=20,rotated=rotated)
+						time_slice_num=time_slice_num, direction='yz' ,dir_slice=None, dir_slice_num=dir_slice_num,rotated=rotated)
 				(y0 ,z0 ,data0) =interpolated_onto_vertical_grid(data0, elevation0, yvec, vertical_coordinate)
 				data=data-data0
 				vmin=-vanom  ; vmax=vanom
 
 			plot_data_field(data, y, z,  vmin, vmax, flipped=False, colorbar=True, cmap=cmap,colorbar_units=colorbar_unit_list[k])
 
-			zoom_in_on_second_plot=True
+			zoom_in_on_second_plot=False
 			if zoom_in_on_second_plot is True:
 				xlo=475.-320.0 ; xhi=500.-320.0
 				ylo=-520.; yhi=-420.
