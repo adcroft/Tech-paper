@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.6.7)  9 SEP 2018 11:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.6.7)  9 SEP 2018 12:14
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -718,34 +718,16 @@ se_melt_m_per_year_anomaly.png used on input line 1027.
 (pdftex.def)             Requested size: 487.0827pt x 322.85329pt.
  [47 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_melt_m_per_year_
-anomaly.png>]
-</Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Git
-hub_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_layers_x149_mask_t0
-_t1_t50.png, id=235, 618.1494pt x 630.9171pt>
-File: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
-r/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_layers_x149_ma
-sk_t0_t1_t50.png Graphic file (type png)
-
-<use /Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper
-/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_layers_x149_mas
-k_t0_t1_t50.png>
-Package pdftex.def Info: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Pu
-blication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collap
-se_v_layers_x149_mask_t0_t1_t50.png used on input line 1040.
-(pdftex.def)             Requested size: 487.0827pt x 497.15791pt.
- [48 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
-r/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_v_layers_x149_ma
-sk_t0_t1_t50.png>] [49
+anomaly.png>] [48
 
 
 
-
-] [50
+] [49
 
 
 ]
 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Git
-hub_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_melt.png, id=247, 106
+hub_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_melt.png, id=242, 106
 5.2598pt x 707.7642pt>
 File: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_melt.png Graphic
@@ -755,14 +737,14 @@ r/Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_melt.png Graphic
 /Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_melt.png>
 Package pdftex.def Info: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Pu
 blication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparis
-on_melt.png used on input line 1180.
+on_melt.png used on input line 1176.
 (pdftex.def)             Requested size: 487.0827pt x 323.62076pt.
 
-[51 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper
+[50 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper
 /Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_melt.png>]
 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Git
 hub_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_salt_layers.png, id=2
-52, 975.645pt x 723.1818pt>
+47, 975.645pt x 723.1818pt>
 File: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_salt_layers.png 
 Graphic file (type png)
@@ -771,14 +753,14 @@ Graphic file (type png)
 /Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_salt_layers.png>
 Package pdftex.def Info: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Pu
 blication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparis
-on_salt_layers.png used on input line 1193.
+on_salt_layers.png used on input line 1189.
 (pdftex.def)             Requested size: 487.0827pt x 361.03825pt.
 
-[52 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper
+[51 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper
 /Github_stuff/Tech-paper/Figures/Wind_static_shelf_comparison_salt_layers.png>]
 
 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Git
-hub_stuff/Tech-paper/Figures/Wind_static_shelf_solo_temp_v_v.png, id=257, 630.9
+hub_stuff/Tech-paper/Figures/Wind_static_shelf_solo_temp_v_v.png, id=252, 630.9
 171pt x 630.9171pt>
 File: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_temp_v_v.png Graphic f
@@ -788,13 +770,13 @@ ile (type png)
 /Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_temp_v_v.png>
 Package pdftex.def Info: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Pu
 blication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_tem
-p_v_v.png used on input line 1205.
+p_v_v.png used on input line 1201.
 (pdftex.def)             Requested size: 487.0827pt x 487.08806pt.
- [53 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
+ [52 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_temp_v_v.png>]
 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Git
 hub_stuff/Tech-paper/Figures/Wind_static_shelf_solo_melt_m_per_year_sst_ustar_i
-ceberg.png, id=262, 950.5914pt x 652.1163pt>
+ceberg.png, id=257, 950.5914pt x 652.1163pt>
 File: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_melt_m_per_year_sst_us
 tar_iceberg.png Graphic file (type png)
@@ -804,14 +786,14 @@ tar_iceberg.png Graphic file (type png)
 ar_iceberg.png>
 Package pdftex.def Info: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Pu
 blication/Tech_paper/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_mel
-t_m_per_year_sst_ustar_iceberg.png used on input line 1219.
+t_m_per_year_sst_ustar_iceberg.png used on input line 1215.
 (pdftex.def)             Requested size: 487.0827pt x 334.14708pt.
- [54 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
+ [53 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/Wind_static_shelf_solo_melt_m_per_year_sst_us
 tar_iceberg.png>]
 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Git
 hub_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Broken_Compare_melt_m_per_year
-_anomaly.png, id=267, 983.8356pt x 652.1163pt>
+_anomaly.png, id=262, 983.8356pt x 652.1163pt>
 File: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Broken_Compare_melt_m_per
 _year_anomaly.png Graphic file (type png)
@@ -821,14 +803,14 @@ _year_anomaly.png Graphic file (type png)
 year_anomaly.png>
 Package pdftex.def Info: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Pu
 blication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Broken
-_Compare_melt_m_per_year_anomaly.png used on input line 1231.
+_Compare_melt_m_per_year_anomaly.png used on input line 1227.
 (pdftex.def)             Requested size: 487.0827pt x 322.85329pt.
- [55 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
+ [54 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Broken_Compare_melt_m_per
 _year_anomaly.png>]
 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Git
 hub_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_ustar_iceberg.png, id
-=273, 1009.371pt x 652.1163pt>
+=267, 1009.371pt x 652.1163pt>
 File: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_ustar_iceberg.pn
 g Graphic file (type png)
@@ -838,14 +820,14 @@ g Graphic file (type png)
 >
 Package pdftex.def Info: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Pu
 blication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collap
-se_ustar_iceberg.png used on input line 1243.
+se_ustar_iceberg.png used on input line 1239.
 (pdftex.def)             Requested size: 487.0827pt x 314.68394pt.
- [56 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
+ [55 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_ustar_iceberg.pn
 g>]
 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper/Git
 hub_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_salt_zold_x20_anomaly
-_mask.png, id=278, 624.4128pt x 630.9171pt>
+_mask.png, id=273, 624.4128pt x 630.9171pt>
 File: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_pape
 r/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_salt_zold_x20_an
 omaly_mask.png Graphic file (type png)
@@ -855,20 +837,20 @@ omaly_mask.png Graphic file (type png)
 maly_mask.png>
 Package pdftex.def Info: /Users/alon/Desktop/files/Icebergs_clusters/Towards_Pu
 blication/Tech_paper/Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collap
-se_salt_zold_x20_anomaly_mask.png used on input line 1257.
+se_salt_zold_x20_anomaly_mask.png used on input line 1253.
 (pdftex.def)             Requested size: 487.0827pt x 492.15187pt.
 
 
-LaTeX Warning: Float too large for page by 6.02101pt on input line 1262.
+LaTeX Warning: Float too large for page by 6.02101pt on input line 1258.
 
-[57 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper
+[56 </Users/alon/Desktop/files/Icebergs_clusters/Towards_Publication/Tech_paper
 /Github_stuff/Tech-paper/Figures/snapshots_Wind_Wind_Collapse_salt_zold_x20_ano
 maly_mask.png>] (./Lagrangian_MISOMIP.aux) ) 
 Here is how much of TeX's memory you used:
- 3826 strings out of 494437
- 62808 string characters out of 6166646
- 125228 words of memory out of 5000000
- 7101 multiletter control sequences out of 15000+600000
+ 3820 strings out of 494437
+ 62021 string characters out of 6166646
+ 125217 words of memory out of 5000000
+ 7096 multiletter control sequences out of 15000+600000
  15991 words of font info for 58 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  39i,11n,26p,1252b,499s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -891,10 +873,10 @@ y10.pfb></usr/local/texlive/2017basic/texmf-dist/fonts/type1/public/amsfonts/cm
 /cm/cmsy8.pfb></usr/local/texlive/2017basic/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmti12.pfb></usr/local/texlive/2017basic/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmtt12.pfb>
-Output written on Lagrangian_MISOMIP.pdf (57 pages, 7924913 bytes).
+Output written on Lagrangian_MISOMIP.pdf (56 pages, 7541821 bytes).
 PDF statistics:
- 340 PDF objects out of 1000 (max. 8388607)
- 208 compressed objects within 3 object streams
+ 335 PDF objects out of 1000 (max. 8388607)
+ 206 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
- 101 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 96 words of extra memory for PDF output out of 10000 (max. 10000000)
 
